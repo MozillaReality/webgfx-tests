@@ -1,0 +1,12 @@
+[
+  {
+    "id": "instancing",
+    "engine": "three.js",
+    "entry": "/static/index.html"
+  },
+  {
+    "id": "billboard_particles",
+    "engine": "three.js",
+    "entry": "/static/index2.html"
+  }
+]
