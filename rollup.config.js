@@ -7,7 +7,7 @@ export default {
     resolve({customResolveOptions: 'node_modules'}),
     commonjs()
 	],
-	//external: ['websocket'],
+	external: ['crypto'],
 	// sourceMap: true,
 	output: [
 		{

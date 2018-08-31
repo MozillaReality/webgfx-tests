@@ -16,8 +16,8 @@ wrapFunctions.forEach(key => {
         this.logs.warnings.push(args);
       }
 
-      //if (TesterConfig.sendLog)
-      TESTER.socket.emit('log', args);
+      if (TesterConfig.sendLog)
+        TESTER.socket.emit('log', args);
 
       return fn.apply(null, args);
     }
