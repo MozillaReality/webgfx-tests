@@ -3,6 +3,11 @@ var server = http.createServer();
 var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function (socket) {
+  
+  socket.on('disconnect', () => {
+
+  });
+  
   socket.on('log', (data) => {
     console.log(`[LOGGER]`, data);
   });
@@ -20,6 +25,7 @@ io.sockets.on('connection', function (socket) {
       console.log(`**********************************************************************\nFINISHED.`);
       // process.exit(0);
     }
+    io.emit('benchmark_finished', data);
   });
 
 });

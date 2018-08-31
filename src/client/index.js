@@ -120,8 +120,8 @@ window.TESTER = {
 
     function reftest () {
       const init = performance.realNow();
-      document.body.appendChild(actualImage);
-      actualImage.style.cssText="position:absolute;left:0;right:0;top:0;bottom:0;z-index:99990;width:100%;height:100%;background-color:#999;font-size:100px;display:flex;align-items:center;justify-content:center;font-family:sans-serif";
+      //document.body.appendChild(actualImage);
+      //actualImage.style.cssText="position:absolute;left:0;right:0;top:0;bottom:0;z-index:99990;width:100%;height:100%;background-color:#999;font-size:100px;display:flex;align-items:center;justify-content:center;font-family:sans-serif";
       TESTER.stats.timeGeneratingReferenceImages += performance.realNow() - init;
     }
 
@@ -190,6 +190,7 @@ window.TESTER = {
     this.socket.emit('benchmark_finish', data);
     console.log('Finished!', data);
     this.socket.disconnect();
+    if (typeof window !== 'undefined' && window.close) window.close();
   },
   wrapErrors: function () {
     window.addEventListener('error', error => evt.logs.catchErrors = {

@@ -7,11 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
   </head>
   <style>
     body {
       font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     }
+
+    td {
+      padding: 10px;
+      background-color: #f3f3f3;
+    }
+    
   </style>
   <body>
     <div id="app">
@@ -41,7 +48,30 @@
       <h3>Options</h3>
       // TODO
       <h2>Results log</h2>
-      // TODO    
+      <table>
+        <thead>
+          <th>test_id</th>
+          <th>Total time</th>
+          <th>First frame</th>
+          <th>FPS</th>
+          <th>CPU Time</th>
+          <th>CPU Idle</th>
+          <th># janked frames</th>
+          <th>JSON</th>
+        </thead>
+        <tbody>
+          <tr v-for="result in results">
+            <td>{{result.test_id}}</td>
+            <td>{{result.totalTime}}</td>
+            <td>{{result.timeToFirstFrame}}</td>
+            <td>{{result.avgFps}}</td>
+            <td>{{result.cpuTime}}</td>
+            <td>{{result.cpuIdlePerc}}</td>
+            <td>{{result.numStutterEvents}}</td>
+            <td>{{result}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <script src="index.js" async defer></script>
   </body>

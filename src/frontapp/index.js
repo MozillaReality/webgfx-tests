@@ -12,10 +12,33 @@ const tests = [
     "name": "instancing demo (single triangle)"
   }
 ];
+var data = {
+  tests: tests,
+  results: []
+};
 
 var app = new Vue({
   el: '#app',
-  data: {
-    tests: tests
-  }
+  data: data
 });      
+
+var serverUrl = 'http://localhost:8888';
+
+this.socket = io.connect(serverUrl);
+
+this.socket.on('connect', function(data) {
+  console.log('Connected to testing server');
+});
+
+this.socket.on('benchmark_finished', (result) => {
+  console.log(result);
+  data.results.push(result);
+});
+
+this.socket.on('error', (error) => {
+  console.log(error);
+});
+
+this.socket.on('connect_error', (error) => {
+  console.log(error);
+});
