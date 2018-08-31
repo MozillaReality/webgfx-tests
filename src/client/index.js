@@ -2,6 +2,7 @@ import FakeTimers from 'fake-timers';
 import CanvasHook from 'canvas-hook';
 import PerfStats from 'performance-stats';
 import seedrandom from 'seedrandom';
+// import io from 'socket.io-client';
 
 //-----------------
 
@@ -136,7 +137,7 @@ window.TESTER = {
   },
 
   initServer: function () {
-    var serverUrl = 'http://' + GFXPERFTEST_SERVER_IP + ':8888';
+    var serverUrl = 'http://' + GFXPERFTEST_CONFIG.serverIP + ':8888';
 
     this.socket = io.connect(serverUrl);
     this.stats = new PerfStats();
@@ -169,7 +170,7 @@ window.TESTER = {
     var fps = this.numFramesToRender * 1000.0 / totalRenderTime;
     
     var data = {
-      test_id: TEST_ID,
+      test_id: GFXPERFTEST_CONFIG.test_id,
       values: this.stats.getStatsSummary(),
       numFrames: this.numFramesToRender,
       totalTime: totalTime,
@@ -231,7 +232,7 @@ window.TESTER = {
     };
     this.wrapErrors();
 
-    this.socket.emit('benchmark_started', {id: TEST_ID});
+    this.socket.emit('benchmark_started', {id: GFXPERFTEST_CONFIG.test_id});
 
     this.socket.on('next_benchmark', (data) => {
             // window.location.replace('http://threejs.org');

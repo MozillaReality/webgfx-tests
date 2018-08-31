@@ -15,6 +15,11 @@ server.get('/static/gfx-perftests.js', (req, res) => {
   res.send(html);
 });
 
+server.get('/', (req, res) => {
+  var html = fs.readFileSync(__dirname+'/../frontapp/index.html', 'utf8');
+  res.send(html);
+});
+
 server.get('/static*', (req, res) => {
   var pathf = path.join(__dirname+'/../', req.url);
   var ext = path.extname(req.url);
@@ -24,8 +29,7 @@ server.get('/static*', (req, res) => {
       var html = fs.readFileSync(pathf, 'utf8');
       var $ = cheerio.load(html);
       var head = $('head');
-      head.append(`<script>var TEST_ID = '${test.id}';</script>\n`)
-          .append(`<script>var GFXPERFTEST_SERVER_IP = '${internalIp.v4.sync()}';</script>`)
+      head.append(`<script>var GFXPERFTEST_CONFIG = {serverIP: '${internalIp.v4.sync()}', test_id: '${test.id}'};</script>`)
           .append('<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>')
           .append('<script src="gfx-perftests.js"></script>');
       res.send($.html());    
