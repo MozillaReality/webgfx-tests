@@ -3,7 +3,6 @@ import CanvasHook from './canvashook';
 import PerfStats from 'performance-stats';
 import seedrandom from 'seedrandom';
 
-
 //-----------------
 
 var randomSeed = 1;
@@ -137,9 +136,7 @@ window.TESTER = {
   },
 
   initServer: function () {
-    //var serverUrl = 'http://127.0.0.1:8888';
-    //var serverUrl = 'http://127.0.0.1:8888';
-    var serverUrl = 'http://192.168.1.49:8888';
+    var serverUrl = 'http://' + GFXPERFTEST_SERVER_IP + ':8888';
 
     this.socket = io.connect(serverUrl);
     this.stats = new PerfStats();

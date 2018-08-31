@@ -6,13 +6,14 @@ export default {
   plugins: [
     resolve({customResolveOptions: 'node_modules'}),
     commonjs()
-  ],
+	],
+	//external: ['websocket'],
 	// sourceMap: true,
 	output: [
 		{
 			format: 'umd',
-			name: 'PERFTESTS',
-			file: 'dist/perftests.js',
+			name: 'GFXPERFTESTS',
+			file: 'dist/gfx-perftests.js',
 			indent: '\t'
 		},
 	]
