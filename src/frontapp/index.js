@@ -2,12 +2,12 @@ const tests = [
   {
     "id": "instancing",
     "engine": "three.js",
-    "entry": "/static/index.html"
+    "entry": "index.html"
   },
   {
     "id": "billboard_particles",
     "engine": "three.js",
-    "entry": "/tests/index2.html"
+    "entry": "index2.html"
   }
 ];
 

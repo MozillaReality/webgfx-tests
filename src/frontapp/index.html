@@ -32,8 +32,8 @@
             <td>{{test.id}}</td>
             <td>{{test.name}}</td>
             <td>{{test.engine}}</td>
-            <td><a target="_blank" :href="test.entry">test</a></td>
-            <td><a target="_blank" :href="test.entry">launch</a></td>
+            <td><a target="_blank" :href="'tests/' + test.entry">test</a></td>
+            <td><a target="_blank" :href="'static/' + test.entry">launch</a></td>
           </tr>
         <tbody>
         </tbody>

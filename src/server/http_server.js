@@ -23,7 +23,7 @@ server.get('/tests*', (req, res) => {
   var pathf = path.join(__dirname+'/../', req.url);
   var ext = path.extname(req.url);
   if (ext === '.html') {
-    var test = testsDb.find(test => test.entry === req.url);
+    var test = testsDb.find(test => test.entry === req.url.replace(/\/tests\//, ''));
     if (test) {
       var html = fs.readFileSync(pathf, 'utf8');
       var $ = cheerio.load(html);
