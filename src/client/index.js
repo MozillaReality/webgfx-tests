@@ -1,5 +1,5 @@
 import FakeTimers from 'fake-timers';
-import CanvasHook from './canvashook';
+import CanvasHook from 'canvas-hook';
 import PerfStats from 'performance-stats';
 import seedrandom from 'seedrandom';
 
