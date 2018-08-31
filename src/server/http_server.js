@@ -15,10 +15,7 @@ server.get('/static/gfx-perftests.js', (req, res) => {
   res.send(html);
 });
 
-server.get('/', (req, res) => {
-  var html = fs.readFileSync(__dirname+'/../frontapp/index.html', 'utf8');
-  res.send(html);
-});
+server.use('/', express.static('src/frontapp'));
 
 server.get('/static*', (req, res) => {
   var pathf = path.join(__dirname+'/../', req.url);
