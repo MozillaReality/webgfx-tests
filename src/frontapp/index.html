@@ -14,24 +14,35 @@
     }
   </style>
   <body>
-    <h2>System information</h2>
-    // TODO
-    <h2>Tests</h2>
-    <table>
-      <thead>
-        <th></th>
-        <th>Name</th>
-        <th>Test</th>
-        <th>Launch</th>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-    <h3>Options</h3>
-    // TODO
-    <h2>Results log</h2>
-    // TODO
-    <script src="" async defer>
-    </script>
+    <div id="app">
+      <h2>System information</h2>
+      // TODO
+      <h2>Tests</h2>
+      <table>
+        <thead>
+          <th></th>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Engine</th>
+          <th>Test</th>
+          <th>Launch</th>
+        </thead>
+          <tr v-for="test in tests">
+            <td><input type="checkbox"></td>
+            <td>{{test.id}}</td>
+            <td>{{test.name}}</td>
+            <td>{{test.engine}}</td>
+            <td><a target="_blank" :href="test.entry">test</a></td>
+            <td><a target="_blank" :href="test.entry">launch</a></td>
+          </tr>
+        <tbody>
+        </tbody>
+      </table>
+      <h3>Options</h3>
+      // TODO
+      <h2>Results log</h2>
+      // TODO    
+    </div>
+    <script src="index.js" async defer></script>
   </body>
 </html>

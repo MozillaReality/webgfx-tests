@@ -10,14 +10,16 @@ let server = express();
 
 var testsDb = JSON.parse(fs.readFileSync(__dirname + '/tests.json', 'utf8'));
 
-server.get('/static/gfx-perftests.js', (req, res) => {
+server.use('/', express.static('src/frontapp'));
+
+server.use('/static', express.static('src/tests'));
+
+server.get('/tests/gfx-perftests.js', (req, res) => {
   var html = fs.readFileSync(__dirname+'/../../dist/gfx-perftests.js', 'utf8');
   res.send(html);
 });
 
-server.use('/', express.static('src/frontapp'));
-
-server.get('/static*', (req, res) => {
+server.get('/tests*', (req, res) => {
   var pathf = path.join(__dirname+'/../', req.url);
   var ext = path.extname(req.url);
   if (ext === '.html') {
