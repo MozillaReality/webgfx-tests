@@ -40,8 +40,6 @@ server.get('/tests*', (req, res) => {
   }
 });
 
-
-
 server.listen(3000, function(){
   console.log(chalk.white('listening on ') + chalk.yellow('*:3000'));
 });

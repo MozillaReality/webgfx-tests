@@ -2,12 +2,14 @@ const tests = [
   {
     "id": "instancing",
     "engine": "three.js",
-    "entry": "index.html"
+    "entry": "index.html",
+    "name": "instanced circle billboards"
   },
   {
     "id": "billboard_particles",
     "engine": "three.js",
-    "entry": "index2.html"
+    "entry": "index2.html",
+    "name": "instancing demo (single triangle)"
   }
 ];
 
