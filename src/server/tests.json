@@ -2,13 +2,25 @@
   {
     "id": "instancing",
     "engine": "three.js",
-    "entry": "index.html",
+    "url": "threejs/index.html",
     "name": "instanced circle billboards"
   },
   {
     "id": "billboard_particles",
     "engine": "three.js",
-    "entry": "index2.html",
+    "url": "threejs/index2.html",
     "name": "instancing demo (single triangle)"
+  },
+  {
+    "id": "simple",
+    "engine": "babylon.js",
+    "url": "babylon/simple.html",
+    "name": "simple example"
+  },
+  {
+    "id": "playcanvas",
+    "engine": "playcanvas",
+    "url": "playcanvas/animation.html",
+    "name": "animation"
   }
 ]

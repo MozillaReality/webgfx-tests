@@ -20,17 +20,18 @@ server.get('/tests/gfx-perftests.js', (req, res) => {
 });
 
 server.get('/tests*', (req, res) => {
-  var pathf = path.join(__dirname+'/../', req.url);
-  var ext = path.extname(req.url);
+  var url = req.url.split('?')[0]; // Remove params like /file.json?p=whatever
+  var pathf = path.join(__dirname+'/../', url);
+  var ext = path.extname(url);
   if (ext === '.html') {
-    var test = testsDb.find(test => test.entry === req.url.replace(/\/tests\//, ''));
+    var test = testsDb.find(test => test.url === url.replace(/\/tests\//, ''));
     if (test) {
       var html = fs.readFileSync(pathf, 'utf8');
       var $ = cheerio.load(html);
       var head = $('head');
       head.append(`<script>var GFXPERFTEST_CONFIG = {serverIP: '${internalIp.v4.sync()}', test_id: '${test.id}'};</script>`)
           .append('<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>')
-          .append('<script src="gfx-perftests.js"></script>');
+          .append('<script src="/tests/gfx-perftests.js"></script>');
       res.send($.html());    
     } else {
       res.send('Not test found');

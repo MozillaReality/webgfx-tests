@@ -50,10 +50,6 @@ var webglContext = null;
 window.alert = function(msg) { console.error('window.alert(' + msg + ')'); }
 window.confirm = function(msg) { console.error('window.confirm(' + msg + ')'); return true; }
 
-function emunittestReportCustomBlockDuration() {
-  console.log(arguments);
-}
-
 window.TESTER = {
   // Currently executing frame.
   referenceTestFrameNumber: 0,

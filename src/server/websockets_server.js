@@ -23,7 +23,7 @@ io.sockets.on('connection', function (socket) {
       socket.emit('next_benchmark', {url: '/static/index2.html'});
     } else {
       console.log(`**********************************************************************\nFINISHED.`);
-      // process.exit(0);
+      // process.exit(0); 
     }
     io.emit('benchmark_finished', data);
   });

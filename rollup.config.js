@@ -1,20 +1,7 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
+import clientConfig from './rollup.config.client.js';
+import frontAppConfig from './rollup.config.frontapp.js';
 
-export default {
-  input: 'src/client/index.js',
-  plugins: [
-    resolve({customResolveOptions: 'node_modules'}),
-    commonjs()
-	],
-	external: ['crypto'],
-	// sourceMap: true,
-	output: [
-		{
-			format: 'umd',
-			name: 'GFXPERFTESTS',
-			file: 'dist/gfx-perftests.js',
-			indent: '\t'
-		},
-	]
-};
+export default [
+  clientConfig,
+  frontAppConfig
+];

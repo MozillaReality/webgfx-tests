@@ -23,7 +23,9 @@
   <body>
     <div id="app">
       <h2>System information</h2>
-      // TODO
+      <h3>Native environment</h3>
+      <h3>Browser environment</h3>
+      <pre>{{getBrowserInfo()}}</pre>
       <h2>Tests</h2>
       <table>
         <thead>
@@ -35,19 +37,22 @@
           <th>Launch</th>
         </thead>
           <tr v-for="test in tests">
-            <td><input type="checkbox"></td>
+            <td><input type="checkbox" checked></td>
             <td>{{test.id}}</td>
             <td>{{test.name}}</td>
             <td>{{test.engine}}</td>
-            <td><a target="_blank" :href="'tests/' + test.entry">test</a></td>
-            <td><a target="_blank" :href="'static/' + test.entry">launch</a></td>
+            <td><button v-on:click="runTest(test,false)">test</button></td>
+            <td><button v-on:click="runTest(test,true)">launch</button></td>
           </tr>
         <tbody>
         </tbody>
       </table>
+      <button onclick="runSelectedTests()" id='runTests'>Run tests</button>
+
       <h3>Options</h3>
       // TODO
       <h2>Results log</h2>
+      <button v-on:click="show_json = !show_json">Show JSON</button>
       <table>
         <thead>
           <th>test_id</th>
@@ -57,7 +62,7 @@
           <th>CPU Time</th>
           <th>CPU Idle</th>
           <th># janked frames</th>
-          <th>JSON</th>
+          <th v-show="show_json">JSON</th>
         </thead>
         <tbody>
           <tr v-for="result in results">
@@ -68,11 +73,12 @@
             <td>{{result.cpuTime}}</td>
             <td>{{result.cpuIdlePerc}}</td>
             <td>{{result.numStutterEvents}}</td>
-            <td>{{result}}</td>
+            <td v-show="show_json"><pre>{{result.json}}</pre></td>
           </tr>
         </tbody>
       </table>
     </div>
-    <script src="index.js" async defer></script>
+    <!--<script src="index.js" async defer></script>-->
+    <script src="app.bundle.js" async defer></script>
   </body>
 </html>
