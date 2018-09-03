@@ -50,6 +50,7 @@ export default function browserFeatureTest(successCallback) {
   setApiSupport('WebAssembly', typeof WebAssembly !== 'undefined');
   setApiSupport('WebVR', typeof navigator.getVRDisplays !== 'undefined');
   setApiSupport('WebXR', typeof navigator.xr !== 'undefined');
+  setApiSupport('OffscreenCanvas', typeof OffscreenCanvas !== 'undefined');
 
   //-------------------------------------------
   //-------------------------------------------
