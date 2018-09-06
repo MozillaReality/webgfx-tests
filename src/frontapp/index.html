@@ -18,14 +18,19 @@
       padding: 10px;
       background-color: #f3f3f3;
     }
-    
+
   </style>
   <body>
     <div id="app">
-      <h2>System information</h2>
-      <h3>Native environment</h3>
-      <h3>Browser environment</h3>
-      <pre>{{getBrowserInfo()}}</pre>
+      <div>
+        <h2>System information</h2>
+        <h3>Native environment</h3>
+        <h3>Browser environment</h3>
+        <b>Common features</b>
+        <pre>{{getBrowserInfo()}}</pre>
+        <b>WebGL support</b>
+        <pre>{{webglInfo ? JSON.stringify(webglInfo, null, 4) : 'Checking browser features...'}}</pre>
+      </div>
       <h2>Tests</h2>
       <table>
         <thead>
@@ -37,7 +42,7 @@
           <th>Launch</th>
         </thead>
           <tr v-for="test in tests">
-            <td><input type="checkbox" checked></td>
+            <td><input type="checkbox" v-model="test.selected"></td>
             <td>{{test.id}}</td>
             <td>{{test.name}}</td>
             <td>{{test.engine}}</td>
@@ -47,7 +52,8 @@
         <tbody>
         </tbody>
       </table>
-      <button onclick="runSelectedTests()" id='runTests'>Run tests</button>
+      <button v-on:click="runSelectedTests()" id='runTests'>Run tests</button>
+      {{tests.filter(x => x.selected).length}} selected.
 
       <h3>Options</h3>
       // TODO

@@ -19,6 +19,8 @@ server.get('/tests/gfx-perftests.js', (req, res) => {
   res.send(html);
 });
 
+server.use('/tests.json', express.static('src/server/tests.json'));
+
 server.get('/tests*', (req, res) => {
   var url = req.url.split('?')[0]; // Remove params like /file.json?p=whatever
   var pathf = path.join(__dirname+'/../', url);

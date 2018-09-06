@@ -3,24 +3,32 @@
     "id": "instancing",
     "engine": "three.js",
     "url": "threejs/index.html",
-    "name": "instanced circle billboards"
+    "name": "instanced circle billboards",
+    "mobile": true,
+    "interactive": true
   },
   {
     "id": "billboard_particles",
     "engine": "three.js",
     "url": "threejs/index2.html",
-    "name": "instancing demo (single triangle)"
+    "name": "instancing demo (single triangle)",
+    "mobile": true,
+    "interactive": true
   },
   {
     "id": "simple",
     "engine": "babylon.js",
     "url": "babylon/simple.html",
-    "name": "simple example"
+    "name": "simple example",
+    "mobile": true,
+    "interactive": true
   },
   {
     "id": "playcanvas",
     "engine": "playcanvas",
     "url": "playcanvas/animation.html",
-    "name": "animation"
+    "name": "animation",
+    "mobile": true,
+    "interactive": true
   }
 ]
