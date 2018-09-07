@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/fernandojsg/gfx-perftests#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "browser-features": "^1.0.2",
     "canvas-hook": "^0.1.0",
     "chalk": "^2.4.1",

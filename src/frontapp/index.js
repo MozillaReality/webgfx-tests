@@ -21,7 +21,6 @@ var vueApp = new Vue({
       testApp.runTest(test.id, interactive);
     },
     runSelectedTests: function() {
-      console.log('<<<<');
       testApp.runSelectedTests();
     },
     getBrowserInfo: function () {

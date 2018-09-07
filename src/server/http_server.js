@@ -5,6 +5,7 @@ var cheerio = require('cheerio');
 var path = require('path')
 const chalk = require('chalk');
 const internalIp = require('internal-ip');
+var bodyParser = require('body-parser')
 
 let server = express();
 
@@ -20,6 +21,18 @@ server.get('/tests/gfx-perftests.js', (req, res) => {
 });
 
 server.use('/tests.json', express.static('src/server/tests.json'));
+
+server.use(bodyParser.json());
+
+server.post('/store_test_start', (req, res) => {
+  console.log('Starting a new test', req.body);
+  res.send('');
+});
+
+server.post('/store_system_info', (req, res) => {
+  console.log('Storing system info', req.body);
+  res.send('');
+});
 
 server.get('/tests*', (req, res) => {
   var url = req.url.split('?')[0]; // Remove params like /file.json?p=whatever

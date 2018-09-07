@@ -74,11 +74,11 @@ export default class TestApp {
     this.vueApp = vueApp;
     vueApp.browserInfo = {asdf:1,wer:3};
     console.log(`Test App v.${VERSION}`);
+    this.webglInfo = vueApp.webglInfo = webglInfo();
     browserFeatures(features => {
       this.browserInfo = vueApp.browserInfo = features;
       this.onBrowserResultsReceived({});
     });
-    vueApp.webglInfo = webglInfo();
 
   }
 
@@ -109,8 +109,12 @@ export default class TestApp {
 
   onBrowserResultsReceived() {
     console.log('Browser UUID:', this.getBrowserUUID());
-    //resultsServer.storeSystemInfo();
-    //autoRun();
+    var systemInfo = {
+      webglInfo: this.webglInfo,
+      browserInfo: this.browserInfo
+    };
+
+    this.resultsServer.storeSystemInfo(systemInfo);
   }
     
   runSelectedTests() {
