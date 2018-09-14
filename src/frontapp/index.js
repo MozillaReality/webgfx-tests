@@ -5,18 +5,28 @@ var data = {
   show_json: false,
   browserInfo: null,
   webglInfo: null,
-  numTimesToRunEachTest: 10,
   nativeSystemInfo: {},
+  showInfo: false,
   options: {
-    fakeGL: false,
+    general: {
+      numTimesToRunEachTest: 1
+    },
+    tests: {
+      fakeWebGL: false
+    }
   },
-  results: []
+  results: [],
+  resultsAverage: [],
+  resultsById: {}
 };
 
 var vueApp = new Vue({
   el: '#app',
   data: data,
   methods: {
+    formatNumeric(value) {
+      return value.toFixed(2);
+    },
     runTest: function(test, interactive) {
       testApp.runTest(test.id, interactive);
     },

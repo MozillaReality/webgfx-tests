@@ -46,11 +46,16 @@
 		<a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - instancing demo (single triangle)
 		<div id="notSupported" style="display:none">Sorry your graphics card + browser does not support hardware instancing</div>
 	</div>
-
 	<script src="dat.gui.min.js"></script>
 	<script src="three.js"></script>
 	<script src="Detector.js"></script>
 	<script src="stats.min.js"></script>
+	<script>
+//----------------------------------------------------------------------
+// Hook canvas.getContext
+//----------------------------------------------------------------------
+
+	</script>
 	<script id="vertexShader" type="x-shader/x-vertex">
 		precision highp float;
 
@@ -238,6 +243,7 @@
 		}
 
 		//
+
 
 		function animate() {
 

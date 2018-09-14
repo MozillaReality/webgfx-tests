@@ -18,7 +18,10 @@
       padding: 10px;
       background-color: #f3f3f3;
     }
-
+    
+    .average-results td {
+      background-color: #AAA;
+    }
   </style>
   <body>
     <div id="app">
@@ -26,10 +29,12 @@
         <h2>System information</h2>
         <h3>Native environment</h3>
         <h3>Browser environment</h3>
+        <button v-on:click="showInfo = !showInfo">Toggle visibility</button><br/><br/>
         <b>Common features</b>
-        <pre>{{getBrowserInfo()}}</pre>
+        <pre v-show="showInfo">{{getBrowserInfo()}}</pre>
+        <hr>
         <b>WebGL support</b>
-        <pre>{{webglInfo ? JSON.stringify(webglInfo, null, 4) : 'Checking browser features...'}}</pre>
+        <pre v-show="showInfo">{{webglInfo ? JSON.stringify(webglInfo, null, 4) : 'Checking browser features...'}}</pre>
       </div>
       <h2>Tests</h2>
       <table>
@@ -52,6 +57,9 @@
         <tbody>
         </tbody>
       </table>
+      num.times: <input type="text" v-model="options.general.numTimesToRunEachTest">
+      fake webgl: <input type="checkbox" v-model="options.tests.fakeWebGL">
+      <br>
       <button v-on:click="runSelectedTests()" id='runTests'>Run tests</button>
       {{tests.filter(x => x.selected).length}} selected.
 
@@ -61,7 +69,8 @@
       <button v-on:click="show_json = !show_json">Show JSON</button>
       <table>
         <thead>
-          <th>test_id</th>
+          <th>Test ID</th>
+          <th>Options</th>
           <th>Total time</th>
           <th>First frame</th>
           <th>FPS</th>
@@ -73,12 +82,24 @@
         <tbody>
           <tr v-for="result in results">
             <td>{{result.test_id}}</td>
-            <td>{{result.totalTime}}</td>
-            <td>{{result.timeToFirstFrame}}</td>
-            <td>{{result.avgFps}}</td>
-            <td>{{result.cpuTime}}</td>
-            <td>{{result.cpuIdlePerc}}</td>
+            <td>{{result.options}}</td>
+            <td>{{formatNumeric(result.totalTime)}}</td>
+            <td>{{formatNumeric(result.timeToFirstFrame)}}</td>
+            <td>{{formatNumeric(result.avgFps)}}</td>
+            <td>{{formatNumeric(result.cpuTime)}}</td>
+            <td>{{formatNumeric(result.cpuIdlePerc)}}</td>
             <td>{{result.numStutterEvents}}</td>
+            <td v-show="show_json"><pre>{{result.json}}</pre></td>
+          </tr>
+          <tr class="average-results" v-for="result in resultsAverage">
+            <td>{{result.test_id}}</td>
+            <td></td>
+            <td>{{formatNumeric(result.totalTime)}}</td>
+            <td>{{formatNumeric(result.timeToFirstFrame)}}</td>
+            <td>{{formatNumeric(result.avgFps)}}</td>
+            <td>{{formatNumeric(result.cpuTime)}}</td>
+            <td>{{formatNumeric(result.cpuIdlePerc)}}</td>
+            <td>{{formatNumeric(result.numStutterEvents)}}</td>
             <td v-show="show_json"><pre>{{result.json}}</pre></td>
           </tr>
         </tbody>

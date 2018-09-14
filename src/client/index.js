@@ -2,7 +2,7 @@ import FakeTimers from 'fake-timers';
 import CanvasHook from 'canvas-hook';
 import PerfStats from 'performance-stats';
 import seedrandom from 'seedrandom';
-// import io from 'socket.io-client';
+import queryString from 'query-string';
 
 //-----------------
 
@@ -31,7 +31,9 @@ var numConsecutiveSmoothFrames = 0;
 
 const numFastFramesNeededForSmoothFrameRate = 120; // Require 120 frames i.e. ~2 seconds of consecutive smooth stutter free frames to conclude we have reached a stable animation rate.
 
-CanvasHook.enable();
+const parameters = queryString.parse(location.search);
+
+CanvasHook.enable({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'});
 
 if (!TesterConfig.dontOverrideTime)
 {
