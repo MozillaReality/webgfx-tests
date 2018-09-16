@@ -1,4 +1,6 @@
-export default function generateUUID() {
+import jsSHA from 'jssha';
+
+export function generateUUID() {
   if (window.crypto && window.crypto.getRandomValues) {
     var buf = new Uint16Array(8);
     window.crypto.getRandomValues(buf);
@@ -10,4 +12,19 @@ export default function generateUUID() {
       return v.toString(16);
     });
   }
+}
+
+// Hashes the given text to a UUID string of form 'xxxxxxxx-yyyy-zzzz-wwww-aaaaaaaaaaaa'.
+export function hashToUUID(text) {
+  var shaObj = new jsSHA('SHA-256', 'TEXT');
+  shaObj.update(text);
+  var hash = new Uint8Array(shaObj.getHash('ARRAYBUFFER'));
+  
+  var n = '';
+  for(var i = 0; i < hash.byteLength/2; ++i) {
+    var s = (hash[i] ^ hash[i+8]).toString(16);
+    if (s.length == 1) s = '0' + s;
+    n += s;
+  }
+  return n.slice(0, 8) + '-' + n.slice(8, 12) + '-' + n.slice(12, 16) + '-' + n.slice(16, 20) + '-' + n.slice(20);
 }

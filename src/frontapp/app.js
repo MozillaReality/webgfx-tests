@@ -1,7 +1,8 @@
 import browserFeatures from 'browser-features';
 import webglInfo from 'webgl-info';
-import jsSHA from 'jssha';
-import generateUUID from './UUID';
+//import {hashToUUID, generateUUID} from './UUID';
+import {generateUUID, hashToUUID} from './UUID';
+
 import ResultsServer from './results-server';
 import queryString from 'query-string';
 
@@ -11,23 +12,6 @@ function addGET(url, parameter) {
 }
 
 const parameters = queryString.parse(location.search);
-
-// Hashes the given text to a UUID string of form 'xxxxxxxx-yyyy-zzzz-wwww-aaaaaaaaaaaa'.
-function hashToUUID(text) {
-  var shaObj = new jsSHA('SHA-256', 'TEXT');
-  shaObj.update(text);
-  return shaObj.getHash('HEX');
-  /*
-  var hash = shaObj.getHash('ARRAYBUFFER');
-  var n = '';
-  for(var i = 0; i < hash.byteLength/2; ++i) {
-    var s = (hash[i] ^ hash[i+8]).toString(16);
-    if (s.length == 1) s = '0' + s;
-    n += s;
-  }
-  return n.slice(0, 8) + '-' + n.slice(8, 12) + '-' + n.slice(12, 16) + '-' + n.slice(16, 20) + '-' + n.slice(20);
-  */
-}
 
 
 function yyyymmddhhmmss() {
