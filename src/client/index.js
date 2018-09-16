@@ -55,7 +55,7 @@ window.confirm = function(msg) { console.error('window.confirm(' + msg + ')'); r
 window.TESTER = {
   // Currently executing frame.
   referenceTestFrameNumber: 0,
-  numFramesToRender: 100,
+  numFramesToRender: typeof parameters['numframes'] === 'undefined' ? 100 : parseInt(parameters['numframes']),
 
   tick: function () {
 
@@ -218,6 +218,8 @@ window.TESTER = {
     });
   },
   init: function () {
+    console.log('Frames to render:', this.numFramesToRender);
+
     this.initServer();
 
     this.timeStart = performance.realNow();
