@@ -220,6 +220,14 @@ window.TESTER = {
   init: function () {
     console.log('Frames to render:', this.numFramesToRender);
 
+    const DEFAULT_WIDTH = 400;
+    const DEFAULT_HEIGHT = 300;
+
+    if (typeof parameters['keep-window-size'] === 'undefined') {
+      window.innerWidth = typeof parameters['width'] === 'undefined' ? DEFAULT_WIDTH : parseInt(parameters['width']);
+      window.innerHeight = typeof parameters['height'] === 'undefined' ? DEFAULT_HEIGHT : parseInt(parameters['height']);
+    }
+
     this.initServer();
 
     this.timeStart = performance.realNow();

@@ -14,6 +14,10 @@
     "url": "threejs/index2.html",
     "name": "instancing demo (single triangle)",
     "mobile": true,
+    "windowsize": {
+      "width": 500,
+      "height": 500
+    },
     "interactive": true
   },
   {

@@ -248,6 +248,8 @@ export default class TestApp {
     if (!interactive) url = addGET(url, 'playback');
     if (fakeWebGL) url = addGET(url, 'fake-webgl');
     if (test.numframes) url = addGET(url, 'numframes=' + test.numframes);
+    if (test.windowsize) url = addGET(url, 'width=' + test.windowsize.width + '&height=' + test.windowsize.height);
+    
     console.log(test);
     window.open(url);
   
