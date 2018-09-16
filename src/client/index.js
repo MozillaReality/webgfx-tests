@@ -3,7 +3,6 @@ import CanvasHook from 'canvas-hook';
 import PerfStats from 'performance-stats';
 import seedrandom from 'seedrandom';
 import queryString from 'query-string';
-
 //-----------------
 
 var randomSeed = 1;
@@ -74,6 +73,7 @@ window.TESTER = {
     var frameDuration = timeNow - lastFrameTick;
     lastFrameTick = timeNow;
     if (this.referenceTestFrameNumber > 5 && lastFrameDuration > 0) {
+      // This must be fixed depending on the vsync
       if (frameDuration > 20.0 && frameDuration > lastFrameDuration * 1.35) {
         numStutterEvents++;
         if (numConsecutiveSmoothFrames != -1) numConsecutiveSmoothFrames = 0;
