@@ -1,32 +1,11 @@
 import browserFeatures from 'browser-features';
 import webglInfo from 'webgl-info';
-//import {hashToUUID, generateUUID} from './UUID';
 import {generateUUID, hashToUUID} from './UUID';
-
 import ResultsServer from './results-server';
 import queryString from 'query-string';
-
-function addGET(url, parameter) {
-  if (url.indexOf('?') != -1) return url + '&' + parameter;
-  else return url + '?' + parameter;
-}
+import {addGET, yyyymmddhhmmss} from './utils';
 
 const parameters = queryString.parse(location.search);
-
-
-function yyyymmddhhmmss() {
-  var date = new Date();
-  var yyyy = date.getFullYear();
-  var mm = date.getMonth() < 9 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1); // getMonth() is zero-based
-  var dd  = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-  var hh = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
-  var min = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-  var sec = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-  return yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + min + ':' + sec;
-}
-//import vsyncEstimate from './vsyncestimate';
-//var displayRefreshRate = -1;
-//vsyncEstimate().then(hz => displayRefreshRate = Math.random(hz));
 
 const VERSION = '1.0';
 
@@ -268,10 +247,8 @@ export default class TestApp {
     var url = (interactive ? 'static/': 'tests/') + test.url;
     if (!interactive) url = addGET(url, 'playback');
     if (fakeWebGL) url = addGET(url, 'fake-webgl');
-    
-/*
-    if (test.length) url = addGET(url, 'numframes=' + test.length);
-    */
+    if (test.numframes) url = addGET(url, 'numframes=' + test.numframes);
+    console.log(test);
     window.open(url);
   
     var testData = {

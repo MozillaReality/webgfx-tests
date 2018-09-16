@@ -5,6 +5,7 @@
     "url": "threejs/index.html",
     "name": "instanced circle billboards",
     "mobile": true,
+    "numframes": 200,
     "interactive": true
   },
   {
