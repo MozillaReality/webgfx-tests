@@ -41,6 +41,7 @@ export default class TestApp {
     this.currentlyRunningTest = {};
     this.resultsServer = new ResultsServer();
     this.testsQueuedToRun = [];
+    this.progress = null;
 
     fetch('tests.json')
       .then(response => { return response.json(); })
@@ -183,28 +184,42 @@ export default class TestApp {
 
     this.resultsServer.storeSystemInfo(systemInfo);
   }
-    
+
   runSelectedTests() {
     this.testsQueuedToRun = this.tests.filter(x => x.selected);
     
     //if (data.numTimesToRunEachTest > 1) {
     //  data.numTimesToRunEachTest = Math.max(data.numTimesToRunEachTest, 1000);
     const numTimesToRunEachTest = this.vueApp.options.general.numTimesToRunEachTest;
+    this.progress = {
+      totalGlobal: numTimesToRunEachTest * this.testsQueuedToRun.length,
+      currentGlobal: 1,
+      tests: {}
+    };
+
     {
       var multiples = [];
       for(var i = 0; i < this.testsQueuedToRun.length; i++) {
         for(var j = 0; j < numTimesToRunEachTest; j++) {
           multiples.push(this.testsQueuedToRun[i]);
+          this.progress.tests[this.testsQueuedToRun[i].id] = {
+            current: 1,
+            total: numTimesToRunEachTest
+          }
         }
       }
       this.testsQueuedToRun = multiples;
     }
+
     this.runningTestsInProgress = true;
     this.runNextQueuedTest();
   }
   
   runNextQueuedTest() {  
-    if (this.testsQueuedToRun.length == 0) return false;
+    if (this.testsQueuedToRun.length == 0) {
+      this.progress = null;
+      return false;
+    }
     var t = this.testsQueuedToRun[ 0 ];
     this.testsQueuedToRun.splice(0, 1);
     this.runTest(t.id, false);
@@ -249,8 +264,13 @@ export default class TestApp {
     if (fakeWebGL) url = addGET(url, 'fake-webgl');
     if (test.numframes) url = addGET(url, 'numframes=' + test.numframes);
     if (test.windowsize) url = addGET(url, 'width=' + test.windowsize.width + '&height=' + test.windowsize.height);
-    
-    console.log(test);
+    if (this.progress) {
+      url = addGET(url, 'order-test=' + this.progress.tests[id].current + '&total-test=' + this.progress.tests[id].total);
+      url = addGET(url, 'order-global=' + this.progress.currentGlobal + '&total-global=' + this.progress.totalGlobal);
+      this.progress.tests[id].current++;
+      this.progress.currentGlobal++;
+    }
+
     window.open(url);
   
     var testData = {

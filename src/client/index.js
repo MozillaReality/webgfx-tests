@@ -217,7 +217,68 @@ window.TESTER = {
       }
     });
   },
+  addProgressBar: function() {
+    window.onload = () => {
+      if (typeof parameters['order-global'] === 'undefined') {
+        return;
+      }
+
+      var divProgressBars = document.createElement('div');
+      divProgressBars.style.cssText = 'position: absolute; bottom: 0; background-color: #333; width: 200px; padding: 10px 10px 0px 10px;';
+      document.body.appendChild(divProgressBars);
+      
+      var orderGlobal = parameters['order-global'];
+      var totalGlobal = parameters['total-global'];
+      var percGlobal = Math.round(orderGlobal/totalGlobal * 100);
+      var orderTest = parameters['order-test'];
+      var totalTest = parameters['total-test'];
+      var percTest = Math.round(orderTest/totalTest * 100);
+      
+      function addProgressBarSection(text, color, perc) {
+        var div = document.createElement('div');
+        div.style.cssText='width: 100%; height: 20px; margin-bottom: 10px; overflow: hidden; background-color: #f5f5f5; border-radius: 4px; -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1); box-shadow: inset 0 1px 2px rgba(0,0,0,.1);';
+        divProgressBars.appendChild(div);
+        
+        var divProgress = document.createElement('div');
+        div.appendChild(divProgress);
+        divProgress.style.cssText=`width: ${perc}%; background-color: ${color} float: left;
+          height: 100%;
+          font-family: Monospace;
+          font-size: 12px;
+          font-weight: normal;
+          line-height: 20px;
+          color: #fff;
+          text-align: center;
+          background-color: #337ab7;
+          -webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+          box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+          -webkit-transition: width .6s ease;
+          -o-transition: width .6s ease;
+          transition: width .6s ease;`;
+          divProgress.innerText = text;;
+      }
+
+      addProgressBarSection(`${orderTest}/${totalTest} ${percTest}%`, '#5bc0de', percTest);
+      addProgressBarSection(`${orderGlobal}/${totalGlobal} ${percGlobal}%`, '#337ab7', percGlobal);
+      return;
+      /*
+		<div class="progress" style="width: 100%">
+				<div id="progressbar2" class="progress-bar" role="progressbar" style="width: 50%; background-color: #f0ad4e">
+					1/100 10%
+				</div>
+			</div>	
+*/
+      var div = document.createElement('div');
+      var text = document.createTextNode('Test finished!');
+      div.appendChild(text);
+      div.style.cssText="position:absolute;left:0;right:0;top:0;bottom:0;z-index:9999;background-color:#999;font-size:100px;display:flex;align-items:center;justify-content:center;font-family:sans-serif";
+      document.body.appendChild(div);
+      // console.log('Time spent generating reference images:', TESTER.stats.timeGeneratingReferenceImages);  
+    }
+  },
   init: function () {
+    this.addProgressBar();
+
     console.log('Frames to render:', this.numFramesToRender);
 
     const DEFAULT_WIDTH = 400;
