@@ -23,7 +23,15 @@ export default class InputHelpers {
       visibility: hidden;
     `;
 
-    this.mouseDiv.style.cssText = "position:absolute;width:30px; height:30px; left:0px; top:0px; background-image:url('../cursor.svg');z-index:9999";
+    this.mouseDiv.style.cssText = `
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      left: 0px;
+      top: 0px;
+      background-image: url('../cursor.svg');
+      z-index: 9999
+    `;
     
     this.canvas.parentNode.appendChild(this.mouseDiv);
     this.canvas.parentNode.appendChild(this.mouseClick);

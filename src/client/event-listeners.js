@@ -65,15 +65,30 @@ export default class EventListenerManager {
         self.ensureNoClientHandlers();
         if (overriddenMessageTypes.indexOf(type) != -1) {
           var registerListenerToDOM =
-               (type.indexOf('mouse') == -1 || dispatchMouseEventsViaDOM)
-            && (type.indexOf('key') == -1 || dispatchKeyEventsViaDOM);
-          var filteredEventListener = function(e) { try { if (e.programmatic || !e.isTrusted) listener(e); } catch(e) {} };
+               (type.indexOf('mouse') === -1 || dispatchMouseEventsViaDOM)
+            && (type.indexOf('key') === -1 || dispatchKeyEventsViaDOM);
+          //var filteredEventListener = function(e) { try { if (e.programmatic || !e.isTrusted) listener(e); } catch(e) {} };
+          var filteredEventListener = listener;
           if (registerListenerToDOM) realAddEventListener.call(context || this, type, filteredEventListener, useCapture);
           self.registeredEventListeners.push([context || this, type, filteredEventListener, useCapture]);
         } else {
           realAddEventListener.call(context || this, type, listener, useCapture);
           self.registeredEventListeners.push([context || this, type, listener, useCapture]);
         }
+      }
+
+      var realRemoveEventListener = obj.removeEventListener;
+
+      obj.removeEventListener = function(type, listener, useCapture) {
+        // if (registerListenerToDOM) 
+        //realRemoveEventListener.call(context || this, type, filteredEventListener, useCapture);
+        for (var i = 0; i < self.registeredEventListeners.length; i++) {
+          var eventListener = self.registeredEventListeners[i];
+          if (eventListener[0] === this && eventListener[1] === type && eventListener[2] === listener) {
+            self.registeredEventListeners.splice(i, 1);
+          }
+        }
+        
       }
     }
     if (typeof EventTarget !== 'undefined') {
