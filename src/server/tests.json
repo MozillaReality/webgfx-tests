@@ -17,7 +17,7 @@
     "mobile": true,
     "numframes": 200,
     "interactive": true,
-    "input": "input/draggable.json"
+    "input": "input/webgl_interactive_draggablecubes.json"
   },
   {
     "id": "instancing",
