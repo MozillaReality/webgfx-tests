@@ -5,6 +5,7 @@ import seedrandom from 'seedrandom';
 import queryString from 'query-string';
 import {InputRecorder, InputReplayer} from 'input-events-recorder';
 import EventListenerManager from './event-listeners';
+import InputHelpers from './input-helpers';
 
 const parameters = queryString.parse(location.search);
 
@@ -74,6 +75,10 @@ window.TESTER = {
           })
           .then(json => {
             this.inputReplayer = new InputReplayer(this.canvas, json, this.eventListener.registeredEventListeners);
+            //this.inputReplayer = new InputReplayer(this.canvas, json);
+            //if (parameters.showMouse || parameters.showKeys)
+            this.inputHelpers = new InputHelpers(this.canvas);
+
             this.ready = true;
           });
         }
