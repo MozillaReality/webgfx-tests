@@ -24,6 +24,31 @@ window.TESTER = {
   // Currently executing frame.
   referenceTestFrameNumber: 0,
   firstFrameTime: null,
+  // If -1, we are not running an event. Otherwise represents the wallclock time of when we exited the last event handler.
+  previousEventHandlerExitedTime: -1,
+
+  // Wallclock time denoting when the page has finished loading.
+  pageLoadTime: null,
+
+  // Holds the amount of time in msecs that the previously rendered frame took. Used to estimate when a stutter event occurs (fast frame followed by a slow frame)
+  lastFrameDuration: -1,
+
+  // Wallclock time for when the previous frame finished.
+  lastFrameTick: -1,
+
+  accumulatedCpuIdleTime: 0,
+
+  // Keeps track of performance stutter events. A stutter event occurs when there is a hiccup in subsequent per-frame times. (fast followed by slow)
+  numStutterEvents: 0,
+
+  numFastFramesNeededForSmoothFrameRate: 120, // Require 120 frames i.e. ~2 seconds of consecutive smooth stutter free frames to conclude we have reached a stable animation rate
+
+  // Measure a "time until smooth frame rate" quantity, i.e. the time after which we consider the startup JIT and GC effects to have settled.
+  // This field tracks how many consecutive frames have run smoothly. This variable is set to -1 when smooth frame rate has been achieved to disable tracking this further.
+  numConsecutiveSmoothFrames: 0,
+
+  randomSeed: 1,
+
   numFramesToRender: typeof parameters['numframes'] === 'undefined' ? 100 : parseInt(parameters['numframes']),
 
   // Guard against recursive calls to referenceTestPreTick+referenceTestTick from multiple rAFs.
@@ -81,12 +106,9 @@ window.TESTER = {
     }
 
 /*    
-  
-    if (!runtimeInitialized) return;
     ensureNoClientHandlers();
 */  
     var timeNow = performance.realNow();
-
 
     var frameDuration = timeNow - this.lastFrameTick;
     this.lastFrameTick = timeNow;
@@ -367,31 +389,7 @@ window.TESTER = {
       FakeTimers.enable();
     }
 
-    // If -1, we are not running an event. Otherwise represents the wallclock time of when we exited the last event handler.
-    this.previousEventHandlerExitedTime = -1;
-
-    // Wallclock time denoting when the page has finished loading.
-    this.pageLoadTime = null;
-
-    // Holds the amount of time in msecs that the previously rendered frame took. Used to estimate when a stutter event occurs (fast frame followed by a slow frame)
-    this.lastFrameDuration = -1;
-
-    // Wallclock time for when the previous frame finished.
-    this.lastFrameTick = -1;
-
-    this.accumulatedCpuIdleTime = 0;
-
-    // Keeps track of performance stutter events. A stutter event occurs when there is a hiccup in subsequent per-frame times. (fast followed by slow)
-    this.numStutterEvents = 0;
-
-    this.numFastFramesNeededForSmoothFrameRate = 120; // Require 120 frames i.e. ~2 seconds of consecutive smooth stutter free frames to conclude we have reached a stable animation rate.
-
-    // Measure a "time until smooth frame rate" quantity, i.e. the time after which we consider the startup JIT and GC effects to have settled.
-    // This field tracks how many consecutive frames have run smoothly. This variable is set to -1 when smooth frame rate has been achieved to disable tracking this further.
-    this.numConsecutiveSmoothFrames = 0;
-
-    var randomSeed = 1;
-    Math.random = seedrandom(randomSeed);
+    Math.random = seedrandom(this.randomSeed);
 
     const DEFAULT_WIDTH = 800;
     const DEFAULT_HEIGHT = 600;
@@ -404,7 +402,7 @@ window.TESTER = {
       window.innerWidth = sizeOptions.width;
       window.innerHeight = sizeOptions.height;
     }
-    window.hook = CanvasHook;
+
     CanvasHook.enable(Object.assign({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'}, sizeOptions));
     this.hookModals();
 
