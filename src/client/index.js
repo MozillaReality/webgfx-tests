@@ -45,25 +45,36 @@ window.TESTER = {
   // Guard against recursive calls to referenceTestPreTick+referenceTestTick from multiple rAFs.
   referenceTestPreTickCalledCount: 0,
 
+  // Canvas used by the test to render
+  canvas: null,
+
+  inputRecorder: null,
+
   // Wallclock time for when we started CPU execution of the current frame.
   // var referenceTestT0 = -1;
 
   preTick: function() {
     if (++this.referenceTestPreTickCalledCount == 1) {
+      this.stats.frameStart();
 
-      this.stats.frameStart(); 
-      var canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length-1].canvas;
+      if (!this.canvas) {
+        // We assume the last webgl context being initialized is the one used to rendering
+        // If that's different, the test should have a custom code to return that canvas
+        this.canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1].canvas;
+      }
+
       if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
-        this.inputRecorder = new InputRecorder(canvas);
+        this.inputRecorder = new InputRecorder(this.canvas);
         this.inputRecorder.enable();
       }
+      
       if (typeof parameters['replay'] !== 'undefined' && !this.inputReplayer) {
         if (GFXPERFTESTS_CONFIG.input) {
           fetch('/tests/' + GFXPERFTESTS_CONFIG.input).then(response => {
             return response.json();
           })
           .then(json => {
-            this.inputReplayer = new InputReplayer(canvas, json);
+            this.inputReplayer = new InputReplayer(this.canvas, json);
             ready = true;
           });
         }
@@ -141,6 +152,7 @@ window.TESTER = {
     this.previousEventHandlerExitedTime = performance.realNow();
 
   },
+
   doImageReferenceCheck: function() {
     var canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1].canvas;
 
@@ -165,7 +177,7 @@ window.TESTER = {
   },
 
   initServer: function () {
-    var serverUrl = 'http://' + GFXPERFTESTS_CONFIGS_CONFIG.serverIP + ':8888';
+    var serverUrl = 'http://' + GFXPERFTESTS_CONFIG.serverIP + ':8888';
 
     this.socket = io.connect(serverUrl);
 
@@ -181,7 +193,7 @@ window.TESTER = {
       console.log(error);
     });
 
-    this.socket.emit('benchmark_started', {id: GFXPERFTESTS_CONFIGS_CONFIG.id});
+    this.socket.emit('benchmark_started', {id: GFXPERFTESTS_CONFIG.id});
 
     this.socket.on('next_benchmark', (data) => {
       console.log('next_benchmark', data);
@@ -205,7 +217,7 @@ window.TESTER = {
     var fps = this.numFramesToRender * 1000.0 / totalRenderTime;
     
     var data = {
-      test_id: GFXPERFTESTS_CONFIGS_CONFIG.id,
+      test_id: GFXPERFTESTS_CONFIG.id,
       values: this.stats.getStatsSummary(),
       numFrames: this.numFramesToRender,
       totalTime: totalTime,
@@ -249,6 +261,7 @@ window.TESTER = {
     this.socket.disconnect();
     if (typeof window !== 'undefined' && window.close) window.close();
   },
+
   wrapErrors: function () {
     window.addEventListener('error', error => evt.logs.catchErrors = {
       message: evt.error.message,
@@ -276,6 +289,7 @@ window.TESTER = {
       }
     });
   },
+
   addProgressBar: function() {
     window.onload = () => {
       if (typeof parameters['order-global'] === 'undefined') {
@@ -335,19 +349,21 @@ window.TESTER = {
       // console.log('Time spent generating reference images:', TESTER.stats.timeGeneratingReferenceImages);  
     }
   },
+
   hookModals: function() {
     // Hook modals: This is an unattended run, don't allow window.alert()s to intrude.
     window.alert = function(msg) { console.error('window.alert(' + msg + ')'); }
     window.confirm = function(msg) { console.error('window.confirm(' + msg + ')'); return true; }
   },
-  inputRecorder: null,
 
   hookRAF: function () {
     if (!window.realRequestAnimationFrame) {
       window.realRequestAnimationFrame = window.requestAnimationFrame;
       window.requestAnimationFrame = callback => {
         const hookedCallback = p => {
-          if (GFXPERFTESTS_CONFIG.preMainLoop) { GFXPERFTESTS_CONFIG.preMainLoop(); }
+          if (GFXPERFTESTS_CONFIG.preMainLoop) { 
+            GFXPERFTESTS_CONFIG.preMainLoop(); 
+          }
           this.preTick();
     
           if (this.referenceTestFrameNumber === this.numFramesToRender) {
@@ -359,14 +375,15 @@ window.TESTER = {
           this.tick();
           this.stats.frameEnd();
   
-          if (GFXPERFTESTS_CONFIG.postMainLoop) { GFXPERFTESTS_CONFIG.postMainLoop(); }
-    
+          if (GFXPERFTESTS_CONFIG.postMainLoop) {
+            GFXPERFTESTS_CONFIG.postMainLoop();
+          }
         }
         return window.realRequestAnimationFrame(hookedCallback);
       }
     }
-  }    
   },
+
   init: function () {
 
     if (!GFXPERFTESTS_CONFIG.providesRafIntegration) {
@@ -383,18 +400,17 @@ window.TESTER = {
     Math.random = seedrandom(this.randomSeed);
 
     this.handleSize();
-    CanvasHook.enable(Object.assign({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'}, sizeOptions));
+    CanvasHook.enable(Object.assign({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'}, this.windowSize));
     this.hookModals();
 
     if (parameters['noaudio']) {
       // Hook audio APIs
     }
 
-    this.initServer();
+    // this.initServer();
 
     this.stats = new PerfStats();
 
-    this.timeStart = performance.realNow();
     window.addEventListener('tester_init', () => {
     });
 
@@ -409,19 +425,20 @@ window.TESTER = {
     eventListener.enable();
 
     this.referenceTestFrameNumber = 0;
+    this.timeStart = performance.realNow();
   },
 
   handleSize: function() {
     const DEFAULT_WIDTH = 800;
     const DEFAULT_HEIGHT = 600;
-    var sizeOptions = {};
+    this.windowSize = {};
     if (typeof parameters['keep-window-size'] === 'undefined') {
-      sizeOptions = {
+      this.windowSize = {
         width: typeof parameters['width'] === 'undefined' ? DEFAULT_WIDTH : parseInt(parameters['width']),
         height: typeof parameters['height'] === 'undefined' ? DEFAULT_HEIGHT : parseInt(parameters['height'])
       }
-      window.innerWidth = sizeOptions.width;
-      window.innerHeight = sizeOptions.height;
+      window.innerWidth = this.windowSize.width;
+      window.innerHeight = this.windowSize.height;
     }
   }
 };
