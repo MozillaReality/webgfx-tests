@@ -6,12 +6,11 @@ import queryString from 'query-string';
 import {InputRecorder, InputReplayer} from 'input-events-recorder';
 import EventListenerManager from './event-listeners';
 
-//-----------------
-var ready = false;
-
 const parameters = queryString.parse(location.search);
 
 window.TESTER = {
+  ready: false,
+
   // Currently executing frame.
   referenceTestFrameNumber: 0,
   firstFrameTime: null,
@@ -74,12 +73,12 @@ window.TESTER = {
             return response.json();
           })
           .then(json => {
-            this.inputReplayer = new InputReplayer(this.canvas, json);
-            ready = true;
+            this.inputReplayer = new InputReplayer(this.canvas, json, this.eventListener.registeredEventListeners);
+            this.ready = true;
           });
         }
       } else {
-        ready = true;
+        this.ready = true;
       }
     
       // referenceTestT0 = performance.realNow();
@@ -97,7 +96,7 @@ window.TESTER = {
     if (--this.referenceTestPreTickCalledCount > 0)
       return; // We are being called recursively, so ignore this call.
 
-    if (!ready) {return;}
+    if (!this.ready) {return;}
 
     if (this.inputRecorder) {
       this.inputRecorder.frameNumber = this.referenceTestFrameNumber;
@@ -202,15 +201,89 @@ window.TESTER = {
   },
   
   benchmarkFinished: function () {
+
+    var style = document.createElement('style');
+    style.innerHTML = `
+      #benchmark_finished {
+        align-items: center;
+        background-color: #999;
+        bottom: 0;
+        color: #fff;
+        display: flex;
+        font-family: sans-serif;
+        font-weight: normal;
+        font-size: 40px;
+        justify-content: center;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 9999;
+        flex-direction: column;
+      }
+      
+      #benchmark_finished .button {
+        background-color: #007095;
+        border-color: #007095;
+        color: #FFFFFF;
+        cursor: pointer;
+        display: inline-block;
+        font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif !important;
+        font-size: 16px;
+        font-weight: normal;
+        line-height: normal;
+        padding: 15px 20px 15px 20px;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 300ms ease-out;
+      }
+
+      #benchmark_finished .button:hover {
+        background-color: #0078a0;
+      }
+      `;
+    document.body.appendChild(style);
+
     var timeEnd = performance.realNow();
     var totalTime = timeEnd - pageInitTime; // Total time, including everything.
 
     var div = document.createElement('div');
-    var text = document.createTextNode('Test finished!');
-    div.appendChild(text);
-    div.style.cssText="position:absolute;left:0;right:0;top:0;bottom:0;z-index:9999;background-color:#999;font-size:100px;display:flex;align-items:center;justify-content:center;font-family:sans-serif";
+    div.innerHTML = `
+      <h1>Test finished!</h1>
+    `;
+    //div.appendChild(text);
+    div.id = 'benchmark_finished';
+    
     document.body.appendChild(div);
-    // console.log('Time spent generating reference images:', TESTER.stats.timeGeneratingReferenceImages);
+
+    if (this.inputRecorder) {
+      // Dump input
+      function saveString (text, filename, mimeType) {
+        saveBlob(new Blob([ text ], { type: mimeType }), filename);
+      }
+      
+      function saveBlob (blob, filename) {
+        var link = document.createElement('a');
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.href = URL.createObjectURL(blob);
+        link.download = filename || 'input.json';
+        link.click();
+        // URL.revokeObjectURL(url); breaks Firefox...
+      }
+
+      var json = JSON.stringify(this.inputRecorder.events, null, 2);
+
+      //console.log('Input recorded', json);
+
+      var link = document.createElement('a');
+      document.body.appendChild(link);
+      link.href = '#';
+      link.className = 'button';
+      link.onclick = () => saveString(json, GFXPERFTESTS_CONFIG.id + '.json', 'application/json');
+      link.appendChild(document.createTextNode(`Download input JSON`)); // (${this.inputRecorder.events.length} events recorded)
+      div.appendChild(link);
+    }
 
     var totalRenderTime = timeEnd - this.firstFrameTime;
     var cpuIdle = this.accumulatedCpuIdleTime * 100.0 / totalRenderTime;
@@ -234,31 +307,12 @@ window.TESTER = {
       pageLoadTime: this.pageLoadTime,
     };
 
-    if (this.inputRecorder) {
-      // Dump input
-      function saveString (text, filename, mimeType) {
-        saveBlob(new Blob([ text ], { type: mimeType }), filename);
-      }
-      
-      function saveBlob (blob, filename) {
-        var link = document.createElement('a');
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.href = URL.createObjectURL(blob);
-        link.download = filename || 'ascene.html';
-        link.click();
-        // URL.revokeObjectURL(url); breaks Firefox...
-      }
-
-      var json = JSON.stringify(this.inputRecorder.events, null, 2);
-
-      console.log(json);
-      // saveString(json, GFXPERFTESTS_CONFIG.id + '.json', 'application/json');
+    if (this.socket) {
+      this.socket.emit('benchmark_finish', data);
+      this.socket.disconnect();
     }
 
-    this.socket.emit('benchmark_finish', data);
     console.log('Finished!', data);
-    this.socket.disconnect();
     if (typeof window !== 'undefined' && window.close) window.close();
   },
 
@@ -403,16 +457,9 @@ window.TESTER = {
     CanvasHook.enable(Object.assign({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'}, this.windowSize));
     this.hookModals();
 
-    if (parameters['noaudio']) {
-      // Hook audio APIs
-    }
-
     // this.initServer();
 
     this.stats = new PerfStats();
-
-    window.addEventListener('tester_init', () => {
-    });
 
     this.logs = {
       errors: [],
@@ -421,8 +468,10 @@ window.TESTER = {
     };
     this.wrapErrors();
 
-    var eventListener = new EventListenerManager();
-    eventListener.enable();
+    this.eventListener = new EventListenerManager();
+    if (typeof parameters['replay'] !== 'undefined') {
+      this.eventListener.enable();
+    }
 
     this.referenceTestFrameNumber = 0;
     this.timeStart = performance.realNow();

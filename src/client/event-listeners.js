@@ -34,7 +34,7 @@ export default class EventListenerManager {
  
   //if (injectingInputStream) 
   enable() {
-    return;
+
     // Filter the page event handlers to only pass programmatically generated events to the site - all real user input needs to be discarded since we are
     // doing a programmatic run.
     var overriddenMessageTypes = ['mousedown', 'mouseup', 'mousemove',
@@ -57,14 +57,16 @@ export default class EventListenerManager {
   
     // If context is specified, addEventListener is called using that as the 'this' object. Otherwise the current this is used.
     var self = this;
+    var dispatchMouseEventsViaDOM = false;
+    var dispatchKeyEventsViaDOM = false;
     function replaceEventListener(obj, context) {
       var realAddEventListener = obj.addEventListener;
       obj.addEventListener = function(type, listener, useCapture) {
         self.ensureNoClientHandlers();
         if (overriddenMessageTypes.indexOf(type) != -1) {
           var registerListenerToDOM =
-               (type.indexOf('mouse') == -1 || Module['dispatchMouseEventsViaDOM'])
-            && (type.indexOf('key') == -1 || Module['dispatchKeyEventsViaDOM']);
+               (type.indexOf('mouse') == -1 || dispatchMouseEventsViaDOM)
+            && (type.indexOf('key') == -1 || dispatchKeyEventsViaDOM);
           var filteredEventListener = function(e) { try { if (e.programmatic || !e.isTrusted) listener(e); } catch(e) {} };
           if (registerListenerToDOM) realAddEventListener.call(context || this, type, filteredEventListener, useCapture);
           self.registeredEventListeners.push([context || this, type, filteredEventListener, useCapture]);
