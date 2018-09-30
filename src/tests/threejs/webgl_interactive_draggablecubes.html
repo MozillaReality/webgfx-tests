@@ -104,6 +104,28 @@
 				dragControls.addEventListener( 'dragstart', function ( event ) { controls.enabled = false; } );
 				dragControls.addEventListener( 'dragend', function ( event ) { controls.enabled = true; } );
 
+				const speed = 10;
+				document.addEventListener('keydown', (evt) => {
+					switch (evt.keyCode) {
+						case  87: // W
+						{
+							camera.position.y += speed;
+						} break;
+						case  68: // D
+						{
+							camera.position.x += speed;
+						} break;
+						case  65: // A
+						{
+							camera.position.x -= speed;
+						} break;
+						case  83: // S
+						{
+							camera.position.y -= speed;
+						} break;
+				}
+				});
+
 				var info = document.createElement( 'div' );
 				info.style.position = 'absolute';
 				info.style.top = '10px';
