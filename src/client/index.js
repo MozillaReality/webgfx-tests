@@ -6,17 +6,8 @@ import queryString from 'query-string';
 import {InputRecorder, InputReplayer} from 'input-events-recorder';
 import EventListenerManager from './event-listeners';
 
-var eventListener = new EventListenerManager();
-eventListener.enable();
-
 //-----------------
 var ready = false;
-
-// TICK
-
-var TesterConfig = {
-  dontOverrideTime: false
-};
 
 const parameters = queryString.parse(location.search);
 
@@ -67,8 +58,8 @@ window.TESTER = {
         this.inputRecorder.enable();
       }
       if (typeof parameters['replay'] !== 'undefined' && !this.inputReplayer) {
-        if (GFXPERFTEST.input) {
-          fetch('/tests/' + GFXPERFTEST.input).then(response => {
+        if (GFXPERFTESTS_CONFIG.input) {
+          fetch('/tests/' + GFXPERFTESTS_CONFIG.input).then(response => {
             return response.json();
           })
           .then(json => {
@@ -174,7 +165,7 @@ window.TESTER = {
   },
 
   initServer: function () {
-    var serverUrl = 'http://' + GFXPERFTEST_CONFIG.serverIP + ':8888';
+    var serverUrl = 'http://' + GFXPERFTESTS_CONFIGS_CONFIG.serverIP + ':8888';
 
     this.socket = io.connect(serverUrl);
 
@@ -190,7 +181,7 @@ window.TESTER = {
       console.log(error);
     });
 
-    this.socket.emit('benchmark_started', {id: GFXPERFTEST_CONFIG.test_id});
+    this.socket.emit('benchmark_started', {id: GFXPERFTESTS_CONFIGS_CONFIG.id});
 
     this.socket.on('next_benchmark', (data) => {
       console.log('next_benchmark', data);
@@ -214,7 +205,7 @@ window.TESTER = {
     var fps = this.numFramesToRender * 1000.0 / totalRenderTime;
     
     var data = {
-      test_id: GFXPERFTEST_CONFIG.test_id,
+      test_id: GFXPERFTESTS_CONFIGS_CONFIG.id,
       values: this.stats.getStatsSummary(),
       numFrames: this.numFramesToRender,
       totalTime: totalTime,
@@ -250,7 +241,7 @@ window.TESTER = {
       var json = JSON.stringify(this.inputRecorder.events, null, 2);
 
       console.log(json);
-      // saveString(json, GFXPERFTEST.id + '.json', 'application/json');
+      // saveString(json, GFXPERFTESTS_CONFIG.id + '.json', 'application/json');
     }
 
     this.socket.emit('benchmark_finish', data);
@@ -277,7 +268,7 @@ window.TESTER = {
             this.logs.warnings.push(args);
           }
 
-          if (TesterConfig.sendLog)
+          if (GFXPERFTESTS_CONFIG.sendLog)
             TESTER.socket.emit('log', args);
 
           return fn.apply(null, args);
@@ -356,7 +347,7 @@ window.TESTER = {
       window.realRequestAnimationFrame = window.requestAnimationFrame;
       window.requestAnimationFrame = callback => {
         const hookedCallback = p => {
-          if (TesterConfig.preMainLoop) { TesterConfig.preMainLoop(); }
+          if (GFXPERFTESTS_CONFIG.preMainLoop) { GFXPERFTESTS_CONFIG.preMainLoop(); }
           this.preTick();
     
           if (this.referenceTestFrameNumber === this.numFramesToRender) {
@@ -368,7 +359,7 @@ window.TESTER = {
           this.tick();
           this.stats.frameEnd();
   
-          if (TesterConfig.postMainLoop) { TesterConfig.postMainLoop(); }
+          if (GFXPERFTESTS_CONFIG.postMainLoop) { GFXPERFTESTS_CONFIG.postMainLoop(); }
     
         }
         return window.realRequestAnimationFrame(hookedCallback);
@@ -378,31 +369,20 @@ window.TESTER = {
   },
   init: function () {
 
-    if (!TesterConfig.providesRafIntegration) {
+    if (!GFXPERFTESTS_CONFIG.providesRafIntegration) {
       this.hookRAF();
     }
     this.addProgressBar();
 
     console.log('Frames to render:', this.numFramesToRender);
 
-    if (!TesterConfig.dontOverrideTime) {
+    if (!GFXPERFTESTS_CONFIG.dontOverrideTime) {
       FakeTimers.enable();
     }
 
     Math.random = seedrandom(this.randomSeed);
 
-    const DEFAULT_WIDTH = 800;
-    const DEFAULT_HEIGHT = 600;
-    var sizeOptions = {};
-    if (typeof parameters['keep-window-size'] === 'undefined') {
-      sizeOptions = {
-        width: typeof parameters['width'] === 'undefined' ? DEFAULT_WIDTH : parseInt(parameters['width']),
-        height: typeof parameters['height'] === 'undefined' ? DEFAULT_HEIGHT : parseInt(parameters['height'])
-      }
-      window.innerWidth = sizeOptions.width;
-      window.innerHeight = sizeOptions.height;
-    }
-
+    this.handleSize();
     CanvasHook.enable(Object.assign({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'}, sizeOptions));
     this.hookModals();
 
@@ -425,7 +405,24 @@ window.TESTER = {
     };
     this.wrapErrors();
 
+    var eventListener = new EventListenerManager();
+    eventListener.enable();
+
     this.referenceTestFrameNumber = 0;
+  },
+
+  handleSize: function() {
+    const DEFAULT_WIDTH = 800;
+    const DEFAULT_HEIGHT = 600;
+    var sizeOptions = {};
+    if (typeof parameters['keep-window-size'] === 'undefined') {
+      sizeOptions = {
+        width: typeof parameters['width'] === 'undefined' ? DEFAULT_WIDTH : parseInt(parameters['width']),
+        height: typeof parameters['height'] === 'undefined' ? DEFAULT_HEIGHT : parseInt(parameters['height'])
+      }
+      window.innerWidth = sizeOptions.width;
+      window.innerHeight = sizeOptions.height;
+    }
   }
 };
 
