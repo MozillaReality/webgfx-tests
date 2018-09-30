@@ -5,7 +5,9 @@ export default {
   input: 'src/client/index.js',
   plugins: [
     resolve({customResolveOptions: 'node_modules'}),
-    commonjs()
+    commonjs({
+			include: 'node_modules/**'
+		})
 	],
 	external: ['crypto'],
 	// sourceMap: true,

@@ -31,6 +31,7 @@ window.onload = (x) => {
         return value.toFixed(2);
       },
       runTest: function(test, interactive) {
+        testApp.testsQueuedToRun = [];
         testApp.runTest(test.id, interactive);
       },
       runSelectedTests: function() {

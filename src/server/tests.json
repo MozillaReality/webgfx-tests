@@ -1,5 +1,25 @@
 [
   {
+    "id": "misc_fps",
+    "engine": "three.js",
+    "url": "threejs/misc_fps.html",
+    "name": "fps controls",
+    "mobile": true,
+    "numframes": 200,
+    "interactive": true,
+    "input": "input/misc_fps.json"
+  },
+  {
+    "id": "webgl_interactive_draggablecubes",
+    "engine": "three.js",
+    "url": "threejs/webgl_interactive_draggablecubes.html",
+    "name": "interactive draggable cubes",
+    "mobile": true,
+    "numframes": 200,
+    "interactive": true,
+    "input": "input/draggable.json"
+  },
+  {
     "id": "instancing",
     "engine": "three.js",
     "url": "threejs/index.html",

@@ -3,65 +3,83 @@ import CanvasHook from 'canvas-hook';
 import PerfStats from 'performance-stats';
 import seedrandom from 'seedrandom';
 import queryString from 'query-string';
-//-----------------
+import {InputRecorder, InputReplayer} from 'input-events-recorder';
+import EventListenerManager from './event-listeners';
 
-var randomSeed = 1;
-Math.random = seedrandom(randomSeed);
+var eventListener = new EventListenerManager();
+eventListener.enable();
+
+//-----------------
+var ready = false;
 
 // TICK
-// Holds the amount of time in msecs that the previously rendered frame took. Used to estimate when a stutter event occurs (fast frame followed by a slow frame)
-var lastFrameDuration = -1;
-
-// Wallclock time for when the previous frame finished.
-var lastFrameTick = -1;
-
-var accumulatedCpuIdleTime = 0;
-
-// Keeps track of performance stutter events. A stutter event occurs when there is a hiccup in subsequent per-frame times. (fast followed by slow)
-var numStutterEvents = 0;
 
 var TesterConfig = {
   dontOverrideTime: false
 };
 
-// Measure a "time until smooth frame rate" quantity, i.e. the time after which we consider the startup JIT and GC effects to have settled.
-// This field tracks how many consecutive frames have run smoothly. This variable is set to -1 when smooth frame rate has been achieved to disable tracking this further.
-var numConsecutiveSmoothFrames = 0;
-
-const numFastFramesNeededForSmoothFrameRate = 120; // Require 120 frames i.e. ~2 seconds of consecutive smooth stutter free frames to conclude we have reached a stable animation rate.
-
 const parameters = queryString.parse(location.search);
-
-CanvasHook.enable({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'});
-
-if (!TesterConfig.dontOverrideTime)
-{
-  FakeTimers.enable();
-}
-
-var webglContext = null;
-
-
-
-
-
-// if (injectingInputStream || recordingInputStream) {
-
-// This is an unattended run, don't allow window.alert()s to intrude.
-window.alert = function(msg) { console.error('window.alert(' + msg + ')'); }
-window.confirm = function(msg) { console.error('window.confirm(' + msg + ')'); return true; }
 
 window.TESTER = {
   // Currently executing frame.
   referenceTestFrameNumber: 0,
+  firstFrameTime: null,
   numFramesToRender: typeof parameters['numframes'] === 'undefined' ? 100 : parseInt(parameters['numframes']),
 
+  // Guard against recursive calls to referenceTestPreTick+referenceTestTick from multiple rAFs.
+  referenceTestPreTickCalledCount: 0,
+
+  // Wallclock time for when we started CPU execution of the current frame.
+  // var referenceTestT0 = -1;
+
+  preTick: function() {
+    if (++this.referenceTestPreTickCalledCount == 1) {
+
+      this.stats.frameStart(); 
+      var canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length-1].canvas;
+      if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
+        this.inputRecorder = new InputRecorder(canvas);
+        this.inputRecorder.enable();
+      }
+      if (typeof parameters['replay'] !== 'undefined' && !this.inputReplayer) {
+        if (GFXPERFTEST.input) {
+          fetch('/tests/' + GFXPERFTEST.input).then(response => {
+            return response.json();
+          })
+          .then(json => {
+            this.inputReplayer = new InputReplayer(canvas, json);
+            ready = true;
+          });
+        }
+      } else {
+        ready = true;
+      }
+    
+      // referenceTestT0 = performance.realNow();
+      if (this.pageLoadTime === null) this.pageLoadTime = performance.realNow() - pageInitTime;
+
+      // We will assume that after the reftest tick, the application is running idle to wait for next event.
+      if (this.previousEventHandlerExitedTime != -1) {
+        this.accumulatedCpuIdleTime += performance.realNow() - this.previousEventHandlerExitedTime;
+        this.previousEventHandlerExitedTime = -1;
+      }
+    }
+  },
+
   tick: function () {
-
-    --referenceTestPreTickCalledCount;
-
-    if (referenceTestPreTickCalledCount > 0)
+    if (--this.referenceTestPreTickCalledCount > 0)
       return; // We are being called recursively, so ignore this call.
+
+    if (!ready) {return;}
+
+    if (this.inputRecorder) {
+      this.inputRecorder.frameNumber = this.referenceTestFrameNumber;
+    }
+
+    if (this.inputReplayer) {
+      this.inputReplayer.tick(this.referenceTestFrameNumber);
+    }
+
 /*    
   
     if (!runtimeInitialized) return;
@@ -70,24 +88,24 @@ window.TESTER = {
     var timeNow = performance.realNow();
 
 
-    var frameDuration = timeNow - lastFrameTick;
-    lastFrameTick = timeNow;
-    if (this.referenceTestFrameNumber > 5 && lastFrameDuration > 0) {
+    var frameDuration = timeNow - this.lastFrameTick;
+    this.lastFrameTick = timeNow;
+    if (this.referenceTestFrameNumber > 5 && this.lastFrameDuration > 0) {
       // This must be fixed depending on the vsync
-      if (frameDuration > 20.0 && frameDuration > lastFrameDuration * 1.35) {
-        numStutterEvents++;
-        if (numConsecutiveSmoothFrames != -1) numConsecutiveSmoothFrames = 0;
+      if (frameDuration > 20.0 && frameDuration > this.lastFrameDuration * 1.35) {
+        this.numStutterEvents++;
+        if (this.numConsecutiveSmoothFrames != -1) this.numConsecutiveSmoothFrames = 0;
       } else {
-        if (numConsecutiveSmoothFrames != -1) {
-          numConsecutiveSmoothFrames++;
-          if (numConsecutiveSmoothFrames >= numFastFramesNeededForSmoothFrameRate) {
-            console.log('timeUntilSmoothFramerate', timeNow - firstFrameTime);
-            numConsecutiveSmoothFrames = -1;
+        if (this.numConsecutiveSmoothFrames != -1) {
+          this.numConsecutiveSmoothFrames++;
+          if (this.numConsecutiveSmoothFrames >= this.numFastFramesNeededForSmoothFrameRate) {
+            console.log('timeUntilSmoothFramerate', timeNow - this.firstFrameTime);
+            this.numConsecutiveSmoothFrames = -1;
           }
         }
       }
     }
-    lastFrameDuration = frameDuration;
+    this.lastFrameDuration = frameDuration;
 /*
     if (numPreloadXHRsInFlight == 0) { // Important! The frame number advances only for those frames that the game is not waiting for data from the initial network downloads.
       if (numStartupBlockerXHRsPending == 0) ++this.referenceTestFrameNumber; // Actual reftest frame count only increments after game has consumed all the critical XHRs that were to be preloaded.
@@ -98,21 +116,21 @@ window.TESTER = {
     FakeTimers.fakedTime++; // But game time advances immediately after the preloadable XHRs are finished.
   
     if (this.referenceTestFrameNumber === 1) {
-      firstFrameTime = performance.realNow();
-      console.log('First frame submitted at (ms):', firstFrameTime - pageInitTime);
+      this.firstFrameTime = performance.realNow();
+      console.log('First frame submitted at (ms):', this.firstFrameTime - pageInitTime);
     }
 
     if (this.referenceTestFrameNumber === this.numFramesToRender) {
-      TESTER.doReferenceTest();
+      TESTER.doImageReferenceCheck();
     }
 
     // We will assume that after the reftest tick, the application is running idle to wait for next event.
-    previousEventHandlerExitedTime = performance.realNow();
+    this.previousEventHandlerExitedTime = performance.realNow();
 
   },
-  doReferenceTest: function() {
-    var canvas = CanvasHook.webglContext.canvas;
-    
+  doImageReferenceCheck: function() {
+    var canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1].canvas;
+
     // Grab rendered WebGL front buffer image to a JS-side image object.
     var actualImage = new Image();
 
@@ -131,14 +149,12 @@ window.TESTER = {
     } catch(e) {
       //reftest(); // canvas.toDataURL() likely failed, return results immediately.
     }
-  
   },
 
   initServer: function () {
     var serverUrl = 'http://' + GFXPERFTEST_CONFIG.serverIP + ':8888';
 
     this.socket = io.connect(serverUrl);
-    this.stats = new PerfStats();
 
     this.socket.on('connect', function(data) {
       console.log('Connected to testing server');
@@ -151,7 +167,15 @@ window.TESTER = {
     this.socket.on('connect_error', (error) => {
       console.log(error);
     });
+
+    this.socket.emit('benchmark_started', {id: GFXPERFTEST_CONFIG.test_id});
+
+    this.socket.on('next_benchmark', (data) => {
+      console.log('next_benchmark', data);
+      window.location.replace(data.url);
+    });    
   },
+  
   benchmarkFinished: function () {
     var timeEnd = performance.realNow();
     var totalTime = timeEnd - pageInitTime; // Total time, including everything.
@@ -163,8 +187,8 @@ window.TESTER = {
     document.body.appendChild(div);
     // console.log('Time spent generating reference images:', TESTER.stats.timeGeneratingReferenceImages);
 
-    var totalRenderTime = timeEnd - firstFrameTime;
-    var cpuIdle = accumulatedCpuIdleTime * 100.0 / totalRenderTime;
+    var totalRenderTime = timeEnd - this.firstFrameTime;
+    var cpuIdle = this.accumulatedCpuIdleTime * 100.0 / totalRenderTime;
     var fps = this.numFramesToRender * 1000.0 / totalRenderTime;
     
     var data = {
@@ -172,18 +196,40 @@ window.TESTER = {
       values: this.stats.getStatsSummary(),
       numFrames: this.numFramesToRender,
       totalTime: totalTime,
-      timeToFirstFrame: firstFrameTime - pageInitTime,
+      timeToFirstFrame: this.firstFrameTime - pageInitTime,
       logs: this.logs,
       avgFps: fps,
-      numStutterEvents: numStutterEvents,
+      numStutterEvents: this.numStutterEvents,
       result: 'PASS',
       totalTime: totalTime,
       totalRenderTime: totalRenderTime,
       cpuTime: this.stats.totalTimeInMainLoop,
       cpuIdleTime: this.stats.totalTimeOutsideMainLoop,
       cpuIdlePerc: this.stats.totalTimeOutsideMainLoop * 100 / totalRenderTime,
-      pageLoadTime: pageLoadTime,
+      pageLoadTime: this.pageLoadTime,
     };
+
+    if (this.inputRecorder) {
+      // Dump input
+      function saveString (text, filename, mimeType) {
+        saveBlob(new Blob([ text ], { type: mimeType }), filename);
+      }
+      
+      function saveBlob (blob, filename) {
+        var link = document.createElement('a');
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.href = URL.createObjectURL(blob);
+        link.download = filename || 'ascene.html';
+        link.click();
+        // URL.revokeObjectURL(url); breaks Firefox...
+      }
+
+      var json = JSON.stringify(this.inputRecorder.events, null, 2);
+
+      console.log(json);
+      // saveString(json, GFXPERFTEST.id + '.json', 'application/json');
+    }
 
     this.socket.emit('benchmark_finish', data);
     console.log('Finished!', data);
@@ -276,20 +322,99 @@ window.TESTER = {
       // console.log('Time spent generating reference images:', TESTER.stats.timeGeneratingReferenceImages);  
     }
   },
+  hookModals: function() {
+    // Hook modals: This is an unattended run, don't allow window.alert()s to intrude.
+    window.alert = function(msg) { console.error('window.alert(' + msg + ')'); }
+    window.confirm = function(msg) { console.error('window.confirm(' + msg + ')'); return true; }
+  },
+  inputRecorder: null,
+
+  hookRAF: function () {
+    if (!window.realRequestAnimationFrame) {
+      window.realRequestAnimationFrame = window.requestAnimationFrame;
+      window.requestAnimationFrame = callback => {
+        const hookedCallback = p => {
+          if (TesterConfig.preMainLoop) { TesterConfig.preMainLoop(); }
+          this.preTick();
+    
+          if (this.referenceTestFrameNumber === this.numFramesToRender) {
+            this.benchmarkFinished();
+            return;
+          }
+    
+          callback(performance.now());
+          this.tick();
+          this.stats.frameEnd();
+  
+          if (TesterConfig.postMainLoop) { TesterConfig.postMainLoop(); }
+    
+        }
+        return window.realRequestAnimationFrame(hookedCallback);
+      }
+    }
+  }    
+  },
   init: function () {
+
+    if (!TesterConfig.providesRafIntegration) {
+      this.hookRAF();
+    }
     this.addProgressBar();
 
     console.log('Frames to render:', this.numFramesToRender);
 
-    const DEFAULT_WIDTH = 400;
-    const DEFAULT_HEIGHT = 300;
+    if (!TesterConfig.dontOverrideTime) {
+      FakeTimers.enable();
+    }
 
+    // If -1, we are not running an event. Otherwise represents the wallclock time of when we exited the last event handler.
+    this.previousEventHandlerExitedTime = -1;
+
+    // Wallclock time denoting when the page has finished loading.
+    this.pageLoadTime = null;
+
+    // Holds the amount of time in msecs that the previously rendered frame took. Used to estimate when a stutter event occurs (fast frame followed by a slow frame)
+    this.lastFrameDuration = -1;
+
+    // Wallclock time for when the previous frame finished.
+    this.lastFrameTick = -1;
+
+    this.accumulatedCpuIdleTime = 0;
+
+    // Keeps track of performance stutter events. A stutter event occurs when there is a hiccup in subsequent per-frame times. (fast followed by slow)
+    this.numStutterEvents = 0;
+
+    this.numFastFramesNeededForSmoothFrameRate = 120; // Require 120 frames i.e. ~2 seconds of consecutive smooth stutter free frames to conclude we have reached a stable animation rate.
+
+    // Measure a "time until smooth frame rate" quantity, i.e. the time after which we consider the startup JIT and GC effects to have settled.
+    // This field tracks how many consecutive frames have run smoothly. This variable is set to -1 when smooth frame rate has been achieved to disable tracking this further.
+    this.numConsecutiveSmoothFrames = 0;
+
+    var randomSeed = 1;
+    Math.random = seedrandom(randomSeed);
+
+    const DEFAULT_WIDTH = 800;
+    const DEFAULT_HEIGHT = 600;
+    var sizeOptions = {};
     if (typeof parameters['keep-window-size'] === 'undefined') {
-      window.innerWidth = typeof parameters['width'] === 'undefined' ? DEFAULT_WIDTH : parseInt(parameters['width']);
-      window.innerHeight = typeof parameters['height'] === 'undefined' ? DEFAULT_HEIGHT : parseInt(parameters['height']);
+      sizeOptions = {
+        width: typeof parameters['width'] === 'undefined' ? DEFAULT_WIDTH : parseInt(parameters['width']),
+        height: typeof parameters['height'] === 'undefined' ? DEFAULT_HEIGHT : parseInt(parameters['height'])
+      }
+      window.innerWidth = sizeOptions.width;
+      window.innerHeight = sizeOptions.height;
+    }
+    window.hook = CanvasHook;
+    CanvasHook.enable(Object.assign({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'}, sizeOptions));
+    this.hookModals();
+
+    if (parameters['noaudio']) {
+      // Hook audio APIs
     }
 
     this.initServer();
+
+    this.stats = new PerfStats();
 
     this.timeStart = performance.realNow();
     window.addEventListener('tester_init', () => {
@@ -302,76 +427,10 @@ window.TESTER = {
     };
     this.wrapErrors();
 
-    this.socket.emit('benchmark_started', {id: GFXPERFTEST_CONFIG.test_id});
-
-    this.socket.on('next_benchmark', (data) => {
-            // window.location.replace('http://threejs.org');
-      console.log('next_benchmark', data);
-      window.location.replace(data.url);
-    });
-
     this.referenceTestFrameNumber = 0;
-  },
+  }
 };
-
-var firstFrameTime = null;
 
 TESTER.init();
 
-TesterConfig.preMainLoop = () => { TESTER.stats.frameStart(); };
-TesterConfig.postMainLoop = () => {TESTER.stats.frameEnd(); };
-
-if (!TesterConfig.providesRafIntegration) {
-  if (!window.realRequestAnimationFrame) {
-    window.realRequestAnimationFrame = window.requestAnimationFrame;
-    window.requestAnimationFrame = callback => {
-      const hookedCallback = p => {
-        if (TesterConfig.preMainLoop) { TesterConfig.preMainLoop(); }
-        if (TesterConfig.referenceTestPreTick) { TesterConfig.referenceTestPreTick(); }
-  
-        if (TESTER.referenceTestFrameNumber === TESTER.numFramesToRender) {
-          TESTER.benchmarkFinished();
-          return;
-        }
-  
-        callback(performance.now());
-        TESTER.tick();
-  
-        if (TesterConfig.referenceTestTick) { TesterConfig.referenceTestTick(); }
-        if (TesterConfig.postMainLoop) { TesterConfig.postMainLoop(); }
-  
-      }
-      return window.realRequestAnimationFrame(hookedCallback);
-    }
-  }
-}
-
-
-// Guard against recursive calls to referenceTestPreTick+referenceTestTick from multiple rAFs.
-var referenceTestPreTickCalledCount = 0;
-
-// Wallclock time for when we started CPU execution of the current frame.
-var referenceTestT0 = -1;
-
-function referenceTestPreTick() {
-  ++referenceTestPreTickCalledCount;
-  if (referenceTestPreTickCalledCount == 1) {
-    referenceTestT0 = performance.realNow();
-    if (pageLoadTime === null) pageLoadTime = performance.realNow() - pageInitTime;
-
-    // We will assume that after the reftest tick, the application is running idle to wait for next event.
-    if (previousEventHandlerExitedTime != -1) {
-      accumulatedCpuIdleTime += performance.realNow() - previousEventHandlerExitedTime;
-      previousEventHandlerExitedTime = -1;
-    }
-  }
-}
-TesterConfig.referenceTestPreTick = referenceTestPreTick;
-
-// If -1, we are not running an event. Otherwise represents the wallclock time of when we exited the last event handler.
-var previousEventHandlerExitedTime = -1;
-
 var pageInitTime = performance.realNow();
-
-// Wallclock time denoting when the page has finished loading.
-var pageLoadTime = null;

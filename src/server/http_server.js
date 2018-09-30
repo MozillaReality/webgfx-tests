@@ -44,9 +44,11 @@ server.get('/tests*', (req, res) => {
       var html = fs.readFileSync(pathf, 'utf8');
       var $ = cheerio.load(html);
       var head = $('head');
-      head.append(`<script>var GFXPERFTEST_CONFIG = {serverIP: '${internalIp.v4.sync() || 'localhost'}', test_id: '${test.id}'};</script>`)
+      head.append(`<script>var GFXPERFTEST_CONFIG = {serverIP: '${internalIp.v4.sync() || 'localhost'}', test_id: '${test.id}'};
+      var GFXPERFTEST = ${JSON.stringify(test, null, 2)};
+      </script>`)
           .append('<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>')
-          .append('<script src="/tests/gfx-perftests.js"></script>');
+          .append('<script src="/tests/gfx-perftests.js"></script>')
       res.send($.html());    
     } else {
       res.send('Not test found');
