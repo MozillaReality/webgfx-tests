@@ -12,7 +12,9 @@ var data = {
       numTimesToRunEachTest: 1
     },
     tests: {
-      fakeWebGL: false
+      fakeWebGL: false,
+      showKeys: false,
+      showMouse: false
     }
   },
   results: [],
@@ -30,9 +32,9 @@ window.onload = (x) => {
       formatNumeric(value) {
         return value.toFixed(2);
       },
-      runTest: function(test, interactive) {
+      runTest: function(test, interactive, recording) {
         testApp.testsQueuedToRun = [];
-        testApp.runTest(test.id, interactive);
+        testApp.runTest(test.id, interactive, recording);
       },
       runSelectedTests: function() {
         testApp.runSelectedTests();

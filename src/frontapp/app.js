@@ -245,7 +245,7 @@ export default class TestApp {
     return this.browserUUID;
   }
 
-  runTest(id, interactive) {
+  runTest(id, interactive, record) {
     var test = this.tests.find(t => t.id === id);
     if (!test) {
       console.error('Test not found, id:', id);
@@ -264,12 +264,21 @@ export default class TestApp {
     if (fakeWebGL) url = addGET(url, 'fake-webgl');
     if (test.numframes) url = addGET(url, 'numframes=' + test.numframes);
     if (test.windowsize) url = addGET(url, 'width=' + test.windowsize.width + '&height=' + test.windowsize.height);
+    if (record) {
+      url = addGET(url, 'recording');
+    } else if (test.input) {
+      url = addGET(url, 'replay');
+      if (this.vueApp.options.tests.showKeys) url = addGET(url, 'show-keys');
+      if (this.vueApp.options.tests.showMouse) url = addGET(url, 'show-mouse');
+    }
     if (this.progress) {
       url = addGET(url, 'order-test=' + this.progress.tests[id].current + '&total-test=' + this.progress.tests[id].total);
       url = addGET(url, 'order-global=' + this.progress.currentGlobal + '&total-global=' + this.progress.totalGlobal);
       this.progress.tests[id].current++;
       this.progress.currentGlobal++;
     }
+
+    
 
     window.open(url);
   

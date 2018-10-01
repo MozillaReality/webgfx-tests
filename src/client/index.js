@@ -318,7 +318,9 @@ window.TESTER = {
     }
 
     console.log('Finished!', data);
-    if (typeof window !== 'undefined' && window.close) window.close();
+    if (!this.inputRecorder) {
+      if (typeof window !== 'undefined' && window.close) window.close();
+    }
   },
 
   wrapErrors: function () {
@@ -462,7 +464,7 @@ window.TESTER = {
     CanvasHook.enable(Object.assign({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'}, this.windowSize));
     this.hookModals();
 
-    // this.initServer();
+    this.initServer();
 
     this.stats = new PerfStats();
 

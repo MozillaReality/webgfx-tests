@@ -57,18 +57,22 @@
             <td>{{test.engine}}</td>
             <td><button v-on:click="runTest(test,false)">test</button></td>
             <td><button v-on:click="runTest(test,true)">launch</button></td>
+            <td><button v-on:click="runTest(test, false, true)">record</button></td>
           </tr>
         <tbody>
         </tbody>
       </table>
-      num.times: <input type="text" v-model="options.general.numTimesToRunEachTest">
-      fake webgl: <input type="checkbox" v-model="options.tests.fakeWebGL">
-      <br>
       <button v-on:click="runSelectedTests()" id='runTests'>Run tests</button>
       {{tests.filter(x => x.selected).length}} selected.
 
       <h3>Options</h3>
-      // TODO
+      <ul>
+        <li>num.times: <input type="text" v-model="options.general.numTimesToRunEachTest"></li>
+        <li><input type="checkbox" v-model="options.tests.fakeWebGL"> fake webgl</li>
+        <li>show input: <label><input type="checkbox" v-model="options.tests.showKeys"> keystrokes</label> <label><input type="checkbox" v-model="options.tests.showMouse"> mouse</label></li>
+      </ul>
+      <br>
+
       <h2>Results log</h2>
       <button v-on:click="show_json = !show_json">Show JSON</button>
       <table>
