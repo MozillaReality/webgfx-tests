@@ -14,7 +14,7 @@ export default class InputHelpers {
       border-radius: 50%;
       width: 30px;
       height: 30px;
-      background: yellow;
+      background: #fff;
       position: absolute;
       left: 0px;
       top: 0px;

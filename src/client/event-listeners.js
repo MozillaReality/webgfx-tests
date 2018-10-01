@@ -19,8 +19,8 @@ export default class EventListenerManager {
 
   unloadAllEventHandlers() {
     for(var i in this.registeredEventListeners) {
-      var l = this.registeredEventListeners[i];
-      l[0].removeEventListener(l[1], l[2], l[3]);
+      var listener = this.registeredEventListeners[i];
+      listener.context.removeEventListener(listener.type, listener.fun, listener.useCapture);
     }
     this.registeredEventListeners = [];
   
@@ -70,10 +70,21 @@ export default class EventListenerManager {
           //var filteredEventListener = function(e) { try { if (e.programmatic || !e.isTrusted) listener(e); } catch(e) {} };
           var filteredEventListener = listener;
           if (registerListenerToDOM) realAddEventListener.call(context || this, type, filteredEventListener, useCapture);
-          self.registeredEventListeners.push([context || this, type, filteredEventListener, useCapture]);
+
+          self.registeredEventListeners.push({
+            context: context || this, 
+            type: type, 
+            fun: filteredEventListener, 
+            useCapture: useCapture
+          });
         } else {
           realAddEventListener.call(context || this, type, listener, useCapture);
-          self.registeredEventListeners.push([context || this, type, listener, useCapture]);
+          self.registeredEventListeners.push({
+            context: context || this, 
+            type: type, 
+            fun: listener, 
+            useCapture: useCapture
+          });
         }
       }
 
@@ -84,7 +95,7 @@ export default class EventListenerManager {
         //realRemoveEventListener.call(context || this, type, filteredEventListener, useCapture);
         for (var i = 0; i < self.registeredEventListeners.length; i++) {
           var eventListener = self.registeredEventListeners[i];
-          if (eventListener[0] === this && eventListener[1] === type && eventListener[2] === listener) {
+          if (eventListener.context === this && eventListener.type === type && eventListener.fun === listener) {
             self.registeredEventListeners.splice(i, 1);
           }
         }
@@ -93,7 +104,6 @@ export default class EventListenerManager {
     }
     if (typeof EventTarget !== 'undefined') {
       replaceEventListener(EventTarget.prototype, null);
-      console.log(this.registeredEventListeners);
     } else {
       /*
       var eventListenerObjectsToReplace = [window, document, document.body, Module['canvas']];

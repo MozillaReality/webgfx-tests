@@ -70,6 +70,7 @@ window.TESTER = {
       
       if (typeof parameters['replay'] !== 'undefined' && !this.inputReplayer) {
         if (GFXPERFTESTS_CONFIG.input) {
+          // @fixme Prevent multiple fetch while waiting
           fetch('/tests/' + GFXPERFTESTS_CONFIG.input).then(response => {
             return response.json();
           })
@@ -78,7 +79,6 @@ window.TESTER = {
             //this.inputReplayer = new InputReplayer(this.canvas, json);
             //if (parameters.showMouse || parameters.showKeys)
             this.inputHelpers = new InputHelpers(this.canvas);
-
             this.ready = true;
           });
         }
