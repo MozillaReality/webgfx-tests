@@ -55,10 +55,10 @@ export default class InputHelpers {
 
   constructor (canvas, options) {
     this.canvas = canvas;
-    if (window.location.href.indexOf('show-keyboard') === -1) {
+    if (window.location.href.indexOf('show-keyboard') !== -1) {
       this.initKeys();
     }
-    if (window.location.href.indexOf('show-mouse') === -1) {
+    if (window.location.href.indexOf('show-mouse') !== -1) {
       this.initMouse();
     }
   }
