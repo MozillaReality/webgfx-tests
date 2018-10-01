@@ -1,8 +1,8 @@
-//import KeystrokeVisualizer from 'keystroke-visualizer';
+import KeystrokeVisualizer from 'keystroke-visualizer';
 
 export default class InputHelpers {
   initKeys() {
-  //  KeystrokeVisualizer.enable({unmodifiedKey: false});
+    KeystrokeVisualizer.enable({unmodifiedKey: false});
   }
 
   initMouse() {
@@ -30,7 +30,8 @@ export default class InputHelpers {
       left: 0px;
       top: 0px;
       background-image: url('../cursor.svg');
-      z-index: 9999
+      background-position: -8px -5px;
+      z-index: 9999;
     `;
     
     this.canvas.parentNode.appendChild(this.mouseDiv);
@@ -40,8 +41,8 @@ export default class InputHelpers {
       this.mouseDiv.style.left = evt.x + "px";
       this.mouseDiv.style.top = evt.y + "px";
 
-      this.mouseClick.style.left = `${evt.x - 3}px`;
-      this.mouseClick.style.top = evt.y + "px";
+      this.mouseClick.style.left = `${evt.x - 12}px`;
+      this.mouseClick.style.top = `${evt.y - 7}px`;
     });
 
     this.canvas.addEventListener('mousedown', evt => {
@@ -55,7 +56,7 @@ export default class InputHelpers {
 
   constructor (canvas, options) {
     this.canvas = canvas;
-    if (window.location.href.indexOf('show-keyboard') !== -1) {
+    if (window.location.href.indexOf('show-keys') !== -1) {
       this.initKeys();
     }
     if (window.location.href.indexOf('show-mouse') !== -1) {
