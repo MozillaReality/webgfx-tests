@@ -278,8 +278,6 @@ export default class TestApp {
       this.progress.currentGlobal++;
     }
 
-    
-
     window.open(url);
   
     var testData = {

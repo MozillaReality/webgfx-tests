@@ -15,7 +15,7 @@
     "url": "threejs/webgl_interactive_draggablecubes.html",
     "name": "interactive draggable cubes",
     "mobile": true,
-    "numframes": 500,
+    "numframes": 200,
     "interactive": true,
     "input": "input/webgl_interactive_draggablecubes.json"
   },

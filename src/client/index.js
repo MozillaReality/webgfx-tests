@@ -6,6 +6,8 @@ import queryString from 'query-string';
 import {InputRecorder, InputReplayer} from 'input-events-recorder';
 import EventListenerManager from './event-listeners';
 import InputHelpers from './input-helpers';
+import {resizeImageData} from './image-utils';
+import pixelmatch from 'pixelmatch';
 
 const parameters = queryString.parse(location.search);
 
@@ -60,7 +62,9 @@ window.TESTER = {
       if (!this.canvas) {
         // We assume the last webgl context being initialized is the one used to rendering
         // If that's different, the test should have a custom code to return that canvas
-        this.canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1].canvas;
+        if (CanvasHook.webglContexts) {
+          this.canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1].canvas;
+        }
       }
 
       if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
@@ -149,7 +153,7 @@ window.TESTER = {
     }
 
     if (this.referenceTestFrameNumber === this.numFramesToRender) {
-      TESTER.doImageReferenceCheck();
+      // TESTER.doImageReferenceCheck();
     }
 
     // We will assume that after the reftest tick, the application is running idle to wait for next event.
@@ -157,17 +161,111 @@ window.TESTER = {
 
   },
 
-  doImageReferenceCheck: function() {
+  createDownloadImageLink: function(data, name) {
+    var a = document.createElement('a');
+    a.setAttribute('download', name + '.png');
+    a.setAttribute('href', data);
+    a.style.cssText = 'color: #FFF; display: inline-grid; text-decoration: none; margin: 2px; font-size: 14px;';
+
+    var img = new Image();
+    img.id = name;
+    img.src = data;
+    a.appendChild(img);
+
+    var label = document.createElement('label');
+    label.innerHTML = name;
+    label.style.cssText = 'background-color: #007095; padding: 2px 4px;';
+
+    a.appendChild(label);
+
+    document.getElementById('benchmark_images').appendChild(a);
+  },
+
+  // XHRs in the expected render output image, always 'reference.png' in the root directory of the test.
+  loadReferenceImage: function(callback) {
+    var img = new Image();
+    img.src = '/tests/referenceimages/' + GFXPERFTESTS_CONFIG.id + '.png';
+    // reference.png might come from a different domain than the canvas, so don't let it taint ctx.getImageData().
+    // See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
+    img.crossOrigin = 'Anonymous'; 
+    img.onload = () => {
+      var canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      var ctx = canvas.getContext('2d');
+
+      ctx.drawImage(img, 0, 0);
+      this.referenceImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      var data = canvas.toDataURL('image/png');
+      this.createDownloadImageLink(data, 'reference-image');
+
+      callback(this.referenceImageData);
+    }
+    this.referenceImage = img;
+  },
+
+  getCurrentImage: function(callback) {
+    // Grab rendered WebGL front buffer image to a JS-side image object.
+    var actualImage = new Image();
+
+    try {
+      const init = performance.realNow();
+      actualImage.src = this.canvas.toDataURL("image/png");
+      actualImage.onload = callback;
+      TESTER.stats.timeGeneratingReferenceImages += performance.realNow() - init;
+    } catch(e) {
+      console.error("Can't generate image");
+    }
+  },
+
+   doImageReferenceCheck: function() {
     var canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1].canvas;
 
     // Grab rendered WebGL front buffer image to a JS-side image object.
     var actualImage = new Image();
 
-    function reftest () {
+    var self = this;
+    function reftest (evt) {
+      var img = actualImage;
+      var canvasCurrent = document.createElement('canvas');
+      var context = canvasCurrent.getContext('2d');
+
+      canvasCurrent.width = img.width;
+      canvasCurrent.height = img.height;
+      context.drawImage(img, 0, 0 );
+
+      var currentImageData = context.getImageData(0, 0, img.width, img.height);
+      
       const init = performance.realNow();
       //document.body.appendChild(actualImage);
       //actualImage.style.cssText="position:absolute;left:0;right:0;top:0;bottom:0;z-index:99990;width:100%;height:100%;background-color:#999;font-size:100px;display:flex;align-items:center;justify-content:center;font-family:sans-serif";
       TESTER.stats.timeGeneratingReferenceImages += performance.realNow() - init;
+      self.loadReferenceImage(refImageData => {
+        var width = refImageData.width;
+        var height = refImageData.height;
+        var canvasDiff = document.createElement('canvas');
+        var diffCtx = canvasDiff.getContext('2d');
+        canvasDiff.width = width;
+        canvasDiff.height = height;  
+        var diff = diffCtx.createImageData(width, height);
+        
+        var newImageData = diffCtx.createImageData(width, height);
+        resizeImageData(currentImageData, newImageData);
+
+        var expected = refImageData.data;
+        var actual = newImageData.data;
+
+        var numDiffPixels = pixelmatch(expected, actual, diff.data, width, height, {threshold: 0.5});
+        if (numDiffPixels > 100) {
+          document.getElementById('reference-images-error').style.display = 'block';
+        }
+    
+        diffCtx.putImageData(diff, 0, 0);
+
+        var data = canvasDiff.toDataURL('image/png');
+        self.createDownloadImageLink(data, 'canvas-diff');
+      });
     }
 
     try {
@@ -211,13 +309,13 @@ window.TESTER = {
     style.innerHTML = `
       #benchmark_finished {
         align-items: center;
-        background-color: #999;
+        background-color: #CCC;
         bottom: 0;
         color: #fff;
         display: flex;
         font-family: sans-serif;
         font-weight: normal;
-        font-size: 40px;
+        font-size: 20px;
         justify-content: center;
         left: 0;
         position: absolute;
@@ -227,17 +325,37 @@ window.TESTER = {
         flex-direction: column;
       }
       
+      #benchmark_images {
+        margin-bottom: 20px;
+      }
+
+      #benchmark_images img {
+        width: 300px;
+        border: 1px solid #007095;
+      }
+
+      /*
+      #benchmark_images img:hover {
+        top: 0px; 
+        left: 0px;
+        height: 80%; 
+        width: 80%; 
+        position: fixed;
+      }
+      */
+
       #benchmark_finished .button {
         background-color: #007095;
         border-color: #007095;
+        margin-bottom: 10px;
         color: #FFFFFF;
         cursor: pointer;
         display: inline-block;
         font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif !important;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: normal;
         line-height: normal;
-        padding: 15px 20px 15px 20px;
+        padding: 10px 15px 10px 15px;
         text-align: center;
         text-decoration: none;
         transition: background-color 300ms ease-out;
@@ -253,12 +371,21 @@ window.TESTER = {
     var totalTime = timeEnd - pageInitTime; // Total time, including everything.
 
     var div = document.createElement('div');
-    div.innerHTML = `
-      <h1>Test finished!</h1>
-    `;
+    div.innerHTML = `<h1>Test finished!</h1>`;
     //div.appendChild(text);
     div.id = 'benchmark_finished';
     
+    var divReferenceError = document.createElement('div');
+    divReferenceError.id = 'reference-images-error';
+    divReferenceError.style.cssText = 'text-align:center; color: #f00;'
+    divReferenceError.innerHTML = '<h3>ERROR: Reference image mismatch</h3>';
+    divReferenceError.style.display = 'none';
+
+    div.appendChild(divReferenceError);
+    var divImg = document.createElement('div');
+    divImg.id = 'benchmark_images';
+    divReferenceError.appendChild(divImg);
+
     document.body.appendChild(div);
 
     if (this.inputRecorder) {
@@ -289,6 +416,27 @@ window.TESTER = {
       link.appendChild(document.createTextNode(`Download input JSON`)); // (${this.inputRecorder.events.length} events recorded)
       div.appendChild(link);
     }
+
+
+    var actualImage = new Image();
+    try {
+      var data = this.canvas.toDataURL("image/png");
+      this.createDownloadImageLink(data, 'actual-render');
+    } catch(e) {
+      console.error("Can't generate image");
+    }
+    
+    if (typeof parameters['recording'] !== 'undefined') {
+      var link = document.createElement('a');
+      document.body.appendChild(link);
+      link.href = '#';
+      link.className = 'button';
+      link.download = GFXPERFTESTS_CONFIG.id + '.png';    
+      link.appendChild(document.createTextNode(`Download reference PNG`));
+      div.appendChild(link);  
+    }
+
+    this.doImageReferenceCheck();
 
     var totalRenderTime = timeEnd - this.firstFrameTime;
     var cpuIdle = this.accumulatedCpuIdleTime * 100.0 / totalRenderTime;
@@ -375,7 +523,8 @@ window.TESTER = {
         
         var divProgress = document.createElement('div');
         div.appendChild(divProgress);
-        divProgress.style.cssText=`width: ${perc}%; background-color: ${color} float: left;
+        divProgress.style.cssText=`
+          width: ${perc}%;background-color: ${color} float: left;
           height: 100%;
           font-family: Monospace;
           font-size: 12px;
@@ -405,7 +554,20 @@ window.TESTER = {
       var div = document.createElement('div');
       var text = document.createTextNode('Test finished!');
       div.appendChild(text);
-      div.style.cssText="position:absolute;left:0;right:0;top:0;bottom:0;z-index:9999;background-color:#999;font-size:100px;display:flex;align-items:center;justify-content:center;font-family:sans-serif";
+      div.style.cssText=`
+        align-items: center;
+        background-color: #999;
+        bottom: 0;
+        display: flex;
+        font-family: sans-serif
+        font-size: 100px;
+        justify-content: center;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 9999;
+      `;
       document.body.appendChild(div);
       // console.log('Time spent generating reference images:', TESTER.stats.timeGeneratingReferenceImages);  
     }
@@ -427,15 +589,15 @@ window.TESTER = {
           }
           this.preTick();
     
+          callback(performance.now());
+          this.tick();
+          this.stats.frameEnd();
+              
           if (this.referenceTestFrameNumber === this.numFramesToRender) {
             this.benchmarkFinished();
             return;
           }
-    
-          callback(performance.now());
-          this.tick();
-          this.stats.frameEnd();
-  
+
           if (GFXPERFTESTS_CONFIG.postMainLoop) {
             GFXPERFTESTS_CONFIG.postMainLoop();
           }
@@ -473,7 +635,7 @@ window.TESTER = {
       warnings: [],
       catchErrors: []
     };
-    this.wrapErrors();
+    // this.wrapErrors();
 
     this.eventListener = new EventListenerManager();
     if (typeof parameters['replay'] !== 'undefined') {

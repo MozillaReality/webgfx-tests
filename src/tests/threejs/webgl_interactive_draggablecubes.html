@@ -131,7 +131,7 @@
 				info.style.top = '10px';
 				info.style.width = '100%';
 				info.style.textAlign = 'center';
-				info.innerHTML = '<a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> webgl - draggable cubes';
+				info.innerHTML = '<a href="#" onclick="test()">three.js</a> webgl - draggable cubes';
 				container.appendChild( info );
 
 				stats = new Stats();
@@ -159,18 +159,23 @@
 				requestAnimationFrame( animate );
 				
 				render();
-				stats.update();
+				// stats.update();
 
 			}
 
 			function render() {
 
 				controls.update();
-
+				for (var i=0; i< 10; i++) {
+					objects[ i ].rotation.x = performance.now() / 1000;
+				}
 				renderer.render( scene, camera );
 
 			}
 
+			function test () {
+				console.log('qwerqwrqwrqewqr');
+			}
 		</script>
 
 	</body>
