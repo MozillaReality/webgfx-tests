@@ -255,10 +255,15 @@ window.TESTER = {
 
         var expected = refImageData.data;
         var actual = newImageData.data;
-
-        var numDiffPixels = pixelmatch(expected, actual, diff.data, width, height, {threshold: 0.5});
-        if (numDiffPixels > 100) {
-          document.getElementById('reference-images-error').style.display = 'block';
+        
+        var threshold = typeof GFXPERFTESTS_CONFIG.referenceCompareThreshold === 'undefined' ? 0.5 : GFXPERFTESTS_CONFIG.referenceCompareThreshold;
+        var numDiffPixels = pixelmatch(expected, actual, diff.data, width, height, {threshold: threshold});
+        var diffPerc = (numDiffPixels / (width * height) * 100).toFixed(2);
+        
+        if (diffPerc > 1) {
+          var divError = document.getElementById('reference-images-error');
+          divError.querySelector('h3').innerHTML = `ERROR: Reference image mismatch (${diffPerc}% different pixels)`;
+          divError.style.display = 'block';
         }
     
         diffCtx.putImageData(diff, 0, 0);

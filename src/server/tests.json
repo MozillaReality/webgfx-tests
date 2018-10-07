@@ -17,6 +17,9 @@
     "mobile": true,
     "numframes": 200,
     "interactive": true,
+    "referenceCompareThreshold": 0.5,
+    "referencePercentageFail": 1.5, // OR
+    "referenceNumPixelsFail": 100,
     "input": "input/webgl_interactive_draggablecubes.json"
   },
   {
