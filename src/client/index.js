@@ -444,6 +444,7 @@ window.TESTER = {
     var div = document.createElement('div');
     div.innerHTML = `<h1>Test finished!</h1>`;
     div.id = 'benchmark_finished';
+    div.style.visibility = 'hidden';
     
     var divReferenceError = document.createElement('div');
     divReferenceError.id = 'reference-images-error';
@@ -487,6 +488,8 @@ window.TESTER = {
         this.socket.disconnect();
       }
   
+      document.getElementById('benchmark_finished').style.visibility = 'visible';
+    
       console.log('Finished!', result);
       if (!this.inputRecorder) {
         if (typeof window !== 'undefined' && window.close && typeof parameters['no_close_on_fail'] === 'undefined') {
