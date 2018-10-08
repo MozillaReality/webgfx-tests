@@ -272,7 +272,7 @@ export default class TestApp {
       if (this.vueApp.options.tests.showMouse) url = addGET(url, 'show-mouse');
     }
 
-    if (this.vueApp.options.general.noCloseOnFail) url = addGET(url, 'no_close_on_fail');
+    if (this.vueApp.options.tests.noCloseOnFail) url = addGET(url, 'no_close_on_fail');
 
     if (this.progress) {
       url = addGET(url, 'order-test=' + this.progress.tests[id].current + '&total-test=' + this.progress.tests[id].total);

@@ -9,12 +9,13 @@ var data = {
   showInfo: false,
   options: {
     general: {
-      numTimesToRunEachTest: 1
+      numTimesToRunEachTest: 1,
     },
     tests: {
       fakeWebGL: false,
       showKeys: false,
-      showMouse: false
+      showMouse: false,
+      noCloseOnFail: false
     }
   },
   results: [],
