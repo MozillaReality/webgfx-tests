@@ -219,10 +219,7 @@ window.TESTER = {
     }
   },
 
-   doImageReferenceCheck: function() {
-    var canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1].canvas;
-
-    // Grab rendered WebGL front buffer image to a JS-side image object.
+  doImageReferenceCheck: function() {
     var actualImage = new Image();
 
     var self = this;
@@ -238,8 +235,6 @@ window.TESTER = {
       var currentImageData = context.getImageData(0, 0, img.width, img.height);
       
       const init = performance.realNow();
-      //document.body.appendChild(actualImage);
-      //actualImage.style.cssText="position:absolute;left:0;right:0;top:0;bottom:0;z-index:99990;width:100%;height:100%;background-color:#999;font-size:100px;display:flex;align-items:center;justify-content:center;font-family:sans-serif";
       TESTER.stats.timeGeneratingReferenceImages += performance.realNow() - init;
       self.loadReferenceImage(refImageData => {
         var width = refImageData.width;
@@ -256,11 +251,11 @@ window.TESTER = {
         var expected = refImageData.data;
         var actual = newImageData.data;
         
-        var threshold = typeof GFXPERFTESTS_CONFIG.referenceCompareThreshold === 'undefined' ? 0.5 : GFXPERFTESTS_CONFIG.referenceCompareThreshold;
+        var threshold = typeof GFXPERFTESTS_CONFIG.referenceCompareThreshold === 'undefined' ? 0.2 : GFXPERFTESTS_CONFIG.referenceCompareThreshold;
         var numDiffPixels = pixelmatch(expected, actual, diff.data, width, height, {threshold: threshold});
         var diffPerc = (numDiffPixels / (width * height) * 100).toFixed(2);
         
-        if (diffPerc > 1) {
+        if (diffPerc > 0.1) {
           var divError = document.getElementById('reference-images-error');
           divError.querySelector('h3').innerHTML = `ERROR: Reference image mismatch (${diffPerc}% different pixels)`;
           divError.style.display = 'block';
@@ -275,7 +270,7 @@ window.TESTER = {
 
     try {
       const init = performance.realNow();
-      actualImage.src = canvas.toDataURL("image/png");
+      actualImage.src = this.canvas.toDataURL("image/png");
       actualImage.onload = reftest;
       TESTER.stats.timeGeneratingReferenceImages += performance.realNow() - init;
     } catch(e) {
@@ -308,6 +303,70 @@ window.TESTER = {
     });    
   },
   
+  addInputDownloadButton: function () {
+      // Dump input
+      function saveString (text, filename, mimeType) {
+        saveBlob(new Blob([ text ], { type: mimeType }), filename);
+      }
+      
+      function saveBlob (blob, filename) {
+        var link = document.createElement('a');
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.href = URL.createObjectURL(blob);
+        link.download = filename || 'input.json';
+        link.click();
+        // URL.revokeObjectURL(url); breaks Firefox...
+      }
+
+      var json = JSON.stringify(this.inputRecorder.events, null, 2);
+
+      //console.log('Input recorded', json);
+
+      var link = document.createElement('a');
+      document.body.appendChild(link);
+      link.href = '#';
+      link.className = 'button';
+      link.onclick = () => saveString(json, GFXPERFTESTS_CONFIG.id + '.json', 'application/json');
+      link.appendChild(document.createTextNode(`Download input JSON`)); // (${this.inputRecorder.events.length} events recorded)
+      document.getElementById('benchmark_finished').appendChild(link);
+  },
+
+  generateBenchmarkResult: function () {
+    var timeEnd = performance.realNow();
+    var totalTime = timeEnd - pageInitTime; // Total time, including everything.
+
+    this.doImageReferenceCheck();
+    
+    return new Promise (resolve => {
+      var totalRenderTime = timeEnd - this.firstFrameTime;
+      var cpuIdle = this.accumulatedCpuIdleTime * 100.0 / totalRenderTime;
+      var fps = this.numFramesToRender * 1000.0 / totalRenderTime;
+      
+      var testResult = 'FAIL';
+  
+      var result = {
+        test_id: GFXPERFTESTS_CONFIG.id,
+        values: this.stats.getStatsSummary(),
+        numFrames: this.numFramesToRender,
+        totalTime: totalTime,
+        timeToFirstFrame: this.firstFrameTime - pageInitTime,
+        logs: this.logs,
+        avgFps: fps,
+        numStutterEvents: this.numStutterEvents,
+        result: testResult,
+        totalTime: totalTime,
+        totalRenderTime: totalRenderTime,
+        cpuTime: this.stats.totalTimeInMainLoop,
+        cpuIdleTime: this.stats.totalTimeOutsideMainLoop,
+        cpuIdlePerc: this.stats.totalTimeOutsideMainLoop * 100 / totalRenderTime,
+        pageLoadTime: this.pageLoadTime,
+      };
+
+      resolve(result);
+    });
+  },
+
   benchmarkFinished: function () {
 
     var style = document.createElement('style');
@@ -369,21 +428,17 @@ window.TESTER = {
       #benchmark_finished .button:hover {
         background-color: #0078a0;
       }
-      `;
+    `;
     document.body.appendChild(style);
-
-    var timeEnd = performance.realNow();
-    var totalTime = timeEnd - pageInitTime; // Total time, including everything.
 
     var div = document.createElement('div');
     div.innerHTML = `<h1>Test finished!</h1>`;
-    //div.appendChild(text);
     div.id = 'benchmark_finished';
     
     var divReferenceError = document.createElement('div');
     divReferenceError.id = 'reference-images-error';
     divReferenceError.style.cssText = 'text-align:center; color: #f00;'
-    divReferenceError.innerHTML = '<h3>ERROR: Reference image mismatch</h3>';
+    divReferenceError.innerHTML = '<h3>-</h3>';
     divReferenceError.style.display = 'none';
 
     div.appendChild(divReferenceError);
@@ -394,36 +449,9 @@ window.TESTER = {
     document.body.appendChild(div);
 
     if (this.inputRecorder) {
-      // Dump input
-      function saveString (text, filename, mimeType) {
-        saveBlob(new Blob([ text ], { type: mimeType }), filename);
-      }
-      
-      function saveBlob (blob, filename) {
-        var link = document.createElement('a');
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.href = URL.createObjectURL(blob);
-        link.download = filename || 'input.json';
-        link.click();
-        // URL.revokeObjectURL(url); breaks Firefox...
-      }
-
-      var json = JSON.stringify(this.inputRecorder.events, null, 2);
-
-      //console.log('Input recorded', json);
-
-      var link = document.createElement('a');
-      document.body.appendChild(link);
-      link.href = '#';
-      link.className = 'button';
-      link.onclick = () => saveString(json, GFXPERFTESTS_CONFIG.id + '.json', 'application/json');
-      link.appendChild(document.createTextNode(`Download input JSON`)); // (${this.inputRecorder.events.length} events recorded)
-      div.appendChild(link);
+      this.addInputDownloadButton();
     }
 
-
-    var actualImage = new Image();
     try {
       var data = this.canvas.toDataURL("image/png");
       this.createDownloadImageLink(data, 'actual-render');
@@ -431,6 +459,7 @@ window.TESTER = {
       console.error("Can't generate image");
     }
     
+    /*
     if (typeof parameters['recording'] !== 'undefined') {
       var link = document.createElement('a');
       document.body.appendChild(link);
@@ -438,42 +467,21 @@ window.TESTER = {
       link.className = 'button';
       link.download = GFXPERFTESTS_CONFIG.id + '.png';    
       link.appendChild(document.createTextNode(`Download reference PNG`));
-      div.appendChild(link);  
+      div.appendChild(link);
     }
+    */
 
-    this.doImageReferenceCheck();
-
-    var totalRenderTime = timeEnd - this.firstFrameTime;
-    var cpuIdle = this.accumulatedCpuIdleTime * 100.0 / totalRenderTime;
-    var fps = this.numFramesToRender * 1000.0 / totalRenderTime;
-    
-    var data = {
-      test_id: GFXPERFTESTS_CONFIG.id,
-      values: this.stats.getStatsSummary(),
-      numFrames: this.numFramesToRender,
-      totalTime: totalTime,
-      timeToFirstFrame: this.firstFrameTime - pageInitTime,
-      logs: this.logs,
-      avgFps: fps,
-      numStutterEvents: this.numStutterEvents,
-      result: 'PASS',
-      totalTime: totalTime,
-      totalRenderTime: totalRenderTime,
-      cpuTime: this.stats.totalTimeInMainLoop,
-      cpuIdleTime: this.stats.totalTimeOutsideMainLoop,
-      cpuIdlePerc: this.stats.totalTimeOutsideMainLoop * 100 / totalRenderTime,
-      pageLoadTime: this.pageLoadTime,
-    };
-
-    if (this.socket) {
-      this.socket.emit('benchmark_finish', data);
-      this.socket.disconnect();
-    }
-
-    console.log('Finished!', data);
-    if (!this.inputRecorder) {
-      if (typeof window !== 'undefined' && window.close) window.close();
-    }
+    this.generateBenchmarkResult().then(result => {
+      if (this.socket) {
+        this.socket.emit('benchmark_finish', result);
+        this.socket.disconnect();
+      }
+  
+      console.log('Finished!', result);
+      if (!this.inputRecorder) {
+        if (typeof window !== 'undefined' && window.close) window.close();
+      }  
+    });
   },
 
   wrapErrors: function () {
