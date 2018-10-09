@@ -182,27 +182,33 @@ window.TESTER = {
   },
 
   // XHRs in the expected render output image, always 'reference.png' in the root directory of the test.
-  loadReferenceImage: function(callback) {
-    var img = new Image();
-    img.src = '/tests/referenceimages/' + GFXPERFTESTS_CONFIG.id + '.png';
-    // reference.png might come from a different domain than the canvas, so don't let it taint ctx.getImageData().
-    // See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
-    img.crossOrigin = 'Anonymous'; 
-    img.onload = () => {
-      var canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      var ctx = canvas.getContext('2d');
-
-      ctx.drawImage(img, 0, 0);
-      this.referenceImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-      var data = canvas.toDataURL('image/png');
-      this.createDownloadImageLink(data, 'reference-image');
-
-      callback(this.referenceImageData);
-    }
-    this.referenceImage = img;
+  loadReferenceImage: function() {
+    return new Promise ((resolve, reject) => {
+      var img = new Image();
+      var referenceImageName = parameters['reference-image'] || GFXPERFTESTS_CONFIG.id;
+        
+      img.src = '/tests/referenceimages/' + referenceImageName + '.png';
+      img.onabort = img.onerror = reject;
+      
+      // reference.png might come from a different domain than the canvas, so don't let it taint ctx.getImageData().
+      // See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
+      img.crossOrigin = 'Anonymous'; 
+      img.onload = () => {
+        var canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var ctx = canvas.getContext('2d');
+  
+        ctx.drawImage(img, 0, 0);
+        this.referenceImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  
+        var data = canvas.toDataURL('image/png');
+        this.createDownloadImageLink(data, 'reference-image');
+  
+        resolve(this.referenceImageData);
+      }
+      this.referenceImage = img;  
+    });
   },
 
   getCurrentImage: function(callback) {
@@ -223,7 +229,7 @@ window.TESTER = {
     var actualImage = new Image();
     var self = this;
 
-    return new Promise (resolve => {
+    return new Promise ((resolve, reject) => {
       function reftest (evt) {
         var img = actualImage;
         var canvasCurrent = document.createElement('canvas');
@@ -231,13 +237,13 @@ window.TESTER = {
 
         canvasCurrent.width = img.width;
         canvasCurrent.height = img.height;
-        context.drawImage(img, 0, 0 );
+        context.drawImage(img, 0, 0);
 
         var currentImageData = context.getImageData(0, 0, img.width, img.height);
         
         const init = performance.realNow();
         TESTER.stats.timeGeneratingReferenceImages += performance.realNow() - init;
-        self.loadReferenceImage(refImageData => {
+        self.loadReferenceImage().then(refImageData => {
           var width = refImageData.width;
           var height = refImageData.height;
           var canvasDiff = document.createElement('canvas');
@@ -266,15 +272,23 @@ window.TESTER = {
             result = {
               result: 'fail',
               diffPerc: diffPerc,
-              numDiffPixels: numDiffPixels
+              numDiffPixels: numDiffPixels,
+              failReason: 'Reference image mismatch'
             };
-          }
               
-          diffCtx.putImageData(diff, 0, 0);
+            diffCtx.putImageData(diff, 0, 0);
 
-          var data = canvasDiff.toDataURL('image/png');
-          self.createDownloadImageLink(data, 'canvas-diff');
-          resolve(result);
+            var data = canvasDiff.toDataURL('image/png');
+            self.createDownloadImageLink(data, 'canvas-diff');
+            reject(result);
+          } else {
+            resolve(result);
+          }
+        }).catch(() => {
+          reject({
+            result: 'fail',
+            failReason: 'Error loading reference image'
+          });
         });
       }
 
@@ -284,7 +298,7 @@ window.TESTER = {
         actualImage.onload = reftest;
         TESTER.stats.timeGeneratingReferenceImages += performance.realNow() - init;
       } catch(e) {
-        resolve({result: 'fail'}); // canvas.toDataURL() likely failed, return results immediately.
+        reject();
       }
     });
   },
@@ -348,31 +362,33 @@ window.TESTER = {
     var totalTime = timeEnd - pageInitTime; // Total time, including everything.
 
     return new Promise (resolve => {
-      this.doImageReferenceCheck().then(refResult => {
-        var totalRenderTime = timeEnd - this.firstFrameTime;
-        var cpuIdle = this.accumulatedCpuIdleTime * 100.0 / totalRenderTime;
-        var fps = this.numFramesToRender * 1000.0 / totalRenderTime;
-    
-        var result = {
-          test_id: GFXPERFTESTS_CONFIG.id,
-          values: this.stats.getStatsSummary(),
-          numFrames: this.numFramesToRender,
-          totalTime: totalTime,
-          timeToFirstFrame: this.firstFrameTime - pageInitTime,
-          logs: this.logs,
-          avgFps: fps,
-          numStutterEvents: this.numStutterEvents,
-          totalTime: totalTime,
-          totalRenderTime: totalRenderTime,
-          cpuTime: this.stats.totalTimeInMainLoop,
-          cpuIdleTime: this.stats.totalTimeOutsideMainLoop,
-          cpuIdlePerc: this.stats.totalTimeOutsideMainLoop * 100 / totalRenderTime,
-          pageLoadTime: this.pageLoadTime,
-        };
-
-        Object.assign(result, refResult);
+      var totalRenderTime = timeEnd - this.firstFrameTime;
+      var cpuIdle = this.accumulatedCpuIdleTime * 100.0 / totalRenderTime;
+      var fps = this.numFramesToRender * 1000.0 / totalRenderTime;
   
+      var result = {
+        test_id: GFXPERFTESTS_CONFIG.id,
+        values: this.stats.getStatsSummary(),
+        numFrames: this.numFramesToRender,
+        totalTime: totalTime,
+        timeToFirstFrame: this.firstFrameTime - pageInitTime,
+        logs: this.logs,
+        avgFps: fps,
+        numStutterEvents: this.numStutterEvents,
+        totalTime: totalTime,
+        totalRenderTime: totalRenderTime,
+        cpuTime: this.stats.totalTimeInMainLoop,
+        cpuIdleTime: this.stats.totalTimeOutsideMainLoop,
+        cpuIdlePerc: this.stats.totalTimeOutsideMainLoop * 100 / totalRenderTime,
+        pageLoadTime: this.pageLoadTime,
+      };
+
+      this.doImageReferenceCheck().then(refResult => {
+        Object.assign(result, refResult);
         resolve(result);  
+      }).catch(refResult => {
+        Object.assign(result, refResult);
+        resolve(result);
       });
     });
   },
@@ -492,7 +508,7 @@ window.TESTER = {
     
       console.log('Finished!', result);
       if (!this.inputRecorder) {
-        if (typeof window !== 'undefined' && window.close && typeof parameters['no_close_on_fail'] === 'undefined') {
+        if (typeof window !== 'undefined' && window.close && typeof parameters['no-close-on-fail'] === 'undefined') {
           window.close();
         }
       }  

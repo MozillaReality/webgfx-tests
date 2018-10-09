@@ -7,7 +7,8 @@
     "mobile": true,
     "numframes": 200,
     "interactive": true,
-    "input": "input/misc_fps.json"
+    "input": "input/misc_fps.json",
+    "referenceImageTest": false
   },
   {
     "id": "webgl_interactive_draggablecubes",
