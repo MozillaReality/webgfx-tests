@@ -76,9 +76,12 @@ export default class TestApp {
     this.socket.on('benchmark_finished', (result) => {
       result.json = JSON.stringify(result, null, 4);
       var options = JSON.parse(JSON.stringify(this.vueApp.options.tests));
-      if (options.fakeWebGL === false) {
-        delete options.fakeWebGL;
-      }
+
+      // To remove options 
+      delete options.fakeWebGL;
+      delete options.showKeys;
+      delete options.showMouse;
+      delete options.noCloseOnFail;
 
       result.options = options;
 
@@ -273,7 +276,8 @@ export default class TestApp {
     }
 
     if (this.vueApp.options.tests.noCloseOnFail) url = addGET(url, 'no-close-on-fail');
-    if (test.referenceImageTest === false) url = addGET(url, 'no-image-reference-test');
+    if (test.skipReferenceImageTest) url = addGET(url, 'skip-reference-image-test');
+    if (test.referenceImage) url = addGET(url, 'reference-image');
 
     if (this.progress) {
       url = addGET(url, 'order-test=' + this.progress.tests[id].current + '&total-test=' + this.progress.tests[id].total);

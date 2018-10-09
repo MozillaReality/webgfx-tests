@@ -8,7 +8,7 @@
     "numframes": 200,
     "interactive": true,
     "input": "input/misc_fps.json",
-    "referenceImageTest": false
+    "skipReferenceImageTest": true
   },
   {
     "id": "webgl_interactive_draggablecubes",
@@ -30,7 +30,8 @@
     "name": "instanced circle billboards",
     "mobile": true,
     "numframes": 200,
-    "interactive": true
+    "interactive": true,
+    "skipReferenceImageTest": true
   },
   {
     "id": "billboard_particles",
@@ -42,7 +43,8 @@
       "width": 500,
       "height": 500
     },
-    "interactive": true
+    "interactive": true,
+    "skipReferenceImageTest": true
   },
   {
     "id": "simple",
@@ -50,7 +52,8 @@
     "url": "babylon/simple.html",
     "name": "simple example",
     "mobile": true,
-    "interactive": true
+    "interactive": true,
+    "skipReferenceImageTest": true
   },
   {
     "id": "playcanvas",
@@ -58,6 +61,7 @@
     "url": "playcanvas/animation.html",
     "name": "animation",
     "mobile": true,
-    "interactive": true
+    "interactive": true,
+    "skipReferenceImageTest": true
   }
 ]

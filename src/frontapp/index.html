@@ -17,6 +17,14 @@
     body {
       font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     }
+/*
+    tr.pass td {
+      background-color: #90EE90;
+    }
+*/
+    tr.fail td {
+      background-color: #f55;
+    }
 
     td {
       padding: 10px;
@@ -80,6 +88,7 @@
         <thead>
           <th>Test ID</th>
           <th>Options</th>
+          <th>Result</th>
           <th>Total time</th>
           <th>First frame</th>
           <th>FPS</th>
@@ -89,9 +98,10 @@
           <th v-show="show_json">JSON</th>
         </thead>
         <tbody>
-          <tr v-for="result in results">
+          <tr v-for="result in results"  v-bind:class="{'fail': result.result === 'fail', 'pass': result.result === 'pass'}">
             <td>{{result.test_id}}</td>
             <td>{{result.options}}</td>
+            <td>{{result.result}}</td>
             <td>{{formatNumeric(result.totalTime)}}</td>
             <td>{{formatNumeric(result.timeToFirstFrame)}}</td>
             <td>{{formatNumeric(result.avgFps)}}</td>

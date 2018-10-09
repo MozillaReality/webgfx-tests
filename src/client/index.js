@@ -374,6 +374,7 @@ window.TESTER = {
         timeToFirstFrame: this.firstFrameTime - pageInitTime,
         logs: this.logs,
         avgFps: fps,
+        result: 'pass',
         numStutterEvents: this.numStutterEvents,
         totalTime: totalTime,
         totalRenderTime: totalRenderTime,
@@ -383,13 +384,18 @@ window.TESTER = {
         pageLoadTime: this.pageLoadTime,
       };
 
-      this.doImageReferenceCheck().then(refResult => {
-        Object.assign(result, refResult);
-        resolve(result);  
-      }).catch(refResult => {
-        Object.assign(result, refResult);
+      // @todo Indicate somehow that no reference test has been performed
+      if (typeof parameters['skip-reference-image-test'] !== 'undefined') {
         resolve(result);
-      });
+      } else {
+        this.doImageReferenceCheck().then(refResult => {
+          Object.assign(result, refResult);
+          resolve(result);  
+        }).catch(refResult => {
+          Object.assign(result, refResult);
+          resolve(result);
+        });
+      }
     });
   },
 
