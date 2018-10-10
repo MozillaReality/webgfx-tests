@@ -77,7 +77,7 @@
       <ul>
         <li>num.times: <input type="text" v-model="options.general.numTimesToRunEachTest"></li>
         <li><label><input type="checkbox" v-model="options.tests.fakeWebGL"> fake webgl</label></li>
-        <li><label><input type="checkbox" v-model="options.tests.noCloseOnFail"> no close on fail</label></li>
+        <li><label><input type="checkbox" v-model="options.tests.noCloseOnFail"> no close when finished</label></li>
         <li>show input: <label><input type="checkbox" v-model="options.tests.showKeys"> keystrokes</label> <label><input type="checkbox" v-model="options.tests.showMouse"> mouse</label></li>
       </ul>
       <br>
@@ -112,6 +112,7 @@
           </tr>
           <tr class="average-results" v-for="result in resultsAverage">
             <td>{{result.test_id}}</td>
+            <td></td>
             <td></td>
             <td>{{formatNumeric(result.totalTime)}}</td>
             <td>{{formatNumeric(result.timeToFirstFrame)}}</td>

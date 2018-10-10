@@ -161,20 +161,20 @@ window.TESTER = {
 
   },
 
-  createDownloadImageLink: function(data, name) {
+  createDownloadImageLink: function(data, filename, description) {
     var a = document.createElement('a');
-    a.setAttribute('download', name + '.png');
+    a.setAttribute('download', filename + '.png');
     a.setAttribute('href', data);
     a.style.cssText = 'color: #FFF; display: inline-grid; text-decoration: none; margin: 2px; font-size: 14px;';
 
     var img = new Image();
-    img.id = name;
+    img.id = filename;
     img.src = data;
     a.appendChild(img);
 
     var label = document.createElement('label');
-    label.innerHTML = name;
-    label.style.cssText = 'background-color: #007095; padding: 2px 4px;';
+    label.className = 'button';
+    label.innerHTML = description || filename;
 
     a.appendChild(label);
 
@@ -203,7 +203,7 @@ window.TESTER = {
         this.referenceImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   
         var data = canvas.toDataURL('image/png');
-        this.createDownloadImageLink(data, 'reference-image');
+        this.createDownloadImageLink(data, 'reference-image', 'Reference image');
   
         resolve(this.referenceImageData);
       }
@@ -276,15 +276,27 @@ window.TESTER = {
               failReason: 'Reference image mismatch'
             };
               
+            var benchmarkDiv = document.getElementById('benchmark_finished');
+            benchmarkDiv.className = 'fail';
+            benchmarkDiv.querySelector('h1').innerText = 'Test failed!';
+
             diffCtx.putImageData(diff, 0, 0);
 
             var data = canvasDiff.toDataURL('image/png');
-            self.createDownloadImageLink(data, 'canvas-diff');
+            self.createDownloadImageLink(data, 'canvas-diff', 'Difference');
             reject(result);
           } else {
             resolve(result);
           }
         }).catch(() => {
+          var benchmarkDiv = document.getElementById('benchmark_finished');
+          benchmarkDiv.className = 'fail';
+          benchmarkDiv.querySelector('h1').innerText = 'Test failed!';
+
+          var divError = document.getElementById('reference-images-error');
+          divError.querySelector('h3').innerHTML = `ERROR: Failed to load reference image`;
+          divError.style.display = 'block';
+
           reject({
             result: 'fail',
             failReason: 'Error loading reference image'
@@ -405,9 +417,9 @@ window.TESTER = {
     style.innerHTML = `
       #benchmark_finished {
         align-items: center;
-        background-color: #CCC;
+        background-color: #ddd;
         bottom: 0;
-        color: #fff;
+        color: #000;
         display: flex;
         font-family: sans-serif;
         font-weight: normal;
@@ -421,6 +433,14 @@ window.TESTER = {
         flex-direction: column;
       }
       
+      #benchmark_finished.pass {
+        background-color: #9f9;
+      }
+
+      #benchmark_finished.fail {
+        background-color: #f99;
+      }
+
       #benchmark_images {
         margin-bottom: 20px;
       }
@@ -451,7 +471,8 @@ window.TESTER = {
         font-size: 14px;
         font-weight: normal;
         line-height: normal;
-        padding: 10px 15px 10px 15px;
+        width: 300px;
+        padding: 10px 1px;
         text-align: center;
         text-decoration: none;
         transition: background-color 300ms ease-out;
@@ -471,7 +492,7 @@ window.TESTER = {
     var divReferenceError = document.createElement('div');
     divReferenceError.id = 'reference-images-error';
     divReferenceError.style.cssText = 'text-align:center; color: #f00;'
-    divReferenceError.innerHTML = '<h3>-</h3>';
+    divReferenceError.innerHTML = '<h3></h3>';
     divReferenceError.style.display = 'none';
 
     div.appendChild(divReferenceError);
@@ -487,38 +508,36 @@ window.TESTER = {
 
     try {
       var data = this.canvas.toDataURL("image/png");
-      this.createDownloadImageLink(data, 'actual-render');
+      var description = this.inputRecorder ? 'Download reference image' : 'Actual render';
+      this.createDownloadImageLink(data, GFXPERFTESTS_CONFIG.id, description);
     } catch(e) {
       console.error("Can't generate image");
     }
-    
-    /*
-    if (typeof parameters['recording'] !== 'undefined') {
-      var link = document.createElement('a');
-      document.body.appendChild(link);
-      link.href = '#';
-      link.className = 'button';
-      link.download = GFXPERFTESTS_CONFIG.id + '.png';    
-      link.appendChild(document.createTextNode(`Download reference PNG`));
-      div.appendChild(link);
-    }
-    */
 
-    this.generateBenchmarkResult().then(result => {
-      if (this.socket) {
-        this.socket.emit('benchmark_finish', result);
-        this.socket.disconnect();
-      }
-  
+    if (this.inputRecorder) {
       document.getElementById('benchmark_finished').style.visibility = 'visible';
+      document.getElementById('reference-images-error').style.display = 'block';
+    } else {
+      this.generateBenchmarkResult().then(result => {
+        if (this.socket) {
+          this.socket.emit('benchmark_finish', result);
+          this.socket.disconnect();
+        }
     
-      console.log('Finished!', result);
-      if (!this.inputRecorder) {
+        var benchmarkDiv = document.getElementById('benchmark_finished');
+        benchmarkDiv.className = result.result;
+        if (result.result === 'pass') {
+          benchmarkDiv.querySelector('h1').innerText = 'Test passed!';
+        }
+
+        benchmarkDiv.style.visibility = 'visible';
+      
+        console.log('Finished!', result);
         if (typeof window !== 'undefined' && window.close && typeof parameters['no-close-on-fail'] === 'undefined') {
           window.close();
         }
-      }  
-    });
+      });  
+    }
   },
 
   wrapErrors: function () {

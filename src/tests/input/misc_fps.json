@@ -1,389 +1,262 @@
 [
   {
-    "frameNumber": 2,
     "type": "mouse",
     "event": "move",
     "parameters": {
-      "x": 0.69875,
-      "y": 0.6616666666666666
-    }
+      "x": 0.9525,
+      "y": 0.595,
+      "button": 0
+    },
+    "frameNumber": 42
   },
   {
-    "frameNumber": 3,
     "type": "mouse",
     "event": "move",
     "parameters": {
-      "x": 0.6975,
-      "y": 0.6483333333333333
-    }
+      "x": 0.8775,
+      "y": 0.6,
+      "button": 0
+    },
+    "frameNumber": 43
   },
   {
-    "frameNumber": 4,
     "type": "mouse",
     "event": "move",
     "parameters": {
-      "x": 0.69625,
-      "y": 0.6383333333333333
-    }
+      "x": 0.8125,
+      "y": 0.615,
+      "button": 0
+    },
+    "frameNumber": 44
   },
   {
-    "frameNumber": 5,
     "type": "mouse",
     "event": "move",
     "parameters": {
-      "x": 0.69125,
-      "y": 0.61
-    }
+      "x": 0.78,
+      "y": 0.6216666666666667,
+      "button": 0
+    },
+    "frameNumber": 45
   },
   {
-    "frameNumber": 6,
     "type": "mouse",
     "event": "move",
     "parameters": {
-      "x": 0.68375,
-      "y": 0.565
-    }
+      "x": 0.76,
+      "y": 0.6266666666666667,
+      "button": 0
+    },
+    "frameNumber": 46
   },
   {
-    "frameNumber": 7,
-    "type": "mouse",
-    "event": "move",
-    "parameters": {
-      "x": 0.68125,
-      "y": 0.555
-    }
-  },
-  {
-    "frameNumber": 8,
-    "type": "mouse",
-    "event": "move",
-    "parameters": {
-      "x": 0.68,
-      "y": 0.5516666666666666
-    }
-  },
-  {
-    "frameNumber": 9,
-    "type": "mouse",
-    "event": "move",
-    "parameters": {
-      "x": 0.68,
-      "y": 0.55
-    }
-  },
-  {
-    "frameNumber": 10,
-    "type": "mouse",
-    "event": "move",
-    "parameters": {
-      "x": 0.68,
-      "y": 0.55
-    }
-  },
-  {
-    "frameNumber": 12,
-    "type": "mouse",
-    "event": "down",
-    "parameters": {
-      "x": 0.68,
-      "y": 0.55
-    }
-  },
-  {
-    "frameNumber": 17,
-    "type": "mouse",
-    "event": "up",
-    "parameters": {
-      "x": 0.68,
-      "y": 0.55
-    }
-  },
-  {
-    "frameNumber": 18,
-    "type": "mouse",
-    "event": "move",
-    "parameters": {
-      "x": 0.68,
-      "y": 0.5483333333333333
-    }
-  },
-  {
-    "frameNumber": 19,
-    "type": "mouse",
-    "event": "move",
-    "parameters": {
-      "x": 0.6775,
-      "y": 0.5416666666666666
-    }
-  },
-  {
-    "frameNumber": 37,
     "type": "key",
     "event": "down",
     "parameters": {
       "keyCode": 83,
       "charCode": 0,
       "key": "s"
-    }
+    },
+    "frameNumber": 61
   },
   {
-    "frameNumber": 52,
     "type": "key",
     "event": "down",
     "parameters": {
       "keyCode": 83,
       "charCode": 0,
       "key": "s"
-    }
+    },
+    "frameNumber": 76
   },
   {
-    "frameNumber": 53,
     "type": "key",
     "event": "down",
     "parameters": {
       "keyCode": 68,
       "charCode": 0,
       "key": "d"
-    }
+    },
+    "frameNumber": 77
   },
   {
-    "frameNumber": 56,
     "type": "key",
     "event": "up",
     "parameters": {
       "keyCode": 83,
       "charCode": 0,
       "key": "s"
-    }
+    },
+    "frameNumber": 81
   },
   {
-    "frameNumber": 66,
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 92
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 94
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 96
+  },
+  {
     "type": "key",
     "event": "down",
     "parameters": {
       "keyCode": 87,
       "charCode": 0,
       "key": "w"
-    }
+    },
+    "frameNumber": 96
   },
   {
-    "frameNumber": 70,
-    "type": "key",
-    "event": "up",
-    "parameters": {
-      "keyCode": 68,
-      "charCode": 0,
-      "key": "d"
-    }
-  },
-  {
-    "frameNumber": 79,
     "type": "key",
     "event": "down",
     "parameters": {
       "keyCode": 65,
       "charCode": 0,
       "key": "a"
-    }
+    },
+    "frameNumber": 103
   },
   {
-    "frameNumber": 84,
+    "type": "key",
+    "event": "up",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 104
+  },
+  {
     "type": "key",
     "event": "up",
     "parameters": {
       "keyCode": 87,
       "charCode": 0,
       "key": "w"
-    }
+    },
+    "frameNumber": 104
   },
   {
-    "frameNumber": 88,
-    "type": "key",
-    "event": "up",
-    "parameters": {
-      "keyCode": 65,
-      "charCode": 0,
-      "key": "a"
-    }
-  },
-  {
-    "frameNumber": 92,
-    "type": "key",
-    "event": "down",
-    "parameters": {
-      "keyCode": 32,
-      "charCode": 0,
-      "key": " "
-    }
-  },
-  {
-    "frameNumber": 98,
-    "type": "key",
-    "event": "up",
-    "parameters": {
-      "keyCode": 32,
-      "charCode": 0,
-      "key": " "
-    }
-  },
-  {
-    "frameNumber": 126,
     "type": "key",
     "event": "down",
     "parameters": {
       "keyCode": 83,
       "charCode": 0,
       "key": "s"
-    }
+    },
+    "frameNumber": 111
   },
   {
-    "frameNumber": 140,
     "type": "key",
-    "event": "down",
+    "event": "up",
     "parameters": {
-      "keyCode": 68,
+      "keyCode": 65,
       "charCode": 0,
-      "key": "d"
-    }
+      "key": "a"
+    },
+    "frameNumber": 115
   },
   {
-    "frameNumber": 143,
     "type": "key",
     "event": "up",
     "parameters": {
       "keyCode": 83,
       "charCode": 0,
       "key": "s"
-    }
+    },
+    "frameNumber": 124
   },
   {
-    "frameNumber": 156,
-    "type": "key",
-    "event": "down",
-    "parameters": {
-      "keyCode": 68,
-      "charCode": 0,
-      "key": "d"
-    }
-  },
-  {
-    "frameNumber": 158,
-    "type": "key",
-    "event": "down",
-    "parameters": {
-      "keyCode": 68,
-      "charCode": 0,
-      "key": "d"
-    }
-  },
-  {
-    "frameNumber": 160,
-    "type": "key",
-    "event": "down",
-    "parameters": {
-      "keyCode": 68,
-      "charCode": 0,
-      "key": "d"
-    }
-  },
-  {
-    "frameNumber": 162,
-    "type": "key",
-    "event": "down",
-    "parameters": {
-      "keyCode": 68,
-      "charCode": 0,
-      "key": "d"
-    }
-  },
-  {
-    "frameNumber": 162,
-    "type": "key",
-    "event": "down",
-    "parameters": {
-      "keyCode": 87,
-      "charCode": 0,
-      "key": "w"
-    }
-  },
-  {
-    "frameNumber": 169,
-    "type": "key",
-    "event": "up",
-    "parameters": {
-      "keyCode": 68,
-      "charCode": 0,
-      "key": "d"
-    }
-  },
-  {
-    "frameNumber": 175,
-    "type": "key",
-    "event": "up",
-    "parameters": {
-      "keyCode": 87,
-      "charCode": 0,
-      "key": "w"
-    }
-  },
-  {
-    "frameNumber": 177,
-    "type": "key",
-    "event": "down",
-    "parameters": {
-      "keyCode": 65,
-      "charCode": 0,
-      "key": "a"
-    }
-  },
-  {
-    "frameNumber": 180,
-    "type": "key",
-    "event": "up",
-    "parameters": {
-      "keyCode": 65,
-      "charCode": 0,
-      "key": "a"
-    }
-  },
-  {
-    "frameNumber": 180,
-    "type": "key",
-    "event": "down",
-    "parameters": {
-      "keyCode": 87,
-      "charCode": 0,
-      "key": "w"
-    }
-  },
-  {
-    "frameNumber": 193,
     "type": "key",
     "event": "down",
     "parameters": {
       "keyCode": 32,
       "charCode": 0,
       "key": " "
-    }
+    },
+    "frameNumber": 129
   },
   {
-    "frameNumber": 199,
     "type": "key",
     "event": "up",
     "parameters": {
       "keyCode": 32,
       "charCode": 0,
       "key": " "
-    }
+    },
+    "frameNumber": 142
   },
   {
-    "frameNumber": 199,
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 171
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 186
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 188
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 190
+  },
+  {
     "type": "key",
     "event": "up",
     "parameters": {
-      "keyCode": 87,
+      "keyCode": 68,
       "charCode": 0,
-      "key": "w"
-    }
+      "key": "d"
+    },
+    "frameNumber": 191
   }
 ]
