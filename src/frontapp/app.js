@@ -12,8 +12,8 @@ const VERSION = '1.0';
 export default class TestApp {
   parseParameters() {
     const parameters = queryString.parse(location.search);
-    if (parameters['numtimes']) {
-      this.vueApp.options.general.numTimesToRunEachTest = parseInt(parameters.numtimes);
+    if (parameters['num-times']) {
+      this.vueApp.options.general.numTimesToRunEachTest = parseInt(parameters['num-times']);
     }
 
     if (typeof parameters['fake-webgl'] !== 'undefined') {
@@ -265,7 +265,7 @@ export default class TestApp {
     var url = (interactive ? 'static/': 'tests/') + test.url;
     if (!interactive) url = addGET(url, 'playback');
     if (fakeWebGL) url = addGET(url, 'fake-webgl');
-    if (test.numframes) url = addGET(url, 'numframes=' + test.numframes);
+    if (test.numframes) url = addGET(url, 'num-frames=' + test.numframes);
     if (test.windowsize) url = addGET(url, 'width=' + test.windowsize.width + '&height=' + test.windowsize.height);
     if (record) {
       url = addGET(url, 'recording');

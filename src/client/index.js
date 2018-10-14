@@ -42,7 +42,7 @@ window.TESTER = {
 
   randomSeed: 1,
 
-  numFramesToRender: typeof parameters['numframes'] === 'undefined' ? 100 : parseInt(parameters['numframes']),
+  numFramesToRender: typeof parameters['num-frames'] === 'undefined' ? 100 : parseInt(parameters['num-frames']),
 
   // Guard against recursive calls to referenceTestPreTick+referenceTestTick from multiple rAFs.
   referenceTestPreTickCalledCount: 0,
@@ -262,7 +262,7 @@ window.TESTER = {
           var numDiffPixels = pixelmatch(expected, actual, diff.data, width, height, {threshold: threshold});
           var diffPerc = (numDiffPixels / (width * height) * 100).toFixed(2);
           
-          var fail = diffPerc > 0.1;
+          var fail = diffPerc > 0.2; // diff perc 0 - 100%
           var result = {result: 'pass'};
 
           if (fail) {
