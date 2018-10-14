@@ -33,3 +33,6 @@ Run all tests:
 - Run all tests: `npm run tests [params]`
 - Run one test: `npm run tests id1 [params]`
 - Run selected tests: `npm run tests id1,id2,id3,id4 [params]`
+
+## Command line parameters
+- `browser`: 
