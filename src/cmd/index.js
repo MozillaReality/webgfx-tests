@@ -1,8 +1,39 @@
 #!/usr/bin/env node
 
 var fs = require('fs');
+const internalIp = require('internal-ip');
+const findProcess = require('find-process');
 const detectBrowsers = require('detect-browsers');
 const { spawn } = require('child_process');
+var killProcess = require('kill-process');
+var program = require('commander');
+const opn = require('opn');
+
+const testsFilename = __dirname + '/../server/tests.json';
+var testsDb = JSON.parse(fs.readFileSync(testsFilename, 'utf8'));    
+
+/*
+
+npm run test -- run misc_fps
+npm run test -- --listbrowsers
+npm run test -- --listtests
+
+
+-h --help
+--kill_start
+--kill_exit
+--no_server
+--no_browser
+--verbose
+--log_stdout
+--log_stderr
+--timeout
+--list_browsers
+--android
+--system_info
+--browser_info
+--json
+*/
 
 function buildTestURL(baseURL, test, testOptions, globalOptions) {
   var url = baseURL;
@@ -30,21 +61,14 @@ function buildTestURL(baseURL, test, testOptions, globalOptions) {
     this.progress.tests[id].current++;
     this.progress.currentGlobal++;
   }
-  */    
- return url;
+  */
+  return url;
 }
 
 function addGET(url, parameter) {
   if (url.indexOf('?') != -1) return url + '&' + parameter;
   else return url + '?' + parameter;
 }
-
-/**
- * Module dependencies.
- */
- 
-var program = require('commander');
-const opn = require('opn');
 
 program
   .version('0.1.0')
@@ -53,10 +77,7 @@ program
 
 program
   .command('run [testIDs]')
-  .action((testIDs, options) => {        
-    const testsFilename = __dirname + '/../server/tests.json';
-    console.log(testsFilename);
-    var testsDb = JSON.parse(fs.readFileSync(testsFilename, 'utf8'));    
+  .action((testIDs, options) => {
     var testsToRun = testsDb;
 
     if (testIDs) {
@@ -66,18 +87,16 @@ program
 
     if (testsToRun.length === 0) {
       console.log('Tests not found.');
-      return;
+    } else {
+      console.log('TESTS TO RUN', testsToRun.map(t => t.id));
+      runTests(testsToRun);  
     }
-    
-    console.log('TESTS TO RUN', testsToRun.map(t => t.id));
-
-    runTests(testsToRun);
 });
 
 var testsToRun;
 function runTest(test, callback) {
-  console.log('RRuninggggg:', test.id);
-  const baseURL = 'http://localhost:3000/tests/';
+  const serverIP = internalIp.v4.sync() || 'localhost';
+  const baseURL = `http://${serverIP}:3000/tests/`;
   var url = baseURL + test.url;
 
   var options = {
@@ -89,9 +108,30 @@ function runTest(test, callback) {
   console.log('Running:', test.id);
   url = buildTestURL(url, test, options, {});
   
-  opn(url, {app: 'firefox'}).then(() => {
-    console.log('>>>>> exit browser');
-    callback();
+  //var child = opn(url, {app: 'firefox'}).then(() => {
+  const browser = 'chrome';
+  killStart().then(() => {
+    //var cp = spawn('/Applications/Firefox.app/Contents/MacOS/firefox-bin', ['http://fernandojsg.com']);
+    /*
+    var cp = opn(url, {app: 'google chrome'}).then(() => {
+      console.log('!!!!!!!!!!!!!!!');
+    });
+    */
+  });
+
+  /*
+  setTimeout(() => {
+    killProcess(child.pid);
+  }, 5000);
+  */
+}
+
+function killStart() {
+  return new Promise(resolve => {
+    findProcess('name', 'chrome').then(list => {
+      list.forEach(p => killProcess(p.pid));
+      resolve();
+    });
   });
 }
 
@@ -109,13 +149,29 @@ function runTests(tests) {
 
 program.parse(process.argv);
 
+var detectedBrowsers = [];
+
+function getBrowsers() {
+  return new Promise((resolve, reject) => {
+    detectBrowsers.getInstalledBrowsers()
+    .then(browsers => {
+      resolve(browsers.map(browser => {browser.name = browser.name.toLowerCase(); return browser}));
+    })
+    .catch( error => reject(error));
+  });
+}
+
+
 if (program.listtests) {
   console.log('List tests\n----------');
   testsDb.forEach(test => {
     console.log(`- ${test.id}: ${test.name}`);
   });
 } else if (program.listbrowsers) {
-  detectBrowsers.getInstalledBrowsers()
-    .then( browsers => console.log('Installed browsers:\n', browsers))
+  getBrowsers()
+    .then(browsers => {
+      console.log('Installed browsers:\n-------------------');
+      console.log(browsers);
+    })
     .catch( error => console.error(error));
 }
