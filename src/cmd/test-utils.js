@@ -50,7 +50,7 @@ function runTest(device, browser, test, callback) {
   console.log('* Running:', test.id);
   url = buildTestURL(url, test, options, {});
   
-  const killOnStart = true;
+  const killOnStart = false; //true;
 
   if (killOnStart) {
     device.killBrowser(browser).then(() => {
@@ -61,19 +61,35 @@ function runTest(device, browser, test, callback) {
   }
 }
 
-var browserToRun;
-var testsToRun;
+var browsersToRun;
+var testsToRun = [];
+var runningTest = null;
+
+function getRunningTest() {
+  return runningTest;
+}
 
 function runNextTest() {
-  var test = testsToRun.shift();
-  if (test) {
-    runTest(device, browserToRun, test, runNextTest);
+  runningTest = testsToRun.shift();
+  if (runningTest) {
+    runTest(device, runningTest.browser, runningTest.test, runNextTest);
   }
 }
 
-function runTests(tests, browser) {
-  testsToRun = tests;
-  browserToRun = browser;
+function runTests(tests, browsers) {
+  const numTimes = 1;
+
+  testsToRun = [];
+  browsers.forEach(browser => {
+    tests.forEach(test => {
+      for (let i = 0; i < numTimes; i++) {
+        testsToRun.push({
+          test: test,
+          browser: browser
+        });
+      }
+    });
+  });
   runNextTest();
 }
 
@@ -91,5 +107,7 @@ function listTests() {
 module.exports = {
   runTests: runTests,
   testsDb: testsDb,
-  listTests: listTests
+  listTests: listTests,
+  runNextTest: runNextTest,
+  getRunningTest: getRunningTest
 }

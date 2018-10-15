@@ -16,8 +16,6 @@ module.exports = {
   },
   killBrowser: function(browser) {
     return new Promise(resolve => {    
-      resolve();
-      return;
       findProcess('cmd', browser.executablePath).then(list => {
         console.log('* killing', browser);
         list.forEach(p => killProcess(p.pid));
@@ -27,10 +25,19 @@ module.exports = {
   },
   launchBrowser: function(browser, url) {
     return new Promise(resolve => {
-      //var cp = spawn(browser.executablePath, ['http://fernandojsg.com']);
+      if (browser.name === 'safari') {
+        var cp = opn(url, {app: browser.executablePath}).then(() => {
+          resolve();
+        }).catch(err => {
+          console.log(err)
+        });
+      } else 
+      var cp = spawn(browser.executablePath, [url]); resolve();
+      
+      /*
       var cp = opn(url, {app: browser.executablePath}).then(() => {
         resolve();
-      });
+      });*/
     });
   }
 };

@@ -42,7 +42,7 @@ window.TESTER = {
 
   randomSeed: 1,
 
-  numFramesToRender: typeof parameters['num-frames'] === 'undefined' ? 100 : parseInt(parameters['num-frames']),
+  numFramesToRender: typeof parameters['num-frames'] === 'undefined' ? 500 : parseInt(parameters['num-frames']),
 
   // Guard against recursive calls to referenceTestPreTick+referenceTestTick from multiple rAFs.
   referenceTestPreTickCalledCount: 0,

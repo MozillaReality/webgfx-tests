@@ -52,6 +52,7 @@
     "name": "simple example",
     "mobile": true,
     "interactive": true,
+    "numframes": 200,
     "skipReferenceImageTest": true
   },
   {
