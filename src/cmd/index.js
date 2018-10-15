@@ -77,6 +77,8 @@ program
 
 program
   .command('run [testIDs]')
+  .description('run tests')
+  .option("-b, --browser [browser name]", "Which browser to use")
   .action((testIDs, options) => {
     var testsToRun = testsDb;
 
@@ -89,10 +91,14 @@ program
       console.log('Tests not found.');
     } else {
       console.log('TESTS TO RUN', testsToRun.map(t => t.id));
-      runTests(testsToRun);  
+      getBrowsers().then(browsers => {
+        browserToRun = options.browser && browsers.filter(b => b.name === options.browser)[0] || browsers[0];
+        runTests(testsToRun);
+      });
     }
 });
 
+var browserToRun;
 var testsToRun;
 function runTest(test, callback) {
   const serverIP = internalIp.v4.sync() || 'localhost';
@@ -111,12 +117,10 @@ function runTest(test, callback) {
   //var child = opn(url, {app: 'firefox'}).then(() => {
   const browser = 'chrome';
   killStart().then(() => {
-    //var cp = spawn('/Applications/Firefox.app/Contents/MacOS/firefox-bin', ['http://fernandojsg.com']);
-    /*
-    var cp = opn(url, {app: 'google chrome'}).then(() => {
+    //var cp = spawn(browserToRun.executablePath, ['http://fernandojsg.com']);
+    var cp = opn(url, {app: browserToRun.executablePath}).then(() => {
       console.log('!!!!!!!!!!!!!!!');
     });
-    */
   });
 
   /*
@@ -127,8 +131,8 @@ function runTest(test, callback) {
 }
 
 function killStart() {
-  return new Promise(resolve => {
-    findProcess('name', 'chrome').then(list => {
+  return new Promise(resolve => {    
+    findProcess('cmd', browserToRun.executablePath).then(list => {
       list.forEach(p => killProcess(p.pid));
       resolve();
     });
@@ -142,14 +146,13 @@ function runNextTest() {
   }
 }
 
-function runTests(tests) {
+function runTests(tests, browser) {
   testsToRun = tests;
   runNextTest();
 }
 
 program.parse(process.argv);
 
-var detectedBrowsers = [];
 
 function getBrowsers() {
   return new Promise((resolve, reject) => {
