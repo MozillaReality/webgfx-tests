@@ -35,4 +35,18 @@ Run all tests:
 - Run selected tests: `npm run tests id1,id2,id3,id4 [params]`
 
 ## Command line parameters
-- `browser`: 
+- `adb`: Run on an Android device using ADB
+- `browser`: Select the browser to run
+- `listtests`:
+- `listbrowsers`:
+
+```
+--listbrowsers
+
+--listtests
+
+--browser safari
+
+--listbrowsers --adb
+
+```
