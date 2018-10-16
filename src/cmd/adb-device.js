@@ -27,7 +27,7 @@ ADB.prototype = {
   },
   killBrowser: function(browser) {
     return new Promise(resolve => {    
-      resolve();
+      adbtk.forceStop(browser.package, resolve);
     });  
   },
   launchBrowser: function(browser, url) {

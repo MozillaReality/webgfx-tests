@@ -76,9 +76,7 @@ function runNextTest() {
   }
 }
 
-function runTests(tests, browsers) {
-  const numTimes = 1;
-
+function runTests(tests, browsers, numTimes) {
   testsToRun = [];
   browsers.forEach(browser => {
     tests.forEach(test => {

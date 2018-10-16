@@ -1,7 +1,4 @@
 const detectBrowsers = require('detect-browsers');
-const opn = require('opn');
-var killProcess = require('kill-process');
-const findProcess = require('find-process');
 const { spawn } = require('child_process');
 var ps = require('ps-node');
 
@@ -11,7 +8,17 @@ module.exports = {
     return new Promise((resolve, reject) => {
       detectBrowsers.getInstalledBrowsers()
       .then(browsers => {
-        resolve(browsers.map(browser => {browser.name = browser.name.toLowerCase(); return browser}));
+        resolve(browsers.map(
+          browser => {
+            return {
+              name: browser.name,
+              code: browser.name.toLowerCase(),
+              launchCmd: browser.executablePath,
+              versionCode: '',
+              versionName: ''
+            };
+          })
+        );
       })
       .catch( error => reject(error));
     });
@@ -34,45 +41,50 @@ module.exports = {
         }
         else {
           console.log( 'No such process found!' );
+          resolve();
         }
       });  
-      /*
-      findProcess('cmd', browser.executablePath).then(list => {
-        console.log('* killing', browser);
-        list.forEach(p => killProcess(p.pid));
-        resolve();
-      });
-      */
     });  
   },
   launchBrowser: function(browser, url) {
     return new Promise(resolve => {
       /*
-      if (browser.name === 'safari') {
-        var cp = opn(url, {app: browser.executablePath}).then(() => {
+      if (browser.code === 'safari') {
+        var cp = opn(url, {app: browser.launchCmd}).then(() => {
           resolve();
         }).catch(err => {
           console.log(err)
         });
       } else 
       */
-     console.log(browser.executablePath);
-     this.lastOpenProcess = spawn(browser.executablePath, 
-        [
+      var options = [];
+      if (browser.code.indexOf('chrome') !== -1) {
+        options = [
           '--incognito',
-          '--enable-nacl',
-          '--enable-pnacl',
           '--disable-restore-session-state',
-          '--enable-webgl',
           '--no-default-browser-check',
-          '--no-first-run',
-          '--allow-file-access-from-files',
-          url
-        ]);
-      resolve();
+          '--no-first-run'
+        //  '--allow-file-access-from-files'
+        ];
+      } else if (browser.code.indexOf('firefox') !== -1) {
+      } else if (browser.code.indexOf('safari') !== -1) {
+        // Safari has a bug that a command line 'Safari http://page.com' does not launch that page,
+        // but instead launches 'file:///http://page.com'. To remedy this, must use the open -a command
+        // to run Safari, but unfortunately this will end up spawning Safari process detached from emrun.
+        //if MACOS:
+        browser.launchCmd = 'open';
+        options = ['-a', 'Safari'];
+      }
+      options.push(url);
+      this.lastOpenProcess = spawn(browser.launchCmd, options);
+      resolve(this.lastOpenProcess);
+      this.lastOpenProcess.on('close', () => {
+        console.log('Unexpected closed!');
+        // @todo
+      });
       
       /*
-      var cp = opn(url, {app: browser.executablePath}).then(() => {
+      var cp = opn(url, {app: browser.launchCmd}).then(() => {
         resolve();
       });*/
     });

@@ -44,10 +44,12 @@ program
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
   .option("-b, --browser [browser name]", "Which browser to use")
+  .option("-a, --adb [devices]", "Use android devices through ADB")
+  .option("-n, --numtimes [number]", "Number of times to run each test")
   .action((testIDs, options) => {
     var testsToRun = TestUtils.testsDb;
 
-    device = program.adb ? ADBDevice : LocalDevice;
+    device = options.adb ? ADBDevice : LocalDevice;
 
     if (testIDs) {
       var testsIDs = testIDs.split(',');
@@ -69,10 +71,10 @@ program
         browsersToRun = browsers;
         if (options.browser && options.browser !== 'all') {
           var browserOptions = options.browser.split(',');
-          browsersToRun = browsers.filter(b => browserOptions.indexOf(b.name) !== -1);
+          browsersToRun = browsers.filter(b => browserOptions.indexOf(b.code) !== -1);
         } 
         console.log('Browser to run:', browsersToRun.map(b => b.name));
-        TestUtils.runTests(testsToRun, browsersToRun);
+        TestUtils.runTests(testsToRun, browsersToRun, options.numtimes || 1);
       });
     }
 });
