@@ -64,23 +64,26 @@ function runTest(device, browser, test, callback) {
 var browsersToRun;
 var testsToRun = [];
 var runningTest = null;
+var onFinish = null;
 
 function getRunningTest() {
   return runningTest;
 }
 
 function runNextTest() {
-  runningTest = testsToRun.shift();
-  if (runningTest) {
+  if (testsToRun.length > 0) {
+    runningTest = testsToRun.shift();
     runTest(device, runningTest.browser, runningTest.test, runNextTest);
+  } else if (onFinish) {
+    onFinish();
   }
 }
 
-function runTests(tests, browsers, numTimes) {
+function runTests(tests, browsers, onFinishCb, options) {
   testsToRun = [];
   browsers.forEach(browser => {
     tests.forEach(test => {
-      for (let i = 0; i < numTimes; i++) {
+      for (let i = 0; i < options.numTimes; i++) {
         testsToRun.push({
           test: test,
           browser: browser
@@ -88,6 +91,8 @@ function runTests(tests, browsers, numTimes) {
       }
     });
   });
+  onFinish = onFinishCb;
+
   runNextTest();
 }
 

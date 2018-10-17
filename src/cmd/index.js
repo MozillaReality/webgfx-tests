@@ -63,6 +63,11 @@ program
       });
     });
 
+    function onFinish() {
+      console.log('TESTS FINISHED!');
+      process.exit();
+    }
+
     if (testsToRun.length === 0) {
       console.log('Tests not found.');
     } else {
@@ -74,7 +79,7 @@ program
           browsersToRun = browsers.filter(b => browserOptions.indexOf(b.code) !== -1);
         } 
         console.log('Browser to run:', browsersToRun.map(b => b.name));
-        TestUtils.runTests(testsToRun, browsersToRun, options.numtimes || 1);
+        TestUtils.runTests(testsToRun, browsersToRun, onFinish, {numTimes: options.numtimes || 1});
       });
     }
 });
