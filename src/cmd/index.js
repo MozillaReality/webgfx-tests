@@ -26,13 +26,19 @@ program
   .command('list-browsers')
   .description('List browsers')
   .option("-a, --adb [deviceserial]", "Use ADB to connect to an android device")
+  .option("-v, --verbose", "Show all the information available")
   .action((options) => {
     device = options.adb ? ADBDevice : LocalDevice;
 
     device.getBrowsers()
     .then(browsers => {
       console.log('Installed browsers:\n-------------------');
-      console.log(browsers);
+      if (options.verbose) {
+        console.log(browsers);
+      } else {
+        console.log(browsers.map(b => b.code).join('\n'));
+      }
+      
     })
     .catch(error => console.error(error));
   });
