@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rollup -c",
-    "start": "node src/server/index.js",
+    "start": "node src/cmd/index.js start-server",
     "test": "node src/cmd/index.js",
     "dev": "concurrently --names \"ROLLUP,SERVER\" -c \"bgGreen.bold,bgBlue.bold\" \"rollup -c -w -m inline\" \"npm run start\""
   },
