@@ -61,7 +61,6 @@ function runTest(device, browser, test, callback) {
   }
 }
 
-var browsersToRun;
 var testsToRun = [];
 var runningTest = null;
 var onFinish = null;
@@ -92,7 +91,6 @@ function runTests(tests, browsers, onFinishCb, options) {
     });
   });
   onFinish = onFinishCb;
-
   runNextTest();
 }
 

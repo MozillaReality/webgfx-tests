@@ -1,0 +1,155 @@
+[{
+  "test_id": "misc_fps",
+  "values": {
+    "fps": {
+      "min": 54.835493516424854,
+      "max": 60.32482598855558,
+      "avg": 59.65797345626918,
+      "standard_deviation": 1.2987771100699608
+    },
+    "dt": {
+      "min": 4.300000000512227,
+      "max": 70.39999999688007,
+      "avg": 17.280000000027947,
+      "standard_deviation": 5.61669831691086
+    },
+    "cpu": {
+      "min": 4.00000001074603,
+      "max": 93.09815949201828,
+      "avg": 10.513629389944528,
+      "standard_deviation": 9.306878305666185
+    }
+  },
+  "numFrames": 200,
+  "totalTime": 4445.799999986775,
+  "timeToFirstFrame": 830.0999999919441,
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "avgFps": 55.314323644186715,
+  "result": "pass",
+  "numStutterEvents": 1,
+  "totalRenderTime": 3615.699999994831,
+  "cpuTime": 396.09999989625067,
+  "cpuIdleTime": 3059.9000001093373,
+  "cpuIdlePerc": 84.62814946244742,
+  "pageLoadTime": 739.1000000061467
+},{
+  "test_id": "instancing",
+  "values": {
+    "fps": {
+      "min": 50.85529357372923,
+      "max": 60.10171058713454,
+      "avg": 59.386875601240156,
+      "standard_deviation": 2.2809626199033115
+    },
+    "dt": {
+      "min": 7.000000012340024,
+      "max": 66.69999999576248,
+      "avg": 17.083919598035347,
+      "standard_deviation": 4.569028651837857
+    },
+    "cpu": {
+      "min": 0.8064515925555296,
+      "max": 9.09090903077721,
+      "avg": 3.4193709432798105,
+      "standard_deviation": 0.9664051321943076
+    }
+  },
+  "numFrames": 200,
+  "totalTime": 3934.499999973923,
+  "timeToFirstFrame": 308.39999997988343,
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "avgFps": 55.1556768981354,
+  "result": "fail",
+  "numStutterEvents": 2,
+  "totalRenderTime": 3626.0999999940395,
+  "cpuTime": 113.69999987073243,
+  "cpuIdleTime": 3286.0000001383014,
+  "cpuIdlePerc": 90.62077714745051,
+  "pageLoadTime": 307.60000000009313,
+  "failReason": "Error loading reference image"
+},{
+  "test_id": "misc_fps",
+  "values": {
+    "fps": {
+      "min": 59.701492537313435,
+      "max": 60.465116279069896,
+      "avg": 60.03309154699241,
+      "standard_deviation": 0.21447267646761106
+    },
+    "dt": {
+      "min": 10,
+      "max": 22,
+      "avg": 16.64,
+      "standard_deviation": 1.0772186407596107
+    },
+    "cpu": {
+      "min": 0,
+      "max": 31.818181818181817,
+      "avg": 7.178259423325368,
+      "standard_deviation": 3.099500239751698
+    }
+  },
+  "numFrames": 200,
+  "totalTime": 3706,
+  "timeToFirstFrame": 240,
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "avgFps": 57.70340450086555,
+  "result": "pass",
+  "numStutterEvents": 0,
+  "totalRenderTime": 3466,
+  "cpuTime": 241.00000000000506,
+  "cpuIdleTime": 3086.999999999995,
+  "cpuIdlePerc": 89.06520484708582,
+  "pageLoadTime": 98
+},{
+  "test_id": "instancing",
+  "values": {
+    "fps": {
+      "min": 59.701492537313435,
+      "max": 60.46511627906977,
+      "avg": 59.99740577172249,
+      "standard_deviation": 0.20547652362495322
+    },
+    "dt": {
+      "min": 8,
+      "max": 20.000000000000057,
+      "avg": 16.618090452261313,
+      "standard_deviation": 1.0198405490993308
+    },
+    "cpu": {
+      "min": 0,
+      "max": 86.666666666667,
+      "avg": 7.708978826816752,
+      "standard_deviation": 6.374452654627803
+    }
+  },
+  "numFrames": 200,
+  "totalTime": 3716,
+  "timeToFirstFrame": 211,
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "avgFps": 57.06134094151213,
+  "result": "fail",
+  "numStutterEvents": 0,
+  "totalRenderTime": 3505,
+  "cpuTime": 253.00000000000932,
+  "cpuIdleTime": 3053.999999999991,
+  "cpuIdlePerc": 87.13266761768875,
+  "pageLoadTime": 209,
+  "failReason": "Error loading reference image"
+}]

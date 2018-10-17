@@ -5,6 +5,7 @@
 var program = require('commander');
 var initHTTPServer = require('../server/http_server');
 var initWebSocketServer = require('../server/websockets_server');
+const fs = require('fs');
 
 const ADBDevice = require('./adb-device');
 const LocalDevice = require('./local-device');
@@ -46,6 +47,7 @@ program
   .option("-b, --browser [browser name]", "Which browser to use")
   .option("-a, --adb [devices]", "Use android devices through ADB")
   .option("-n, --numtimes [number]", "Number of times to run each test")
+  .option("-s, --storefile [file]", "Store test results on a local file")
   .action((testIDs, options) => {
     var testsToRun = TestUtils.testsDb;
 
@@ -56,16 +58,31 @@ program
       testsToRun = TestUtils.testsDb.filter(test => testsIDs.indexOf(test.id) !== -1);
     }
 
+    var numOutputTests = 0;
+
     initHTTPServer(options.port);
     initWebSocketServer(options.wsport, function (data) {
+      if (options.storefile) {
+        fs.appendFile(options.storefile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {  
+          if (err) throw err;
+          numOutputTests++;
+        });
+      }
       device.killBrowser(TestUtils.getRunningTest().browser).then(() => {
         TestUtils.runNextTest();
       });
     });
 
-    function onFinish() {
+    function onTestsFinish() {
       console.log('TESTS FINISHED!');
-      process.exit();
+      if (options.storefile) {
+        fs.appendFile(options.storefile, ']', (err) => {  
+          if (err) throw err;
+          process.exit();
+        });
+      } else {
+        process.exit();
+      }
     }
 
     if (testsToRun.length === 0) {
@@ -78,8 +95,15 @@ program
           var browserOptions = options.browser.split(',');
           browsersToRun = browsers.filter(b => browserOptions.indexOf(b.code) !== -1);
         } 
+
+        if (options.storefile) {
+          fs.writeFile(options.storefile, '[', err => {
+            if (err) throw err;
+          });
+        }
+
         console.log('Browser to run:', browsersToRun.map(b => b.name));
-        TestUtils.runTests(testsToRun, browsersToRun, onFinish, {numTimes: options.numtimes || 1});
+        TestUtils.runTests(testsToRun, browsersToRun, onTestsFinish, {numTimes: options.numtimes || 1});
       });
     }
 });
