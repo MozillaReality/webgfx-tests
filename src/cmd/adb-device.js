@@ -14,25 +14,25 @@ devices.forEach(device => {
 */
 
 function ADB(serial) {
-  var devices = adbtk.getDevices();
+  this.devices = adbtk.getDevices();
   // console.log(devices);
-  this.device = devices[0];
+  this.device = this.devices[0];
 }
 
 ADB.prototype = {
   getBrowsers: function() {
     return new Promise(resolve => {
-      resolve(adbtk.getBrowsers());
+      resolve(this.device.getBrowsers());
     });
   },
   killBrowser: function(browser) {
     return new Promise(resolve => {    
-      adbtk.forceStop(browser.package, resolve);
+      this.device.forceStop(browser.package, resolve);
     });  
   },
   launchBrowser: function(browser, url) {
     return new Promise(resolve => {
-      adbtk.launchUrl(url, browser.code);
+      this.device.launchUrl(url, browser.code);
       resolve();
     });
   }

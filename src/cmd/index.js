@@ -17,11 +17,17 @@ program
 program
   .command('list-tests')
   .description('Lists tests')
+  .option("-v, --verbose", "Show all the information available")
   .action((options) => {
     console.log('Tests list\n----------');
-    TestUtils.testsDb.forEach(test => {
-      console.log(`- ${chalk.yellow(test.id)}: ${test.name}`);
-    });
+
+    if (options.verbose) {
+      console.log(TestUtils.testsDb);
+    } else {
+      TestUtils.testsDb.forEach(test => {
+        console.log(`- ${chalk.yellow(test.id)}: ${test.name}`);
+      });  
+    }
   });
 
 program
@@ -56,7 +62,7 @@ program
   });
 
 program
-  .command('run [testIDs]')
+  .command('run <testIDs>')
   .description('run tests')
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
@@ -69,25 +75,12 @@ program
 
     device = options.adb ? ADBDevice : LocalDevice;
 
-    if (testIDs) {
+    if (testIDs && testIDs !== 'all') {
       var testsIDs = testIDs.split(',');
       testsToRun = TestUtils.testsDb.filter(test => testsIDs.indexOf(test.id) !== -1);
     }
 
     var numOutputTests = 0;
-
-    initHTTPServer(options.port);
-    initWebSocketServer(options.wsport, function (data) {
-      if (options.storefile) {
-        fs.appendFile(options.storefile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {  
-          if (err) throw err;
-          numOutputTests++;
-        });
-      }
-      device.killBrowser(TestUtils.getRunningTest().browser).then(() => {
-        TestUtils.runNextTest();
-      });
-    });
 
     function onTestsFinish() {
       console.log('TESTS FINISHED!');
@@ -102,9 +95,10 @@ program
     }
 
     if (testsToRun.length === 0) {
-      console.log('Tests not found.');
+      console.log('ERROR: Tests not found.');
+      return;
     } else {
-      console.log('Test to run:', testsToRun.map(t => t.id));
+      console.log('Test to run:', testsToRun.map(t => t.id));      
       device.getBrowsers().then(browsers => {
         browsersToRun = browsers;
         if (options.browser && options.browser !== 'all') {
@@ -119,6 +113,21 @@ program
         }
 
         console.log('Browser to run:', browsersToRun.map(b => b.name));
+
+
+        initHTTPServer(options.port);
+        initWebSocketServer(options.wsport, function (data) {
+          if (options.storefile) {
+            fs.appendFile(options.storefile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {  
+              if (err) throw err;
+              numOutputTests++;
+            });
+          }
+          device.killBrowser(TestUtils.getRunningTest().browser).then(() => {
+            TestUtils.runNextTest();
+          });
+        });
+        
         TestUtils.runTests(testsToRun, browsersToRun, onTestsFinish, {numTimes: options.numtimes || 1});
       });
     }
