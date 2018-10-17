@@ -32,7 +32,7 @@ ADB.prototype = {
   },
   launchBrowser: function(browser, url) {
     return new Promise(resolve => {
-      adbtk.launchUrl(url, 'fxr');
+      adbtk.launchUrl(url, browser.code);
       resolve();
     });
   }
