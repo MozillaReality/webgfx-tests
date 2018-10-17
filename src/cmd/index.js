@@ -4,7 +4,7 @@ var program = require('commander');
 var initHTTPServer = require('../server/http_server');
 var initWebSocketServer = require('../server/websockets_server');
 const fs = require('fs');
-
+const chalk = require('chalk');
 const ADBDevice = require('./adb-device');
 const LocalDevice = require('./local-device');
 const TestUtils = require('./test-utils');
@@ -19,7 +19,9 @@ program
   .description('Lists tests')
   .action((options) => {
     console.log('Tests list\n----------');
-    TestUtils.listTests();
+    TestUtils.testsDb.forEach(test => {
+      console.log(`- ${chalk.yellow(test.id)}: ${test.name}`);
+    });
   });
 
 program
