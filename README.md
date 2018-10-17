@@ -25,8 +25,10 @@ npm start
 go to `http://localhost:3000`
 
 ## Run from command line (WIP)
+
+### Run tests
 ```
-npm run tests [testIDs] [params]
+tests [testIDs] [params]
 ```
 
 Run all tests:
@@ -34,19 +36,19 @@ Run all tests:
 - Run one test: `npm run tests id1 [params]`
 - Run selected tests: `npm run tests id1,id2,id3,id4 [params]`
 
-## Command line parameters
+Parameters:
 - `adb`: Run on an Android device using ADB
 - `browser`: Select the browser to run
 - `listtests`:
 - `listbrowsers`:
 
+### See available tests
 ```
---listbrowsers
+list-browsers [--adb]
 
---listtests
+list-tests
+```
 
+```
 --browser safari
-
---listbrowsers --adb
-
 ```

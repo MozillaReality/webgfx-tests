@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-//const cmd = require('./command');
-
 var program = require('commander');
 var initHTTPServer = require('../server/http_server');
 var initWebSocketServer = require('../server/websockets_server');
@@ -17,7 +15,7 @@ program
   .version(package.version);
 
 program
-  .command('listtests')
+  .command('list-tests')
   .description('Lists tests')
   .action((options) => {
     console.log('Tests list\n----------');
@@ -25,9 +23,9 @@ program
   });
 
 program
-  .command('listbrowsers')
+  .command('list-browsers')
   .description('List browsers')
-  .option("-a, --adb", "Use ADB to connect to an android device")
+  .option("-a, --adb [deviceserial]", "Use ADB to connect to an android device")
   .action((options) => {
     device = options.adb ? ADBDevice : LocalDevice;
 
@@ -37,6 +35,16 @@ program
       console.log(browsers);
     })
     .catch(error => console.error(error));
+  });
+
+program
+  .command('start-server')
+  .description('Start tests server')
+  .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
+  .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
+  .action(options => {
+    initHTTPServer(options.port);
+    initWebSocketServer(options.wsport);
   });
 
 program
@@ -107,15 +115,5 @@ program
       });
     }
 });
-
-program
-  .command('start-server')
-  .description('Start tests server')
-  .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
-  .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
-  .action(options => {
-    initHTTPServer(options.port);
-    initWebSocketServer(options.wsport);
-  });
 
 program.parse(process.argv);
