@@ -5,7 +5,7 @@ var initHTTPServer = require('../server/http_server');
 var initWebSocketServer = require('../server/websockets_server');
 const fs = require('fs');
 const chalk = require('chalk');
-const ADBDevice = require('./adb-device');
+const ADBDevices = require('./adb-devices');
 const LocalDevice = require('./local-device');
 const TestUtils = require('./test-utils');
 
@@ -36,19 +36,38 @@ program
   .option("-a, --adb [deviceserial]", "Use ADB to connect to an android device")
   .option("-v, --verbose", "Show all the information available")
   .action((options) => {
-    device = options.adb ? ADBDevice : LocalDevice;
-
-    device.getBrowsers()
-    .then(browsers => {
-      console.log('Installed browsers:\n-------------------');
-      if (options.verbose) {
-        console.log(browsers);
+    if (typeof options.adb !== 'undefined') {
+      if (typeof options.adb == 'string') {
+        devices = ADBDevices.getDevices(options.adb.split(','));
       } else {
-        console.log(browsers.map(b => b.code).join('\n'));
+        devices = ADBDevices.getDevices();
       }
-      
-    })
-    .catch(error => console.error(error));
+    } else {
+      devices = [LocalDevice];
+    }
+
+    function listBrowserByDevice(device) {
+      device.getBrowsers()
+        .then(browsers => {
+          if (browsers.length === 0) {
+            console.log('No ADB devices found');
+          } else {
+            console.log(`Browsers on device: ${chalk.yellow(device.deviceProduct)} (serial: ${chalk.yellow(device.serial)})`);
+            console.log('-----------------------------------------------------');
+            if (options.verbose) {
+              console.log(browsers);
+            } else {
+              console.log(browsers.map(b => chalk.yellow(b.code)).join('\n'));
+            }              
+            console.log('-----------------------------------------------------\n');
+          }
+        })
+        .catch(error => console.error(error));  
+    }
+
+    devices.forEach(device => {
+      listBrowserByDevice(device);
+    });
   });
 
 program

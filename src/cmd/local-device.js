@@ -3,6 +3,8 @@ const { spawn } = require('child_process');
 var ps = require('ps-node');
 
 module.exports = {
+  deviceProduct: 'localdevice',
+  serial: '',
   lastOpenProcess: null,
   getBrowsers: function() {
     return new Promise((resolve, reject) => {
