@@ -6,7 +6,7 @@ module.exports = {
   deviceProduct: 'localdevice',
   serial: '',
   lastOpenProcess: null,
-  getBrowsers: function() {
+  getInstalledBrowsers: function() {
     return new Promise((resolve, reject) => {
       detectBrowsers.getInstalledBrowsers()
       .then(browsers => {

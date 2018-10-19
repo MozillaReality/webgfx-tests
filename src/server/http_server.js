@@ -66,7 +66,7 @@ function initServer(port) {
     });
   
   server.listen(port, function(){
-    console.log(chalk.white('listening on ') + chalk.yellow('*:' + port));
+    console.log('* HTTP Results server listening on ' + chalk.yellow('*:' + port));
   });  
 }
 

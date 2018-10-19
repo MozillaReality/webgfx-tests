@@ -30,24 +30,31 @@ program
     }
   });
 
+function getDevices(adb) {
+  var devices;
+  if (typeof adb !== 'undefined') {
+    if (typeof adb == 'string') {
+      devices = ADBDevices.getDevices(adb.split(','));
+    } else {
+      devices = ADBDevices.getDevices();
+    }
+  } else {
+    devices = [LocalDevice];
+  }
+  return devices;
+}
+
 program
   .command('list-browsers')
   .description('List browsers')
   .option("-a, --adb [deviceserial]", "Use ADB to connect to an android device")
   .option("-v, --verbose", "Show all the information available")
   .action((options) => {
-    if (typeof options.adb !== 'undefined') {
-      if (typeof options.adb == 'string') {
-        devices = ADBDevices.getDevices(options.adb.split(','));
-      } else {
-        devices = ADBDevices.getDevices();
-      }
-    } else {
-      devices = [LocalDevice];
-    }
+
+    var devices = getDevices(options.adb);
 
     function listBrowserByDevice(device) {
-      device.getBrowsers()
+      device.getInstalledBrowsers()
         .then(browsers => {
           if (browsers.length === 0) {
             console.log('No ADB devices found');
@@ -92,8 +99,6 @@ program
   .action((testIDs, options) => {
     var testsToRun = TestUtils.testsDb;
 
-    device = options.adb ? ADBDevice : LocalDevice;
-
     if (testIDs && testIDs !== 'all') {
       var testsIDs = testIDs.split(',');
       testsToRun = TestUtils.testsDb.filter(test => testsIDs.indexOf(test.id) !== -1);
@@ -102,14 +107,18 @@ program
     var numOutputTests = 0;
 
     function onTestsFinish() {
-      console.log('TESTS FINISHED!');
-      if (options.storefile) {
-        fs.appendFile(options.storefile, ']', (err) => {  
-          if (err) throw err;
+      if (--numRunningDevices === 0) {
+        console.log('TESTS FINISHED!');
+        if (options.storefile) {
+          fs.appendFile(options.storefile, ']', (err) => {  
+            if (err) throw err;
+            process.exit();
+          });
+        } else {
           process.exit();
-        });
+        }  
       } else {
-        process.exit();
+        console.log('-- Device finished. Remaining: ', numRunningDevices);
       }
     }
 
@@ -117,37 +126,58 @@ program
       console.log('ERROR: Tests not found.');
       return;
     } else {
-      console.log('Test to run:', testsToRun.map(t => t.id));      
-      device.getBrowsers().then(browsers => {
-        browsersToRun = browsers;
-        if (options.browser && options.browser !== 'all') {
-          var browserOptions = options.browser.split(',');
-          browsersToRun = browsers.filter(b => browserOptions.indexOf(b.code) !== -1);
-        } 
+      console.log('Test to run:', testsToRun.map(t => chalk.green(t.id)).join(', '));
+      var devices = getDevices(options.adb);
+      if (devices.length === 0) {
+        console.log('ERROR: No device found!');
+        return;
+      }
 
+      initHTTPServer(options.port);
+      initWebSocketServer(options.wsport, function (data) {
         if (options.storefile) {
-          fs.writeFile(options.storefile, '[', err => {
+          fs.appendFile(options.storefile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {  
             if (err) throw err;
+            numOutputTests++;
           });
         }
 
-        console.log('Browser to run:', browsersToRun.map(b => b.name));
+        var testRunData = TestUtils.TestsData.getTestData(data.testUUID);
+        if (!testRunData) {
+          console.log('ERROR: No test data found');
+          process.exit();
+        }
 
+        var testsManager = testsManagers[testRunData.device.serial];
+        testRunData.device.killBrowser(testsManager.getRunningTest().browser).then(() => {
+          testsManager.runNextTest();
+        });
+      });
+      
+      var testsManagers = {};
+      var numRunningDevices = devices.length;
 
-        initHTTPServer(options.port);
-        initWebSocketServer(options.wsport, function (data) {
+      devices.forEach(device => {
+        console.log(`Running on device: ${chalk.yellow(device.deviceProduct)} (serial: ${chalk.yellow(device.serial)})`);
+        device.getInstalledBrowsers().then(browsers => {
+          browsersToRun = browsers;
+          if (options.browser && options.browser !== 'all') {
+            var browserOptions = options.browser.split(',');
+            browsersToRun = browsers.filter(b => browserOptions.indexOf(b.code) !== -1);
+          } 
+  
           if (options.storefile) {
-            fs.appendFile(options.storefile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {  
+            fs.writeFile(options.storefile, '[', err => {
               if (err) throw err;
-              numOutputTests++;
             });
           }
-          device.killBrowser(TestUtils.getRunningTest().browser).then(() => {
-            TestUtils.runNextTest();
-          });
-        });
-        
-        TestUtils.runTests(testsToRun, browsersToRun, onTestsFinish, {numTimes: options.numtimes || 1});
+  
+          console.log(`Browsers to run on device ${chalk.green(device.deviceProduct)}:`, browsersToRun.map(b => chalk.yellow(b.name)).join(', '));
+    
+          var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, onTestsFinish, {numTimes: options.numtimes || 1});
+          testsManager.runTests();
+          //TestUtils.runTests(testsToRun, browsersToRun, onTestsFinish, {numTimes: options.numtimes || 1});
+        });          
       });
     }
 });

@@ -21,7 +21,7 @@ function initWebSocketServer(port, testFinishedCallback) {
   io.set('origins', '*:*');
 
   io.sockets.on('connection', function (socket) {
-    console.log('Client connected');
+    // console.log('Client connected');
     socket.on('disconnect', () => {
 
     });
@@ -40,7 +40,7 @@ function initWebSocketServer(port, testFinishedCallback) {
       if (data.test_id === 'instancing') {
         socket.emit('next_benchmark', {url: '/static/index2.html'});
       } else {
-        console.log(`**********************************************************************\nFINISHED.`);
+        //console.log(`**********************************************************************\nFINISHED.`);
         // process.exit(0); 
       }
       io.emit('benchmark_finished', data);
@@ -52,7 +52,7 @@ function initWebSocketServer(port, testFinishedCallback) {
   });
 
   server.listen(port, function () {
-    console.log('listening websockets on *:' + port);
+    console.log('* WebSocket results server listening on *:' + port);
   });
 }
 

@@ -520,6 +520,9 @@ window.TESTER = {
     } else {
       this.generateBenchmarkResult().then(result => {
         if (this.socket) {
+          if (parameters['test-uuid']) {
+            result.testUUID = parameters['test-uuid'];
+          }
           this.socket.emit('benchmark_finish', result);
           this.socket.disconnect();
         }

@@ -4,11 +4,10 @@ function ADB() {
   this.devices = [];
   adbtk.getDevices().forEach(device => {
     this.devices.push(device);
-    device.oldGetBrowsers = device.getBrowsers;
     Object.assign(device, {
-      getBrowsers: function() {
+      getInstalledBrowsers: function(filter) {
         return new Promise(resolve => {
-          resolve(this.oldGetBrowsers());
+          resolve(this.getBrowsers(filter));
         });
       },
       killBrowser: function(browser) {
@@ -28,11 +27,11 @@ function ADB() {
 
 ADB.prototype = {
   getDevice: function(serial) {
-    return this.devices.filter(s => s.serial === serial);
+    return this.devices.find(s => s.serial === serial);
   },
   getDevices: function(serials) {
     if (serials instanceof Array) {
-      return serials.map(serial => this.getDevice(serial));
+      return this.devices.filter(s => serials.indexOf(s.serial) !== -1);
     }
     return this.devices;
   }
