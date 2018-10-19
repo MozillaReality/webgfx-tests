@@ -1,4 +1,7 @@
 var http = require('http');
+const PrettyPrint = require('../cmd/prettyprint');
+
+
 function initWebSocketServer(port, testFinishedCallback) {
   port = port || 8888;
 
@@ -31,11 +34,13 @@ function initWebSocketServer(port, testFinishedCallback) {
     });
 
     socket.on('benchmark_started', (data) => {
-      console.log(`**********************************************************************\n* Benchmark started: `, data);
+      console.log(`**********************************************************************\n* Benchmark started: `);
+      PrettyPrint.json(data);
     });
 
     socket.on('benchmark_finish', function (data) {
-      console.log('* Benchmark has finished', data);
+      console.log('* Benchmark has finished');
+      PrettyPrint.json(data);
       console.log('\n');
       if (data.test_id === 'instancing') {
         socket.emit('next_benchmark', {url: '/static/index2.html'});

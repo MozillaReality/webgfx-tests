@@ -6,7 +6,6 @@ module.exports = {
   deviceProduct: 'localdevice',
   serial: '',
   name: 'PC',
-  lastOpenProcess: null,
   getInstalledBrowsers: function() {
     return new Promise((resolve, reject) => {
       detectBrowsers.getInstalledBrowsers()
@@ -43,7 +42,7 @@ module.exports = {
           });
         }
         else {
-          console.log( 'No such process found!' );
+          //console.log( 'No such process found!' );
           resolve();
         }
       });  

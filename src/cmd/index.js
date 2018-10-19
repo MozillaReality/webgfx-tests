@@ -8,7 +8,7 @@ const chalk = require('chalk');
 const ADBDevices = require('./adb-devices');
 const LocalDevice = require('./local-device');
 const TestUtils = require('./test-utils');
-
+const PrettyPrint = require('./prettyprint');
 const package = require('../../package.json');
 
 program
@@ -22,7 +22,7 @@ program
     console.log('Tests list\n----------');
 
     if (options.verbose) {
-      console.log(TestUtils.testsDb);
+      PrettyPrint.json(TestUtils.testsDb);
     } else {
       TestUtils.testsDb.forEach(test => {
         console.log(`- ${chalk.yellow(test.id)}: ${test.name}`);
@@ -40,7 +40,7 @@ program
     devices.push(LocalDevice);
 
     if (options.verbose) {
-      console.log(devices);
+      PrettyPrint.json(devices);
     } else {
       devices.forEach(device => {
         console.log(`- Device: ${chalk.green(device.name)} (Product: ${chalk.yellow(device.deviceProduct)}) (SN: ${chalk.yellow(device.serial)})`);
@@ -80,7 +80,7 @@ program
             console.log(`Browsers on device: ${chalk.yellow(device.name)} (serial: ${chalk.yellow(device.serial)})`);
             console.log('-----------------------------------------------------');
             if (options.verbose) {
-              console.log(browsers);
+              PrettyPrint.json(browsers);
             } else {
               console.log(browsers.map(b => chalk.yellow(b.code)).join('\n'));
             }              
