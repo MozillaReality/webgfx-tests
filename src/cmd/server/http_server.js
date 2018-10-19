@@ -17,6 +17,7 @@ function initServer(port) {
   server
     .use('/', express.static('src/frontapp'))
     .use('/static', express.static('tests'))
+    .use('/app.bundle.js', express.static('dist/app.bundle.js'))
     .use('/tests.json', express.static('tests/tests.json'))
     .use(bodyParser.json());
   

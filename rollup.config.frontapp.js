@@ -11,7 +11,7 @@ export default {
 		{
 			format: 'umd',
 			name: 'APP',
-			file: 'src/frontapp/app.bundle.js',
+			file: 'dist/app.bundle.js',
 			indent: '\t'
 		},
 	]
