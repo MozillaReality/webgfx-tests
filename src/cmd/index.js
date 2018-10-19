@@ -110,10 +110,10 @@ program
   .description('run tests')
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
-  .option("-b, --browser [browser name]", "Which browser to use")
+  .option("-b, --browser <browsers name>", "Which browsers to use (Comma separated)")
   .option("-a, --adb [devices]", "Use android devices through ADB")
-  .option("-n, --numtimes [number]", "Number of times to run each test")
-  .option("-s, --storefile [file]", "Store test results on a local file")
+  .option("-n, --numtimes <number>", "Number of times to run each test")
+  .option("-s, --storefile <file>", "Store test results on a local file")
   .action((testIDs, options) => {
     var testsToRun = TestUtils.testsDb;
 
@@ -150,7 +150,7 @@ program
         console.log('ERROR: No device found!');
         return;
       }
-
+)
       initHTTPServer(options.port);
       initWebSocketServer(options.wsport, function (data) {
         if (options.storefile) {
