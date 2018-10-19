@@ -38,7 +38,7 @@ function buildTestURL(baseURL, test, testOptions, globalOptions) {
 }
 
 
-const testsFilename = __dirname + '/../tests/tests.json';
+const testsFilename = __dirname + '/../../tests/tests.json';
 var testsDb = JSON.parse(fs.readFileSync(testsFilename, 'utf8'));
 
 function TestsManager(device, tests, browsers, onFinish, options) {
