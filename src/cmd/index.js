@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 var program = require('commander');
-var initHTTPServer = require('../server/http_server');
-var initWebSocketServer = require('../server/websockets_server');
+var initHTTPServer = require('./server/http_server');
+var initWebSocketServer = require('./server/websockets_server');
 const fs = require('fs');
 const chalk = require('chalk');
-const ADBDevices = require('./adb-devices');
-const LocalDevice = require('./local-device');
+const ADBDevices = require('./devices/adb-devices');
+const LocalDevice = require('./devices/local-device');
 const TestUtils = require('./test-utils');
 const PrettyPrint = require('./prettyprint');
 const package = require('../../package.json');
@@ -150,7 +150,7 @@ program
         console.log('ERROR: No device found!');
         return;
       }
-)
+
       initHTTPServer(options.port);
       initWebSocketServer(options.wsport, function (data) {
         if (options.storefile) {

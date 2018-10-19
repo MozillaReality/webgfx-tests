@@ -1,5 +1,5 @@
 var http = require('http');
-const PrettyPrint = require('../cmd/prettyprint');
+const PrettyPrint = require('../prettyprint');
 
 
 function initWebSocketServer(port, testFinishedCallback) {

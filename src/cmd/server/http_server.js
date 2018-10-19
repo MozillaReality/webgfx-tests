@@ -7,7 +7,7 @@ const chalk = require('chalk');
 const internalIp = require('internal-ip');
 var bodyParser = require('body-parser')
 
-const testsDb = require('../cmd/test-utils').testsDb;
+const testsDb = require('../test-utils').testsDb;
 
 function initServer(port) {
   port = port || 3000;
@@ -17,12 +17,12 @@ function initServer(port) {
   server
     .use('/', express.static('src/frontapp'))
     .use('/static', express.static('src/tests'))
-    .use('/tests.json', express.static('src/server/tests.json'))
+    .use('/tests.json', express.static('src/tests/tests.json'))
     .use(bodyParser.json());
   
   server
     .get('/tests/gfx-perftests.js', (req, res) => {
-      var html = fs.readFileSync(__dirname+'/../../dist/gfx-perftests.js', 'utf8');
+      var html = fs.readFileSync(__dirname+'/../../../dist/gfx-perftests.js', 'utf8');
       res.send(html);
     })
     .post('/store_test_start', (req, res) => {
@@ -35,7 +35,7 @@ function initServer(port) {
     })
     .get('/tests*', (req, res) => {
       var url = req.url.split('?')[0]; // Remove params like /file.json?p=whatever
-      var pathf = path.join(__dirname+'/../', url);
+      var pathf = path.join(__dirname+'/../../', url);
       var ext = path.extname(url);
       if (ext === '.html') {
         var test = testsDb.find(test => test.url === url.replace(/\/tests\//, ''));
@@ -46,7 +46,7 @@ function initServer(port) {
           
           if (test.skipReferenceImageTest !== true) {
             const referenceImageName = test.referenceImage || test.id;
-            const path = __dirname + '/../tests/referenceimages/' + referenceImageName + '.png';
+            const path = __dirname + '/../../tests/referenceimages/' + referenceImageName + '.png';
             if (!fs.existsSync(path)) {
               console.log(`ERROR: Reference image for test <${test.id}> "${referenceImageName}" not found! Disabling reference test. Please consider adding 'skipReferenceImageTest: true' to this test or generate a reference image.`);
             }
