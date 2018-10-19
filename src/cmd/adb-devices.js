@@ -1,8 +1,18 @@
 var adbtk = require('adb-toolkit');
 
+function findFriendlyName(deviceProduct) {
+  const names = {
+    'Pacific': 'Oculus Go',
+    'VR_1541F': 'Mirage Solo'
+  };
+
+  return names[deviceProduct] || deviceProduct.replace(/_/gi, ' ');
+}
+
 function ADB() {
   this.devices = [];
   adbtk.getDevices().forEach(device => {
+    device.name = findFriendlyName(device.deviceProduct);
     this.devices.push(device);
     Object.assign(device, {
       getInstalledBrowsers: function(filter) {

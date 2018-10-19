@@ -5,6 +5,7 @@ var ps = require('ps-node');
 module.exports = {
   deviceProduct: 'localdevice',
   serial: '',
+  name: 'PC',
   lastOpenProcess: null,
   getInstalledBrowsers: function() {
     return new Promise((resolve, reject) => {

@@ -30,6 +30,24 @@ program
     }
   });
 
+program
+  .command('list-devices')
+  .description('Lists ADB devices')
+  .option("-v, --verbose", "Show all the information available")
+  .action((options) => {
+    console.log('Device list\n-----------');
+    var devices = getDevices(true);
+    devices.push(LocalDevice);
+
+    if (options.verbose) {
+      console.log(devices);
+    } else {
+      devices.forEach(device => {
+        console.log(`- Device: ${chalk.green(device.name)} (Product: ${chalk.yellow(device.deviceProduct)}) (SN: ${chalk.yellow(device.serial)})`);
+      });
+    }
+  });
+
 function getDevices(adb) {
   var devices;
   if (typeof adb !== 'undefined') {
@@ -59,7 +77,7 @@ program
           if (browsers.length === 0) {
             console.log('No ADB devices found');
           } else {
-            console.log(`Browsers on device: ${chalk.yellow(device.deviceProduct)} (serial: ${chalk.yellow(device.serial)})`);
+            console.log(`Browsers on device: ${chalk.yellow(device.name)} (serial: ${chalk.yellow(device.serial)})`);
             console.log('-----------------------------------------------------');
             if (options.verbose) {
               console.log(browsers);
@@ -158,7 +176,7 @@ program
       var numRunningDevices = devices.length;
 
       devices.forEach(device => {
-        console.log(`Running on device: ${chalk.yellow(device.deviceProduct)} (serial: ${chalk.yellow(device.serial)})`);
+        console.log(`Running on device: ${chalk.yellow(device.name)} (serial: ${chalk.yellow(device.serial)})`);
         device.getInstalledBrowsers().then(browsers => {
           browsersToRun = browsers;
           if (options.browser && options.browser !== 'all') {
@@ -172,7 +190,7 @@ program
             });
           }
   
-          console.log(`Browsers to run on device ${chalk.green(device.deviceProduct)}:`, browsersToRun.map(b => chalk.yellow(b.name)).join(', '));
+          console.log(`Browsers to run on device ${chalk.green(device.name)}:`, browsersToRun.map(b => chalk.yellow(b.name)).join(', '));
     
           var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, onTestsFinish, {numTimes: options.numtimes || 1});
           testsManager.runTests();
