@@ -117,7 +117,7 @@ program
   .option("-b, --browser <browsers name>", "Which browsers to use (Comma separated)")
   .option("-a, --adb [devices]", "Use android devices through ADB")
   .option("-n, --numtimes <number>", "Number of times to run each test")
-  .option("-s, --storefile <file>", "Store test results on a local file")
+  .option("-o, --outputfile <file>", "Store test results on a local file")
   .action((testIDs, options) => {
     const config = TestUtils.getConfig(options.configfile);
     var testsToRun;
@@ -134,8 +134,8 @@ program
     function onTestsFinish() {
       if (--numRunningDevices === 0) {
         console.log('TESTS FINISHED!');
-        if (options.storefile) {
-          fs.appendFile(options.storefile, ']', (err) => {  
+        if (options.outputfile) {
+          fs.appendFile(options.outputfile, ']', (err) => {  
             if (err) throw err;
             process.exit();
           });
@@ -160,8 +160,20 @@ program
 
       initHTTPServer(options.port, config);
       initWebSocketServer(options.wsport, function (data) {
-        if (options.storefile) {
-          fs.appendFile(options.storefile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {  
+        if (options.outputfile) {
+          var testRunData = TestUtils.TestsData.getTestData(data.testUUID);
+          data.browser = {
+            name: testRunData.browser.name,
+            code: testRunData.browser.code,
+            versionCode: testRunData.browser.versionCode,
+            versionName: testRunData.browser.versionName
+          };
+          data.device = {
+            name: testRunData.device.name,
+            deviceProduct: testRunData.device.deviceProduct,
+            serial: testRunData.device.serial
+          };
+          fs.appendFile(options.outputfile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {  
             if (err) throw err;
             numOutputTests++;
           });
@@ -191,8 +203,8 @@ program
             browsersToRun = browsers.filter(b => browserOptions.indexOf(b.code) !== -1);
           } 
   
-          if (options.storefile) {
-            fs.writeFile(options.storefile, '[', err => {
+          if (options.outputfile) {
+            fs.writeFile(options.outputfile, '[', err => {
               if (err) throw err;
             });
           }
