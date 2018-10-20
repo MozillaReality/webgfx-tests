@@ -1,4 +1,4 @@
-// #!/usr/bin/env node
+#!/usr/bin/env node
 var program = require('commander');
 var initHTTPServer = require('./server/http_server');
 var initWebSocketServer = require('./server/websockets_server');
