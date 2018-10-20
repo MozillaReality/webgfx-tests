@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-
+// #!/usr/bin/env node
 var program = require('commander');
 var initHTTPServer = require('./server/http_server');
 var initWebSocketServer = require('./server/websockets_server');
@@ -9,10 +8,10 @@ const ADBDevices = require('./devices/adb-devices');
 const LocalDevice = require('./devices/local-device');
 const TestUtils = require('./testsmanager/device');
 const PrettyPrint = require('./prettyprint');
-const package = require('../../package.json');
+//const packageInfo = require('../../package.json');
 
-program
-  .version(package.version);
+//program
+//  .version(packageInfo.version);
 
 program
   .command('list-tests')
@@ -120,11 +119,14 @@ program
   .option("-n, --numtimes <number>", "Number of times to run each test")
   .option("-s, --storefile <file>", "Store test results on a local file")
   .action((testIDs, options) => {
-    var testsToRun = TestUtils.testsDb;
-
+    const config = TestUtils.getConfig(options.configfile);
+    var testsToRun;
+    
     if (testIDs && testIDs !== 'all') {
       var testsIDs = testIDs.split(',');
-      testsToRun = TestUtils.testsDb.filter(test => testsIDs.indexOf(test.id) !== -1);
+      testsToRun = config.tests.filter(test => testsIDs.indexOf(test.id) !== -1);
+    } else {
+      testsToRun = config.tests;
     }
 
     var numOutputTests = 0;

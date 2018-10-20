@@ -1,7 +1,7 @@
 const fs = require('fs');
 const internalIp = require('internal-ip');
 const chalk = require('chalk');
-//const buildTestURL = require('./common');
+const buildTestURL = require('./common');
 
 function addGET(url, parameter) {
   if (url.indexOf('?') != -1) return url + '&' + parameter;

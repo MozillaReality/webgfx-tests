@@ -1,4 +1,3 @@
-var prettyjson = require('prettyjson');
 var colorize = require('json-colorizer');
 
 module.exports = {

@@ -2,7 +2,7 @@
   "name": "gfx-perftests",
   "version": "0.1.0",
   "description": "GFX Performance Tests",
-  "main": "index.js",
+  "main": "src/main/index.js",
   "scripts": {
     "build": "rollup -c",
     "start": "node src/main/index.js start-server -c tests/tests.config.json",
