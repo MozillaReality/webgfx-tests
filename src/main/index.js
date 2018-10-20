@@ -158,7 +158,7 @@ program
         return;
       }
 
-      initHTTPServer(options.port);
+      initHTTPServer(options.port, config);
       initWebSocketServer(options.wsport, function (data) {
         if (options.storefile) {
           fs.appendFile(options.storefile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {  

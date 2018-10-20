@@ -1,7 +1,7 @@
 const fs = require('fs');
 const internalIp = require('internal-ip');
 const chalk = require('chalk');
-const buildTestURL = require('./common');
+const buildTestURL = require('./common').buildTestURL;
 
 function addGET(url, parameter) {
   if (url.indexOf('?') != -1) return url + '&' + parameter;
@@ -91,7 +91,12 @@ TestsManager.prototype = {
     };
   
     console.log('* Running test:', chalk.yellow(test.id), 'on browser', chalk.yellow(browser.name),'on device', chalk.green(this.device.deviceProduct));
-    url = buildTestURL(url, test, options);
+
+    // @fixme
+    const mode = 'replay';
+    const progress = null;
+
+    url = buildTestURL(url, test, mode, options, progress);
     url = addGET(url, 'test-uuid=' + testUUID);
     
     const killOnStart = false; //true;

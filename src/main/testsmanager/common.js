@@ -1,6 +1,6 @@
-import {addGET} from '../../frontapp/utils';
+const addGET = require('../../frontapp/utils').addGET;
 
-export function buildTestURL(baseURL, test, mode, options, progress) {
+function buildTestURL(baseURL, test, mode, options, progress) {
   var url = baseURL;
 
   if (mode !== 'interactive') url = addGET(url, 'playback');
@@ -27,3 +27,7 @@ export function buildTestURL(baseURL, test, mode, options, progress) {
   }
   return url;
 }
+
+module.exports = {
+  buildTestURL: buildTestURL  
+};

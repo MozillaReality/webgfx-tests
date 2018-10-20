@@ -1,9 +1,9 @@
-export function addGET(url, parameter) {
+function addGET(url, parameter) {
   if (url.indexOf('?') != -1) return url + '&' + parameter;
   else return url + '?' + parameter;
 }
 
-export function yyyymmddhhmmss() {
+function yyyymmddhhmmss() {
   var date = new Date();
   var yyyy = date.getFullYear();
   var mm = date.getMonth() < 9 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1); // getMonth() is zero-based
@@ -13,3 +13,8 @@ export function yyyymmddhhmmss() {
   var sec = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
   return yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + min + ':' + sec;
 }
+
+module.exports = {
+  addGET: addGET,
+  yyyymmddhhmmss: yyyymmddhhmmss
+};
