@@ -1,7 +1,7 @@
 {
   "name": "gfx-perftests",
   "version": "0.1.0",
-  "description": "GFX Performance Tests",
+  "description": "Graphics Tests on the Web",
   "bin": {
     "gfxtests": "src/main/index.js"
   },
