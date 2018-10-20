@@ -37,9 +37,33 @@ function buildTestURL(baseURL, test, testOptions, globalOptions) {
   return url;
 }
 
+function loadJSON(path) {
+  try {
+    return JSON.parse(fs.readFileSync(path, 'utf8'));
+  } catch(err) {
+    throw err;
+  }
+}
 
-const testsFilename = __dirname + '/../../tests/tests.json';
-var testsDb = JSON.parse(fs.readFileSync(testsFilename, 'utf8'));
+var config = null;
+var testsDb = null;
+
+function loadConfig(configFile) {
+  configFile = configFile || 'tests/tests.config.json';
+  config = loadJSON(configFile);
+  testsDb = loadJSON(config.testsFolder + '/' + config.definitions);
+  config.tests = testsDb;
+}
+
+function getConfig(configFile) {
+  if (!config) loadConfig(configFile);
+  return config;
+}
+
+function getTestsDb(configFile) {
+  if (!testsDb) loadConfig(configFile);
+  return testsDb;
+}
 
 function TestsManager(device, tests, browsers, onFinish, options) {
   this.tests = tests;
@@ -132,5 +156,9 @@ var testData = new TestsData();
 module.exports = {
   TestsData: testData,
   TestsManager: TestsManager,
-  testsDb: testsDb,
+  //testsDb: testsDb,
+  getTestsDb: getTestsDb,
+  loadConfig: loadConfig,
+  getConfig: getConfig,
+  config: config
 }

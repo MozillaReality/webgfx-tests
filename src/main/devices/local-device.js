@@ -35,9 +35,9 @@ module.exports = {
      
         var process = resultList[ 0 ];
         if(process) {
-          console.log( 'PID: %s, COMMAND: %s, ARGUMENTS: %s', process.pid, process.command, process.arguments );
+          //console.log( 'PID: %s, COMMAND: %s, ARGUMENTS: %s', process.pid, process.command, process.arguments );
           ps.kill(pid, 'SIGKILL', function( err ) {
-            console.log('Killed');
+            //console.log('Killed');
             resolve();
           });
         }
@@ -81,7 +81,7 @@ module.exports = {
       this.lastOpenProcess = spawn(browser.launchCmd, options);
       resolve(this.lastOpenProcess);
       this.lastOpenProcess.on('close', () => {
-        console.log('Unexpected closed!');
+        //console.log('Unexpected closed!');
         // @todo
       });
       

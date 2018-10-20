@@ -187,7 +187,7 @@ window.TESTER = {
       var img = new Image();
       var referenceImageName = parameters['reference-image'] || GFXPERFTESTS_CONFIG.id;
         
-      img.src = '/tests/referenceimages/' + referenceImageName + '.png';
+      img.src = '/' + GFXPERFTESTS_REFERENCEIMAGE_BASEURL + '/' + referenceImageName + '.png';
       img.onabort = img.onerror = reject;
       
       // reference.png might come from a different domain than the canvas, so don't let it taint ctx.getImageData().

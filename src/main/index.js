@@ -17,14 +17,17 @@ program
 program
   .command('list-tests')
   .description('Lists tests')
+  .option("-c, --configfile <configFile>", "Config file (default test.config.json)")
   .option("-v, --verbose", "Show all the information available")
   .action((options) => {
     console.log('Tests list\n----------');
 
+    const testsDb = TestUtils.getTestsDb(options.configfile);
+
     if (options.verbose) {
-      PrettyPrint.json(TestUtils.testsDb);
+      PrettyPrint.json(testsDb);
     } else {
-      TestUtils.testsDb.forEach(test => {
+      testsDb.forEach(test => {
         console.log(`- ${chalk.yellow(test.id)}: ${test.name}`);
       });  
     }
@@ -100,8 +103,10 @@ program
   .description('Start tests server')
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
+  .option("-c, --configfile <configFile>", "Config file (default test.config.json)")
   .action(options => {
-    initHTTPServer(options.port);
+    const config = TestUtils.getConfig(options.configfile);
+    initHTTPServer(options.port, config);
     initWebSocketServer(options.wsport);
   });
 
