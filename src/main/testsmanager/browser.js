@@ -7,6 +7,7 @@ export function TestsManagerBrowser(tests, options) {
   this.options = options;
   this.currentlyRunningTest = {};
   this.testsQueuedToRun = [];
+  this.progress = null;
 }
 
 TestsManagerBrowser.prototype = {
@@ -22,12 +23,6 @@ TestsManagerBrowser.prototype = {
       
     this.testsQueuedToRun = [];
   
-    this.progress = {
-      totalGlobal: numTimesToRunEachTest * this.testsQueuedToRun.length,
-      currentGlobal: 1,
-      tests: {}
-    };
-
     for(var i = 0; i < this.selectedTests.length; i++) {
       for(var j = 0; j < numTimesToRunEachTest; j++) {
         this.testsQueuedToRun.push(this.selectedTests[i]);

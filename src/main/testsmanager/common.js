@@ -27,4 +27,3 @@ export function buildTestURL(baseURL, test, mode, options, progress) {
   }
   return url;
 }
-

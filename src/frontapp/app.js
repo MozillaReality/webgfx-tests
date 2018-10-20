@@ -42,7 +42,6 @@ export default class TestApp {
     this.browserUUID = null;
     this.resultsServer = new ResultsServer();
     this.testsQueuedToRun = [];
-    this.progress = null;
 
     fetch('tests.json')
       .then(response => { return response.json(); })
