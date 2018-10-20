@@ -1,40 +1,11 @@
 const fs = require('fs');
 const internalIp = require('internal-ip');
 const chalk = require('chalk');
+//const buildTestURL = require('./common');
 
 function addGET(url, parameter) {
   if (url.indexOf('?') != -1) return url + '&' + parameter;
   else return url + '?' + parameter;
-}
-
-function buildTestURL(baseURL, test, testOptions, globalOptions) {
-  var url = baseURL;
-  
-  if (test.numframes) url = addGET(url, 'num-frames=' + test.numframes);
-  if (test.windowsize) url = addGET(url, 'width=' + test.windowsize.width + '&height=' + test.windowsize.height);  
-  if (globalOptions.fakeWebGL) url = addGET(url, 'fake-webgl');
-
-  var record = false;
-  if (record) {
-    url = addGET(url, 'recording');
-  } else if (test.input) {
-    url = addGET(url, 'replay');
-    if (testOptions.showKeys) url = addGET(url, 'show-keys');
-    if (testOptions.showMouse) url = addGET(url, 'show-mouse');
-  }
-  if (testOptions.noCloseOnFail) url = addGET(url, 'no-close-on-fail');
-
-  if (globalOptions.skipReferenceImageTest) url = addGET(url, 'skip-reference-image-test');
-  if (globalOptions.referenceImage) url = addGET(url, 'reference-image');
-  /*
-  if (this.progress) {
-    url = addGET(url, 'order-test=' + this.progress.tests[id].current + '&total-test=' + this.progress.tests[id].total);
-    url = addGET(url, 'order-global=' + this.progress.currentGlobal + '&total-global=' + this.progress.totalGlobal);
-    this.progress.tests[id].current++;
-    this.progress.currentGlobal++;
-  }
-  */
-  return url;
 }
 
 function loadJSON(path) {
@@ -88,9 +59,9 @@ TestsManager.prototype = {
         }
       });
     });
-    this.runNextTest();
+    this.runNextQueuedTest();
   },
-  runNextTest: function() {
+  runNextQueuedTest: function() {
     if (this.testsToRun.length > 0) {
       this.runningTest = this.testsToRun.shift();
       this.runTest(this.runningTest.browser, this.runningTest.test);
@@ -120,17 +91,17 @@ TestsManager.prototype = {
     };
   
     console.log('* Running test:', chalk.yellow(test.id), 'on browser', chalk.yellow(browser.name),'on device', chalk.green(this.device.deviceProduct));
-    url = buildTestURL(url, test, options, {});
+    url = buildTestURL(url, test, options);
     url = addGET(url, 'test-uuid=' + testUUID);
     
     const killOnStart = false; //true;
   
     if (killOnStart) {
       this.device.killBrowser(browser).then(() => {
-        this.device.launchBrowser(browser, url); //.then(runNextTest);
+        this.device.launchBrowser(browser, url); //.then(runNextQueuedTest);
       });  
     } else {
-      this.device.launchBrowser(browser, url); //.then(runNextTest);
+      this.device.launchBrowser(browser, url); //.then(runNextQueuedTest);
     }
   }  
 };

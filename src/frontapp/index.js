@@ -35,7 +35,8 @@ window.onload = (x) => {
       },
       runTest: function(test, interactive, recording) {
         testApp.testsQueuedToRun = [];
-        testApp.runTest(test.id, interactive, recording);
+        var mode = interactive ? 'interactive' : (recording ? 'record' : 'replay');
+        testApp.testsManager.runTest(test.id, mode, data.options.tests);
       },
       runSelectedTests: function() {
         testApp.runSelectedTests();

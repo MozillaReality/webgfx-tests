@@ -7,7 +7,7 @@ const fs = require('fs');
 const chalk = require('chalk');
 const ADBDevices = require('./devices/adb-devices');
 const LocalDevice = require('./devices/local-device');
-const TestUtils = require('./test-utils');
+const TestUtils = require('./testsmanager/device');
 const PrettyPrint = require('./prettyprint');
 const package = require('../../package.json');
 
@@ -173,7 +173,7 @@ program
 
         var testsManager = testsManagers[testRunData.device.serial];
         testRunData.device.killBrowser(testsManager.getRunningTest().browser).then(() => {
-          testsManager.runNextTest();
+          testsManager.runNextQueuedTest();
         });
       });
       
