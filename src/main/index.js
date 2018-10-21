@@ -8,10 +8,10 @@ const ADBDevices = require('./devices/adb-devices');
 const LocalDevice = require('./devices/local-device');
 const TestUtils = require('./testsmanager/device');
 const PrettyPrint = require('./prettyprint');
-//const packageInfo = require('../../package.json');
+const packageInfo = require('../../package.json');
 
-//program
-//  .version(packageInfo.version);
+program
+  .version(packageInfo.version);
 
 program
   .command('list-tests')
@@ -123,6 +123,7 @@ program
 program
   .command('run [testIDs]')
   .description('run tests')
+  .option("-c, --configfile <configFile>", "Config file (default test.config.json)")
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
   .option("-b, --browser <browsers name>", "Which browsers to use (Comma separated)")
