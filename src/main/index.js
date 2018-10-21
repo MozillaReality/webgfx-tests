@@ -20,8 +20,13 @@ program
   .option("-v, --verbose", "Show all the information available")
   .action((options) => {
     console.log('Tests list\n----------');
-
-    const testsDb = TestUtils.getTestsDb(options.configfile);
+    
+    const configfile = options.configfile || 'tests.config.json';
+    const testsDb = TestUtils.getTestsDb(configfile);
+    if (testsDb === false) {
+      console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
+      return;
+    }
 
     if (options.verbose) {
       PrettyPrint.json(testsDb);
@@ -104,9 +109,15 @@ program
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
   .option("-c, --configfile <configFile>", "Config file (default test.config.json)")
   .action(options => {
-    const config = TestUtils.getConfig(options.configfile);
-    initHTTPServer(options.port, config);
-    initWebSocketServer(options.wsport);
+    const configfile = options.configfile || 'tests.config.json';
+
+    const config = TestUtils.getConfig(configfile);
+    if (config === false) {
+      console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
+    } else {
+      initHTTPServer(options.port, config);
+      initWebSocketServer(options.wsport);  
+    }
   });
 
 program

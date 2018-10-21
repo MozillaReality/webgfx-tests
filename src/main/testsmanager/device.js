@@ -10,31 +10,40 @@ function addGET(url, parameter) {
 }
 
 function loadJSON(path) {
+  // @fixme Use async version
   try {
     return JSON.parse(fs.readFileSync(path, 'utf8'));
   } catch(err) {
     throw err;
-  }
+  }  
 }
 
 var config = null;
 var testsDb = null;
 
-function loadConfig(configFile) {
-  configFile = configFile || 'tests.config.json';
-  config = loadJSON(configFile);
-  config.path = path.resolve(configFile);
-  testsDb = loadJSON(path.join(path.dirname(configFile), config.definitions));
-  config.tests = testsDb;
-}
-
 function getConfig(configFile) {
-  if (!config) loadConfig(configFile);
-  return config;
+  if (!fs.existsSync(configFile)) {
+    return false;
+  } else {
+    try {
+      config = loadJSON(configFile);
+      config.path = path.resolve(configFile);
+      testsDb = loadJSON(path.join(path.dirname(configFile), config.definitions));
+      config.tests = testsDb;  
+      return config;  
+    } catch(err) {
+      return false;
+    }
+  }
 }
 
 function getTestsDb(configFile) {
-  if (!testsDb) loadConfig(configFile);
+  if (!testsDb) {
+    config = getConfig(configFile);
+    if (config === false) {
+      return false;
+    }
+  }
   return testsDb;
 }
 
@@ -134,9 +143,7 @@ var testData = new TestsData();
 module.exports = {
   TestsData: testData,
   TestsManager: TestsManager,
-  //testsDb: testsDb,
   getTestsDb: getTestsDb,
-  loadConfig: loadConfig,
   getConfig: getConfig,
   config: config
 }
