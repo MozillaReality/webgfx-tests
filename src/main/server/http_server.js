@@ -54,7 +54,7 @@ function initServer(port, config) {
             const referenceImageName = test.referenceImage || test.id;
             const referenceImagesFolder = path.join(testsFolder, config.referenceImagesFolder);
             const filepath = path.join(referenceImagesFolder, referenceImageName + '.png');
-            console.log(filepath);
+
             if (!fs.existsSync(filepath)) {
               console.log(`ERROR: Reference image for test <${test.id}> "${referenceImageName}" not found! Disabling reference test. Please consider adding 'skipReferenceImageTest: true' to this test or generate a reference image.`);
             }

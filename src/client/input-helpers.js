@@ -29,7 +29,7 @@ export default class InputHelpers {
       height: 30px;
       left: 0px;
       top: 0px;
-      background-image: url('../cursor.svg');
+      background-image: url('/cursor.svg');
       background-position: -8px -5px;
       z-index: 9999;
     `;
