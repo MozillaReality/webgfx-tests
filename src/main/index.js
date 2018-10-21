@@ -110,7 +110,7 @@ program
   });
 
 program
-  .command('run <testIDs>')
+  .command('run [testIDs]')
   .description('run tests')
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
@@ -121,7 +121,6 @@ program
   .action((testIDs, options) => {
     const config = TestUtils.getConfig(options.configfile);
     var testsToRun;
-    
     if (testIDs && testIDs !== 'all') {
       var testsIDs = testIDs.split(',');
       testsToRun = config.tests.filter(test => testsIDs.indexOf(test.id) !== -1);

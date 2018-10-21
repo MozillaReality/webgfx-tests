@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const internalIp = require('internal-ip');
 const chalk = require('chalk');
 const buildTestURL = require('./common').buildTestURL;
@@ -20,9 +21,10 @@ var config = null;
 var testsDb = null;
 
 function loadConfig(configFile) {
-  configFile = configFile || 'tests/tests.config.json';
+  configFile = configFile || 'tests.config.json';
   config = loadJSON(configFile);
-  testsDb = loadJSON(config.testsFolder + '/' + config.definitions);
+  config.path = path.resolve(configFile);
+  testsDb = loadJSON(path.join(path.dirname(configFile), config.definitions));
   config.tests = testsDb;
 }
 

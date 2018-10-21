@@ -14,12 +14,15 @@ function initServer(port, config) {
 
   let server = express();
 
+  var configFilePath = path.dirname(config.path);
+  var testsFolder = path.resolve(path.join(configFilePath, config.testsFolder));
+  var definitionFolder = path.join(configFilePath, config.definitions);
+
   server
-    .use('/', express.static('src/frontapp'))
-    .use('/static', express.static('tests'))
-    .use('/app.bundle.js', express.static('dist/app.bundle.js'))
-    //.use('/tests.json', express.static('tests/tests.json'))
-    .use('/tests.json', express.static('tests/tests.json'))
+    .use('/', express.static(path.join(__dirname, '../../frontapp')))
+    .use('/static', express.static(testsFolder))
+    .use('/app.bundle.js', express.static(path.join(__dirname,'../../../dist/app.bundle.js')))
+    .use('/tests.json', express.static(definitionFolder))
     .use(bodyParser.json());
   
   server
@@ -37,7 +40,8 @@ function initServer(port, config) {
     })
     .get('/tests*', (req, res) => {
       var url = req.url.split('?')[0]; // Remove params like /file.json?p=whatever
-      var pathf = path.join(__dirname + baseFolder, url);
+      var pathf = path.join(testsFolder, url.replace(/\/tests\//, ''));
+      
       var ext = path.extname(url);
       if (ext === '.html') {
         var test = config.tests.find(test => test.url === url.replace(/\/tests\//, ''));
@@ -48,15 +52,17 @@ function initServer(port, config) {
           
           if (test.skipReferenceImageTest !== true) {
             const referenceImageName = test.referenceImage || test.id;
-            const path = __dirname + baseFolder + config.referenceImagesFolder + '/' + referenceImageName + '.png';
-            if (!fs.existsSync(path)) {
+            const referenceImagesFolder = path.join(testsFolder, config.referenceImagesFolder);
+            const filepath = path.join(referenceImagesFolder, referenceImageName + '.png');
+            console.log(filepath);
+            if (!fs.existsSync(filepath)) {
               console.log(`ERROR: Reference image for test <${test.id}> "${referenceImageName}" not found! Disabling reference test. Please consider adding 'skipReferenceImageTest: true' to this test or generate a reference image.`);
             }
           }
           
           test.serverIP = internalIp.v4.sync() || 'localhost';
           head.append(`<script>var GFXPERFTESTS_CONFIG = ${JSON.stringify(test, null, 2)};</script>`)
-              .append(`<script>var GFXPERFTESTS_REFERENCEIMAGE_BASEURL = '${config.referenceImagesFolder}';</script>`)
+              .append(`<script>var GFXPERFTESTS_REFERENCEIMAGE_BASEURL = 'tests/${config.referenceImagesFolder}';</script>`)
               .append('<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>')
               .append('<script src="/gfx-perftests.js"></script>')
           res.send($.html());    
