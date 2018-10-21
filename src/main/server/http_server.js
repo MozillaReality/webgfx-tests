@@ -75,7 +75,7 @@ function initServer(port, config) {
     });
   
   server.listen(port, function(){
-    console.log('* HTTP Results server listening on ' + chalk.yellow('*:' + port));
+    console.log('* HTTP Tests server listening on ' + chalk.yellow('*:' + port));
   });  
 }
 
