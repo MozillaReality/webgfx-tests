@@ -238,6 +238,25 @@ Browsers on device: PC (serial: )
 -----------------------------------------------------
 ```
 
+## Start server
+```
+Usage: start-server [options]
+
+Start tests server
+
+Options:
+  -p, --port <port_number>       HTTP Server Port number (Default 3333)
+  -w, --wsport <port_number>     WebSocket Port number (Default 8888)
+  -c, --configfile <configFile>  Config file (default test.config.json)
+  -h, --help                     output usage information
+```
+
+* `-h, --help`: Show the previous help text.
+* `-p, --port <port_number>`: HTTP Server Port number (Default 3333)
+* `-w, --wsport <port_number>`: WebSocket Port number (Default 8888)
+* `-c, --configfile <configFile>`: Config file (default test.config.json)
+
+
 # Web app parameters
 - `num-times`: Number of times to run every test.
 - `selected`: Comma separated tests IDs to run. (eg: `selected=test1,test2`).
