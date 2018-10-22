@@ -22,6 +22,7 @@ var config = null;
 var testsDb = null;
 
 function getConfig(configFile) {
+  console.log(configFile);
   configFile = path.resolve(configFile);
   try {
     if (fs.lstatSync(configFile).isDirectory()) {

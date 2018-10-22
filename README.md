@@ -11,6 +11,10 @@ npm install -g gfx-tests
 
 ## Help
 ```
+gfxtests --help
+```
+
+```
 Usage: gfxtests [options] [command]
 
 Options:

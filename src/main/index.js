@@ -131,7 +131,14 @@ program
   .option("-n, --numtimes <number>", "Number of times to run each test")
   .option("-o, --outputfile <file>", "Store test results on a local file")
   .action((testIDs, options) => {
-    const config = TestUtils.getConfig(options.configfile);
+    const configfile = options.configfile || 'gfx-tests.config.json';
+
+    const config = TestUtils.getConfig(configfile);
+    if (config === false) {
+      console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
+      return;
+    }
+
     var testsToRun;
     if (testIDs && testIDs !== 'all') {
       var testsIDs = testIDs.split(',');
