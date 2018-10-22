@@ -41,6 +41,95 @@ Options:
 * `-v, --verbose`: Show all the info about the tests.
 * `-c, --configfile <configFile>`: Configuration file for tests. Default: `gfx-tests.config.json`.
 
+Example:
+```
+$ gfxtests list-tests
+
+Tests list
+----------
+- misc_fps: fps controls
+- webgl_interactive_draggablecubes: interactive draggable cubes
+- instancing: instanced circle billboards
+- billboard_particles: instancing demo (single triangle)
+- simple: simple example
+- playcanvas: animation
+```
+
+```
+$ gfxtests list-tests --verbose
+
+Tests list
+----------
+[
+  {
+    "id": "misc_fps",
+    "engine": "three.js",
+    "url": "threejs/misc_fps.html",
+    "name": "fps controls",
+    "mobile": true,
+    "numframes": 200,
+    "interactive": true,
+    "input": "input/misc_fps.json"
+  },
+  {
+    "id": "webgl_interactive_draggablecubes",
+    "engine": "three.js",
+    "url": "threejs/webgl_interactive_draggablecubes.html",
+    "name": "interactive draggable cubes",
+    "mobile": true,
+    "numframes": 200,
+    "interactive": true,
+    "referenceCompareThreshold": 0.5,
+    "referencePercentageFail": 1.5,
+    "referenceNumPixelsFail": 100,
+    "input": "input/webgl_interactive_draggablecubes.json"
+  },
+  {
+    "id": "instancing",
+    "engine": "three.js",
+    "url": "threejs/index.html",
+    "name": "instanced circle billboards",
+    "mobile": true,
+    "numframes": 200,
+    "interactive": true,
+    "skipReferenceImageTest": true
+  },
+  {
+    "id": "billboard_particles",
+    "engine": "three.js",
+    "url": "threejs/index2.html",
+    "name": "instancing demo (single triangle)",
+    "mobile": true,
+    "windowsize": {
+      "width": 500,
+      "height": 500
+    },
+    "interactive": true,
+    "skipReferenceImageTest": true
+  },
+  {
+    "id": "simple",
+    "engine": "babylon.js",
+    "url": "babylon/simple.html",
+    "name": "simple example",
+    "mobile": true,
+    "interactive": true,
+    "numframes": 200,
+    "skipReferenceImageTest": true
+  },
+  {
+    "id": "playcanvas",
+    "engine": "playcanvas",
+    "url": "playcanvas/animation.html",
+    "name": "animation",
+    "mobile": true,
+    "interactive": true,
+    "skipReferenceImageTest": true
+  }
+]
+```
+
+
 ## List devices
 ```
 Usage: list-devices [options]
@@ -57,7 +146,7 @@ Options:
 
 Example:
 ```
-gfxtests --list-devices
+$ gfxtests --list-devices
 
 Device list
 -----------
