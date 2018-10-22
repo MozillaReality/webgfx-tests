@@ -155,7 +155,88 @@ Device list
 - Device: PC (Product: localdevice) (SN: XXXXXX)
 ```
 
+## List browsers
+```
+Usage: list-browsers [options]
 
+List browsers
+
+Options:
+  -a, --adb [deviceserial]  Use ADB to connect to an android device
+  -v, --verbose             Show all the information available
+  -h, --help                output usage information
+```
+
+* `-a, --adb [deviceserial]`: Show browsers on ADB devices. If not device serial is provided, it will query all the devices. You can include multiple serials separated by comma (eg: sn1,sn2,sn3)
+* `-h, --help`: Show the previous help text.
+* `-v, --verbose`: Show all the info about the browsers.
+
+```
+$ gfxtests list-browsers
+
+Browsers on device: PC (serial: )
+-----------------------------------------------------
+chrome
+chromecanary
+firefox
+safari
+-----------------------------------------------------
+```
+
+```
+$ gfxtests list-browsers --adb
+
+Browsers on device: Oculus Go (serial: XXXXXXXXX)
+-----------------------------------------------------
+fxr
+oculus
+-----------------------------------------------------
+
+Browsers on device: Mirage Solo (serial: XXXXXXX)
+-----------------------------------------------------
+fxr
+chrome
+canary
+-----------------------------------------------------
+```
+
+```
+$ gfxtests list-browsers --verbose
+
+Browsers on device: PC (serial: )
+-----------------------------------------------------
+[
+  {
+    "name": "Chrome",
+    "code": "chrome",
+    "launchCmd": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "versionCode": "",
+    "versionName": ""
+  },
+  {
+    "name": "ChromeCanary",
+    "code": "chromecanary",
+    "launchCmd": "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
+    "versionCode": "",
+    "versionName": ""
+  },
+  {
+    "name": "Firefox",
+    "code": "firefox",
+    "launchCmd": "/Applications/Firefox.app/Contents/MacOS/firefox-bin",
+    "versionCode": "",
+    "versionName": ""
+  },
+  {
+    "name": "Safari",
+    "code": "safari",
+    "launchCmd": "/Applications/Safari.app/Contents/MacOS/Safari",
+    "versionCode": "",
+    "versionName": ""
+  }
+]
+-----------------------------------------------------
+```
 
 # Web app parameters
 - `num-times`: Number of times to run every test.
