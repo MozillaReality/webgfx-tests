@@ -21,7 +21,7 @@ program
   .action((options) => {
     console.log('Tests list\n----------');
     
-    const configfile = options.configfile || 'tests.config.json';
+    const configfile = options.configfile || 'gfx-tests.config.json';
     const testsDb = TestUtils.getTestsDb(configfile);
     if (testsDb === false) {
       console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
@@ -109,7 +109,7 @@ program
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
   .option("-c, --configfile <configFile>", "Config file (default test.config.json)")
   .action(options => {
-    const configfile = options.configfile || 'tests.config.json';
+    const configfile = options.configfile || 'gfx-tests.config.json';
 
     const config = TestUtils.getConfig(configfile);
     if (config === false) {

@@ -22,6 +22,15 @@ var config = null;
 var testsDb = null;
 
 function getConfig(configFile) {
+  configFile = path.resolve(configFile);
+  try {
+    if (fs.lstatSync(configFile).isDirectory()) {
+      configFile = path.join(configFile, 'gfx-tests.config.json');
+    }  
+  } catch(err) {
+
+  }
+
   if (!fs.existsSync(configFile)) {
     return false;
   } else {
