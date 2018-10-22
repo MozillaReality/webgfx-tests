@@ -58,10 +58,8 @@ TestsManagerBrowser.prototype = {
     }
     console.log('Running test:', test.name);
 
-    //var url = (interactive ? 'static/': 'tests/') + test.url;
-    const baseURL = `http://localhost:3000/tests/`;
-    var url = baseURL + test.url;
-    url = buildTestURL(url, test, mode, options, this.progress);
+    const baseURL = 'http://localhost:3000/';
+    const url = buildTestURL(baseURL, test, mode, options, this.progress);
   
     this.currentlyRunningTest.test = test;
     this.currentlyRunningTest.startTime = yyyymmddhhmmss();

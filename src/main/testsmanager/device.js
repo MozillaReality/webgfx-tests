@@ -92,8 +92,8 @@ TestsManager.prototype = {
     });
 
     const serverIP = internalIp.v4.sync() || 'localhost';
-    const baseURL = `http://${serverIP}:3000/tests/`;
-    var url = baseURL + test.url;
+    //@fixme port from params
+    const baseURL = `http://${serverIP}:3000/`;
   
     var options = {
       showKeys: false,
@@ -107,7 +107,7 @@ TestsManager.prototype = {
     const mode = 'replay';
     const progress = null;
 
-    url = buildTestURL(url, test, mode, options, progress);
+    var url = buildTestURL(baseURL, test, mode, options, progress);
     url = addGET(url, 'test-uuid=' + testUUID);
     
     const killOnStart = false; //true;
