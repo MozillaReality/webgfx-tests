@@ -14,8 +14,8 @@ export default {
 	output: [
 		{
 			format: 'umd',
-			name: 'GFXPERFTESTS',
-			file: 'dist/gfx-perftests.js',
+			name: 'GFXTESTS',
+			file: 'dist/gfx-tests.js',
 			indent: '\t'
 		},
 	]

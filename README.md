@@ -1,4 +1,4 @@
-# gfx-perftests
+# gfx-tests
 Performance tests for canvas and webgl
 
 # Web app parameters

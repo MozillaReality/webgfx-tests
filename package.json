@@ -1,5 +1,5 @@
 {
-  "name": "gfx-perftests",
+  "name": "gfx-tests",
   "version": "0.1.1",
   "description": "Graphics Tests on the Web",
   "bin": {
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fernandojsg/gfx-perftests.git"
+    "url": "git+https://github.com/fernandojsg/gfx-tests.git"
   },
   "author": "Fernando Serrano <fernandojsg@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fernandojsg/gfx-perftests/issues"
+    "url": "https://github.com/fernandojsg/gfx-tests/issues"
   },
-  "homepage": "https://github.com/fernandojsg/gfx-perftests#readme",
+  "homepage": "https://github.com/fernandojsg/gfx-tests#readme",
   "dependencies": {
     "adb-toolkit": "^0.4.2",
     "body-parser": "^1.18.3",

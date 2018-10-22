@@ -73,9 +73,9 @@ window.TESTER = {
       }
       
       if (typeof parameters['replay'] !== 'undefined' && !this.inputReplayer) {
-        if (GFXPERFTESTS_CONFIG.input) {
+        if (GFXTESTS_CONFIG.input) {
           // @fixme Prevent multiple fetch while waiting
-          fetch('/tests/' + GFXPERFTESTS_CONFIG.input).then(response => {
+          fetch('/tests/' + GFXTESTS_CONFIG.input).then(response => {
             return response.json();
           })
           .then(json => {
@@ -185,9 +185,9 @@ window.TESTER = {
   loadReferenceImage: function() {
     return new Promise ((resolve, reject) => {
       var img = new Image();
-      var referenceImageName = parameters['reference-image'] || GFXPERFTESTS_CONFIG.id;
+      var referenceImageName = parameters['reference-image'] || GFXTESTS_CONFIG.id;
         
-      img.src = '/' + GFXPERFTESTS_REFERENCEIMAGE_BASEURL + '/' + referenceImageName + '.png';
+      img.src = '/' + GFXTESTS_REFERENCEIMAGE_BASEURL + '/' + referenceImageName + '.png';
       img.onabort = img.onerror = reject;
       
       // reference.png might come from a different domain than the canvas, so don't let it taint ctx.getImageData().
@@ -258,7 +258,7 @@ window.TESTER = {
           var expected = refImageData.data;
           var actual = newImageData.data;
           
-          var threshold = typeof GFXPERFTESTS_CONFIG.referenceCompareThreshold === 'undefined' ? 0.2 : GFXPERFTESTS_CONFIG.referenceCompareThreshold;
+          var threshold = typeof GFXTESTS_CONFIG.referenceCompareThreshold === 'undefined' ? 0.2 : GFXTESTS_CONFIG.referenceCompareThreshold;
           var numDiffPixels = pixelmatch(expected, actual, diff.data, width, height, {threshold: threshold});
           var diffPerc = (numDiffPixels / (width * height) * 100).toFixed(2);
           
@@ -316,7 +316,7 @@ window.TESTER = {
   },
 
   initServer: function () {
-    var serverUrl = 'http://' + GFXPERFTESTS_CONFIG.serverIP + ':8888';
+    var serverUrl = 'http://' + GFXTESTS_CONFIG.serverIP + ':8888';
 
     this.socket = io.connect(serverUrl);
 
@@ -332,7 +332,7 @@ window.TESTER = {
       console.log(error);
     });
 
-    this.socket.emit('benchmark_started', {id: GFXPERFTESTS_CONFIG.id});
+    this.socket.emit('benchmark_started', {id: GFXTESTS_CONFIG.id});
 
     this.socket.on('next_benchmark', (data) => {
       console.log('next_benchmark', data);
@@ -364,7 +364,7 @@ window.TESTER = {
       document.body.appendChild(link);
       link.href = '#';
       link.className = 'button';
-      link.onclick = () => saveString(json, GFXPERFTESTS_CONFIG.id + '.json', 'application/json');
+      link.onclick = () => saveString(json, GFXTESTS_CONFIG.id + '.json', 'application/json');
       link.appendChild(document.createTextNode(`Download input JSON`)); // (${this.inputRecorder.events.length} events recorded)
       document.getElementById('benchmark_finished').appendChild(link);
   },
@@ -379,7 +379,7 @@ window.TESTER = {
       var fps = this.numFramesToRender * 1000.0 / totalRenderTime;
   
       var result = {
-        test_id: GFXPERFTESTS_CONFIG.id,
+        test_id: GFXTESTS_CONFIG.id,
         values: this.stats.getStatsSummary(),
         numFrames: this.numFramesToRender,
         totalTime: totalTime,
@@ -509,7 +509,7 @@ window.TESTER = {
     try {
       var data = this.canvas.toDataURL("image/png");
       var description = this.inputRecorder ? 'Download reference image' : 'Actual render';
-      this.createDownloadImageLink(data, GFXPERFTESTS_CONFIG.id, description);
+      this.createDownloadImageLink(data, GFXTESTS_CONFIG.id, description);
     } catch(e) {
       console.error("Can't generate image");
     }
@@ -562,7 +562,7 @@ window.TESTER = {
             this.logs.warnings.push(args);
           }
 
-          if (GFXPERFTESTS_CONFIG.sendLog)
+          if (GFXTESTS_CONFIG.sendLog)
             TESTER.socket.emit('log', args);
 
           return fn.apply(null, args);
@@ -656,8 +656,8 @@ window.TESTER = {
       window.realRequestAnimationFrame = window.requestAnimationFrame;
       window.requestAnimationFrame = callback => {
         const hookedCallback = p => {
-          if (GFXPERFTESTS_CONFIG.preMainLoop) { 
-            GFXPERFTESTS_CONFIG.preMainLoop(); 
+          if (GFXTESTS_CONFIG.preMainLoop) { 
+            GFXTESTS_CONFIG.preMainLoop(); 
           }
           this.preTick();
     
@@ -670,8 +670,8 @@ window.TESTER = {
             return;
           }
 
-          if (GFXPERFTESTS_CONFIG.postMainLoop) {
-            GFXPERFTESTS_CONFIG.postMainLoop();
+          if (GFXTESTS_CONFIG.postMainLoop) {
+            GFXTESTS_CONFIG.postMainLoop();
           }
         }
         return window.realRequestAnimationFrame(hookedCallback);
@@ -681,14 +681,14 @@ window.TESTER = {
 
   init: function () {
 
-    if (!GFXPERFTESTS_CONFIG.providesRafIntegration) {
+    if (!GFXTESTS_CONFIG.providesRafIntegration) {
       this.hookRAF();
     }
     this.addProgressBar();
 
     console.log('Frames to render:', this.numFramesToRender);
 
-    if (!GFXPERFTESTS_CONFIG.dontOverrideTime) {
+    if (!GFXTESTS_CONFIG.dontOverrideTime) {
       FakeTimers.enable();
     }
 
