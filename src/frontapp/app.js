@@ -1,6 +1,6 @@
 import browserFeatures from 'browser-features';
 import webglInfo from 'webgl-info';
-import {generateUUID, hashToUUID} from './UUID';
+import {generateUUID, hashToUUID} from './uuid';
 import ResultsServer from './results-server';
 import queryString from 'query-string';
 import {TestsManagerBrowser} from '../main/testsmanager/browser';

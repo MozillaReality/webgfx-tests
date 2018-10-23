@@ -1,4 +1,3 @@
-var Module = {};
 export default class EventListenerManager {
   constructor() {
     this.registeredEventListeners = [];
