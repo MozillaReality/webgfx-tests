@@ -243,22 +243,31 @@ Browsers on device: PC (serial: )
 ```
 
 ## Start server
+Usage:
 ```
-Usage: start-server [options]
-
-Start tests server
-
-Options:
-  -p, --port <port_number>       HTTP Server Port number (Default 3333)
-  -w, --wsport <port_number>     WebSocket Port number (Default 8888)
-  -c, --configfile <configFile>  Config file (default test.config.json)
-  -h, --help                     output usage information
+$ gfxstart start-server [options]
 ```
 
 * `-h, --help`: Show the previous help text.
 * `-p, --port <port_number>`: HTTP Server Port number (Default 3333)
 * `-w, --wsport <port_number>`: WebSocket Port number (Default 8888)
 * `-c, --configfile <configFile>`: Config file (default test.config.json)
+
+## Run Tests
+Usage:
+```
+$ gfxtests run [options] [testIds]
+```
+
+Options:
+* `-c, --configfile <configFile>`:  Config file (default `gfx-tests.config.json`)
+* `-p, --port <port_number>`: HTTP Server Port number (Default `3333`)
+* `-w, --wsport <port_number>`: WebSocket Port number (Default `8888`)
+* `-b, --browser <browsers name>`: Which browsers to use. Multiple browsers could be specified using comma separated, eg: `firefox,safari,chrome`.
+* `-a, --adb [devices]`: Use android devices through ADB.
+* `-n, --numtimes <number>`: Number of times to run each test.
+* `-o, --outputfile <file>`: Store test results on a JSON file locally.
+* `-h, --help`: output usage information
 
 
 # Web app parameters
@@ -274,24 +283,3 @@ Options:
 - `show-mouse`: Show mouse position and clicks when replaying.
 - `no-close-on-fail`: Don't close the window if the test fails.
 - `fake-webgl`: Hook WebGL calls using NOPs.
-
-# Run tests
-
-## Start web application
-```
-npm start
-```
-
-go to `http://localhost:3000`
-
-## Run from command line (WIP)
-
-### Run tests
-```
-tests [testIDs] [params]
-```
-
-Run all tests:
-- Run all tests: `npm run tests [params]`
-- Run one test: `npm run tests id1 [params]`
-- Run selected tests: `npm run tests id1,id2,id3,id4 [params]`
