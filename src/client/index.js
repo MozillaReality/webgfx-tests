@@ -58,7 +58,7 @@ window.TESTER = {
 
   postTick: function () {
     WebGLStats.frameEnd();
-    // console.log('>>', JSON.stringify(WebGLStats.getCurrentData()));
+    //console.log('>>', JSON.stringify(WebGLStats.getCurrentData()));
   },
 
   preTick: function() {
@@ -392,7 +392,10 @@ window.TESTER = {
   
       var result = {
         test_id: GFXTESTS_CONFIG.id,
-        values: this.stats.getStatsSummary(),
+        stats: {
+          perf: this.stats.getStatsSummary(),
+          webgl: WebGLStats.getSummary()
+        },
         numFrames: this.numFramesToRender,
         totalTime: totalTime,
         timeToFirstFrame: this.firstFrameTime - pageInitTime,
