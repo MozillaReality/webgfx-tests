@@ -110,11 +110,12 @@
 	</script>
 
 	<script>
+
+
 		var container, stats;
 
 		var camera, scene, renderer;
 		var geometry, material, mesh;
-
 		function init() {
 
 			if ( !Detector.webgl ) {
@@ -201,7 +202,6 @@
 			requestAnimationFrame( animate );
 
 			render();
-			stats.update();
 
 		}
 

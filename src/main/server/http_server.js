@@ -26,8 +26,8 @@ function initServer(port, config) {
     .use(bodyParser.json());
   
   server
-    .get('/gfx-tests.js', (req, res) => {
-      var html = fs.readFileSync(__dirname + baseFolder + 'dist/gfx-tests.js', 'utf8');
+    .get('/webgfx-tests.js', (req, res) => {
+      var html = fs.readFileSync(__dirname + baseFolder + 'dist/webgfx-tests.js', 'utf8');
       res.send(html);
     })
     .post('/store_test_start', (req, res) => {
@@ -64,7 +64,7 @@ function initServer(port, config) {
           head.append(`<script>var GFXTESTS_CONFIG = ${JSON.stringify(test, null, 2)};</script>`)
               .append(`<script>var GFXTESTS_REFERENCEIMAGE_BASEURL = 'tests/${config.referenceImagesFolder}';</script>`)
               .append('<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>')
-              .append('<script src="/gfx-tests.js"></script>')
+              .append('<script src="/webgfx-tests.js"></script>')
           res.send($.html());    
         } else {
           res.send('Not test found');

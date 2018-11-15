@@ -1,21 +1,21 @@
-# gfx-tests
+# webgfx-tests
 Performance tests for canvas and webgl
 
 # Install
 
 ```
-npm install -g gfx-tests
+npm install -g webgfx-tests
 ```
 
 # Usage
 
 ## Help
 ```
-gfxtests --help
+webgfx-tests --help
 ```
 
 ```
-Usage: gfxtests [options] [command]
+Usage: webgfx-tests [options] [command]
 
 Options:
   -V, --version            output the version number
@@ -43,11 +43,11 @@ Options:
 
 * `-h, --help`: Show the previous help text.
 * `-v, --verbose`: Show all the info about the tests.
-* `-c, --configfile <configFile>`: Configuration file for tests. Default: `gfx-tests.config.json`.
+* `-c, --configfile <configFile>`: Configuration file for tests. Default: `webgfx-tests.config.json`.
 
 Example:
 ```
-$ gfxtests list-tests
+$ webgfxtests list-tests
 
 Tests list
 ----------
@@ -60,7 +60,7 @@ Tests list
 ```
 
 ```
-$ gfxtests list-tests --verbose
+$ webgfxtests list-tests --verbose
 
 Tests list
 ----------
@@ -150,7 +150,7 @@ Options:
 
 Example:
 ```
-$ gfxtests --list-devices
+$ webgfxtests --list-devices
 
 Device list
 -----------
@@ -176,7 +176,7 @@ Options:
 * `-v, --verbose`: Show all the info about the browsers.
 
 ```
-$ gfxtests list-browsers
+$ webgfxtests list-browsers
 
 Browsers on device: PC (serial: )
 -----------------------------------------------------
@@ -188,7 +188,7 @@ safari
 ```
 
 ```
-$ gfxtests list-browsers --adb
+$ webgfxtests list-browsers --adb
 
 Browsers on device: Oculus Go (serial: XXXXXXXXX)
 -----------------------------------------------------
@@ -205,7 +205,7 @@ canary
 ```
 
 ```
-$ gfxtests list-browsers --verbose
+$ webgfxtests list-browsers --verbose
 
 Browsers on device: PC (serial: )
 -----------------------------------------------------
@@ -256,11 +256,11 @@ $ gfxstart start-server [options]
 ## Run Tests
 Usage:
 ```
-$ gfxtests run [options] [testIds]
+$ webgfxtests run [options] [testIds]
 ```
 
 Options:
-* `-c, --configfile <configFile>`:  Config file (default `gfx-tests.config.json`)
+* `-c, --configfile <configFile>`:  Config file (default `webgfx-tests.config.json`)
 * `-p, --port <port_number>`: HTTP Server Port number (Default `3333`)
 * `-w, --wsport <port_number>`: WebSocket Port number (Default `8888`)
 * `-b, --browser <browsers name>`: Which browsers to use. Multiple browsers could be specified using comma separated, eg: `firefox,safari,chrome`.

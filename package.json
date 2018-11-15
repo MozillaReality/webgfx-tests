@@ -1,9 +1,9 @@
 {
-  "name": "gfx-tests",
+  "name": "webgfx-tests",
   "version": "0.3.1",
   "description": "Graphics Tests on the Web",
   "bin": {
-    "gfxtests": "src/main/index.js"
+    "webgfx-tests": "src/main/index.js"
   },
   "main": "src/main/index.js",
   "scripts": {
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fernandojsg/gfx-tests.git"
+    "url": "git+https://github.com/MozillaReality/webgfx-tests.git"
   },
-  "author": "Fernando Serrano <fernandojsg@gmail.com>",
+  "author": "webgfx-tests authors",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fernandojsg/gfx-tests/issues"
+    "url": "https://github.com/MozillaReality/webgfx-tests/issues"
   },
-  "homepage": "https://github.com/fernandojsg/gfx-tests#readme",
+  "homepage": "https://github.com/MozillaReality/webgfx-tests#readme",
   "dependencies": {
     "adb-toolkit": "^0.4.2",
     "body-parser": "^1.18.3",
@@ -44,7 +44,8 @@
     "query-string": "^6.2.0",
     "seedrandom": "^2.4.4",
     "socket.io": "^2.1.1",
-    "webgl-info": "^0.1.5"
+    "webgl-info": "^0.1.5",
+    "webgl-stats": "^0.2.0"
   },
   "devDependencies": {
     "concurrently": "^4.0.1",

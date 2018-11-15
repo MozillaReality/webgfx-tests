@@ -16,12 +16,12 @@ program
 program
   .command('list-tests')
   .description('Lists tests')
-  .option("-c, --configfile <configFile>", "Config file (default gfx-tests.config.json)")
+  .option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
   .option("-v, --verbose", "Show all the information available")
   .action((options) => {
     console.log('Tests list\n----------');
     
-    const configfile = options.configfile || 'gfx-tests.config.json';
+    const configfile = options.configfile || 'webgfx-tests.config.json';
     const testsDb = TestUtils.getTestsDb(configfile);
     if (testsDb === false) {
       console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
@@ -107,9 +107,9 @@ program
   .description('Start tests server')
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
-  .option("-c, --configfile <configFile>", "Config file (default gfx-tests.config.json)")
+  .option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
   .action(options => {
-    const configfile = options.configfile || 'gfx-tests.config.json';
+    const configfile = options.configfile || 'webgfx-tests.config.json';
 
     const config = TestUtils.getConfig(configfile);
     if (config === false) {
@@ -123,7 +123,7 @@ program
 program
   .command('run [testIDs]')
   .description('run tests')
-  .option("-c, --configfile <configFile>", "Config file (default gfx-tests.config.json)")
+  .option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
   .option("-b, --browser <browsers name>", "Which browsers to use (Comma separated)")
@@ -131,7 +131,7 @@ program
   .option("-n, --numtimes <number>", "Number of times to run each test")
   .option("-o, --outputfile <file>", "Store test results on a local file")
   .action((testIDs, options) => {
-    const configfile = options.configfile || 'gfx-tests.config.json';
+    const configfile = options.configfile || 'webgfx-tests.config.json';
 
     const config = TestUtils.getConfig(configfile);
     if (config === false) {

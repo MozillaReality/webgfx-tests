@@ -46,6 +46,9 @@
 		<a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - instancing demo (single triangle)
 		<div id="notSupported" style="display:none">Sorry your graphics card + browser does not support hardware instancing</div>
 	</div>
+	<script>
+	
+	</script>
 	<script src="dat.gui.min.js"></script>
 	<script src="three.js"></script>
 	<script src="Detector.js"></script>
@@ -110,9 +113,12 @@
 
 	<script>
 
+		let stats2;
+
 		if ( !Detector.webgl ) Detector.addGetWebGLMessage();
 
 		var container, stats;
+
 
 		var camera, scene, renderer;
 
@@ -120,7 +126,7 @@
 		animate();
 
 		function init() {
-
+			
 			container = document.getElementById( 'container' );
 
 			camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10 );
@@ -245,15 +251,15 @@
 		//
 
 
+
 		function animate() {
 
 			requestAnimationFrame( animate );
-
 			render();
-			stats.update();
-
 		}
 		var warmcount = 0;
+
+
 		function render() {
 
 			var time = performance.now();
@@ -276,6 +282,21 @@
 			renderer.render( scene, camera );
 
 		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	</script>
 

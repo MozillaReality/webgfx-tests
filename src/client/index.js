@@ -8,6 +8,7 @@ import EventListenerManager from './event-listeners';
 import InputHelpers from './input-helpers';
 import {resizeImageData} from './image-utils';
 import pixelmatch from 'pixelmatch';
+import WebGLStats from 'webgl-stats';
 
 const parameters = queryString.parse(location.search);
 
@@ -55,7 +56,14 @@ window.TESTER = {
   // Wallclock time for when we started CPU execution of the current frame.
   // var referenceTestT0 = -1;
 
+  postTick: function () {
+    WebGLStats.frameEnd();
+    // console.log('>>', JSON.stringify(WebGLStats.getCurrentData()));
+  },
+
   preTick: function() {
+    WebGLStats.frameStart();
+
     if (++this.referenceTestPreTickCalledCount == 1) {
       this.stats.frameStart();
 
@@ -65,6 +73,10 @@ window.TESTER = {
         if (CanvasHook.webglContexts) {
           this.canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1].canvas;
         }
+      }
+
+      if (this.referenceTestFrameNumber === 0) {
+        WebGLStats.setupExtensions(CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1]);
       }
 
       if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
@@ -664,7 +676,9 @@ window.TESTER = {
           callback(performance.now());
           this.tick();
           this.stats.frameEnd();
-              
+
+          this.postTick();
+          
           if (this.referenceTestFrameNumber === this.numFramesToRender) {
             this.benchmarkFinished();
             return;

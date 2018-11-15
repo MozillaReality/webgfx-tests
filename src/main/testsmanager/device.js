@@ -26,7 +26,7 @@ function getConfig(configFile) {
   configFile = path.resolve(configFile);
   try {
     if (fs.lstatSync(configFile).isDirectory()) {
-      configFile = path.join(configFile, 'gfx-tests.config.json');
+      configFile = path.join(configFile, 'webgfx-tests.config.json');
     }  
   } catch(err) {
 
