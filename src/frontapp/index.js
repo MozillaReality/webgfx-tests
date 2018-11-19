@@ -6,7 +6,6 @@ var data = {
   browserInfo: null,
   webglInfo: null,
   nativeSystemInfo: {},
-  showInfo: false,
   options: {
     general: {
       numTimesToRunEachTest: 1,
@@ -30,6 +29,9 @@ window.onload = (x) => {
     el: '#app',
     data: data,
     methods: {
+      prettyPrint(value) {
+        return prettyPrintJson.toHtml(value);
+      },
       formatNumeric(value) {
         return value.toFixed(2);
       },
@@ -42,7 +44,7 @@ window.onload = (x) => {
         testApp.runSelectedTests();
       },
       getBrowserInfo: function () {
-        return data.browserInfo ? JSON.stringify(data.browserInfo, null, 4) : 'Checking browser features...';
+        return data.browserInfo ? data.browserInfo : 'Checking browser features...';
       }
     }
   });

@@ -8,6 +8,7 @@
   "main": "src/main/index.js",
   "scripts": {
     "build": "rollup -c",
+    "watch": "rollup -c -w -m inline",
     "start": "node src/main/index.js start-server -c example-tests/gfx-tests.config.json",
     "test": "node src/main/index.js run all -c example-tests/gfx-tests.config.json",
     "dev": "concurrently --names \"ROLLUP,SERVER\" -c \"bgGreen.bold,bgBlue.bold\" \"rollup -c -w -m inline\" \"npm run start\""
@@ -44,11 +45,12 @@
     "query-string": "^6.2.0",
     "seedrandom": "^2.4.4",
     "socket.io": "^2.1.1",
+    "vue-json-pretty": "^1.4.1",
     "webgl-info": "^0.1.5",
     "webgl-stats": "^0.2.0"
   },
   "devDependencies": {
-    "concurrently": "^4.0.1",
+    "concurrently": "^4.1.0",
     "rollup": "^0.65.2",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^3.4.0"

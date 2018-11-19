@@ -272,14 +272,14 @@ window.TESTER = {
           
           var threshold = typeof GFXTESTS_CONFIG.referenceCompareThreshold === 'undefined' ? 0.2 : GFXTESTS_CONFIG.referenceCompareThreshold;
           var numDiffPixels = pixelmatch(expected, actual, diff.data, width, height, {threshold: threshold});
-          var diffPerc = (numDiffPixels / (width * height) * 100).toFixed(2);
+          var diffPerc = numDiffPixels / (width * height) * 100;
           
           var fail = diffPerc > 0.2; // diff perc 0 - 100%
           var result = {result: 'pass'};
 
           if (fail) {
             var divError = document.getElementById('reference-images-error');
-            divError.querySelector('h3').innerHTML = `ERROR: Reference image mismatch (${diffPerc}% different pixels)`;
+            divError.querySelector('h3').innerHTML = `ERROR: Reference image mismatch (${diffPerc.toFixed(2)}% different pixels)`;
             divError.style.display = 'block';
             result = {
               result: 'fail',
