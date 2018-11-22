@@ -114,7 +114,8 @@ export default class TestApp {
         var results = this.vueApp.resultsById[testID];
         if (results.length > 1) {
           var testResultsAverage = {};
-          testResultsAverage.test_id = `${testID} (${results.length} samples)`;
+          testResultsAverage.test_id = testID;
+          testResultsAverage.numSamples = results.length;
         
           function get70PercentAverage(getField) {
             function get70PercentArray() {
