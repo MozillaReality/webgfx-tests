@@ -104,19 +104,22 @@
                 </div>
               </div>
               <br>
-              <h2 class="subtitle">Results log</h2>
               <template>
+                <h2 class="subtitle">Results log</h2>
                 <b-table
                     :data="results"
                     paginated
                     per-page="10"
                     detailed
+                    striped
+                    narrowed
+                    v-if="results.length > 0"
                 >
+                
                   <template slot-scope="props">
                       <b-table-column field="test_id" label="ID" width="40" sortable>
                           {{ props.row.test_id }}
                       </b-table-column>
-          
                       <b-table-column field="options" label="Options" sortable>
                           {{ props.row.options }}
                       </b-table-column>    
@@ -143,11 +146,50 @@
                           {{ props.row.numStutterEvents }}
                       </b-table-column>
                   </template>
+                  
                   <template slot="detail" slot-scope="props">
                     <pre v-html="prettyPrint(JSON.parse(props.row.json))"></pre>
                   </template>
                 </b-table>
-              </template>        
+
+                <div v-if="resultsAverage.length > 0">
+                  <h2 class="subtitle">Results average by test ID</h2>
+                  <b-table :data="resultsAverage">
+                    <template slot-scope="props">
+                      <b-table-column field="test_id" label="ID" width="40" sortable>
+                          <b>{{ props.row.test_id }}</b>
+                      </b-table-column>
+                      <b-table-column field="numSamples" label="# Samples" width="40" sortable>
+                        {{ props.row.numSamples }}
+                      </b-table-column>
+                      <b-table-column field="totalTime" label="Total Time" width="40" sortable>
+                          {{ formatNumeric(props.row.totalTime) }}
+                      </b-table-column>
+                      <b-table-column field="cpuIdlePerc" label="CPU Idle %" width="40" sortable>
+                          {{ formatNumeric(props.row.cpuIdlePerc) }}
+                      </b-table-column>
+                      <b-table-column field="cpuIdleTime" label="CPU Idle time" width="40" sortable>
+                          {{ formatNumeric(props.row.cpuIdleTime) }}
+                      </b-table-column>
+                      <b-table-column field="cpuTime" label="CPU Time" width="40" sortable>
+                          {{ formatNumeric(props.row.cpuTime) }}
+                      </b-table-column>
+                      <b-table-column field="pageLoadTime" label="Page load time" width="40" sortable>
+                          {{ formatNumeric(props.row.pageLoadTime) }}
+                      </b-table-column>
+                      <b-table-column field="avgFps" label="Avg. FPS" width="40" sortable>
+                          {{ formatNumeric(props.row.avgFps) }}
+                      </b-table-column>
+                      <b-table-column field="timeToFirstFrame" label="Time to first frame" width="40" sortable>
+                          {{ formatNumeric(props.row.timeToFirstFrame) }}
+                      </b-table-column>
+                      <b-table-column field="numStutterEvents" label="# Janked frames" width="40" sortable>
+                          {{ formatNumeric(props.row.numStutterEvents) }}
+                      </b-table-column>
+                    </template>
+                  </b-table>    
+                </div>
+              </template>
           </b-tab-item>
           <b-tab-item label="System info">
             <h1 class="title">Browser environmnet</h1>
