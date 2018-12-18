@@ -20,9 +20,9 @@ TestsManagerBrowser.prototype = {
       currentGlobal: 1,
       tests: {}
     };
-      
+
     this.testsQueuedToRun = [];
-  
+
     for(var i = 0; i < this.selectedTests.length; i++) {
       for(var j = 0; j < numTimesToRunEachTest; j++) {
         this.testsQueuedToRun.push(this.selectedTests[i]);
@@ -32,9 +32,9 @@ TestsManagerBrowser.prototype = {
         }
       }
     }
-  
+
     this.runningTestsInProgress = true;
-  
+
     console.log('Browser tests', this.testsQueuedToRun);
     this.runNextQueuedTest();
   },
@@ -56,16 +56,17 @@ TestsManagerBrowser.prototype = {
       console.error('Test not found, id:', id);
       return;
     }
+
     console.log('Running test:', test.name);
 
-    const baseURL = 'http://localhost:3000/';
+    const baseURL = window.location.origin + '/';
     const url = buildTestURL(baseURL, test, mode, options, this.progress);
-  
+
     this.currentlyRunningTest.test = test;
     this.currentlyRunningTest.startTime = yyyymmddhhmmss();
     this.currentlyRunningTest.runUUID = generateUUID();
     this.currentlyRunningTest.options = options;
-    
+
     if (this.progress) {
       this.progress.tests[id].current++;
       this.progress.currentGlobal++;
@@ -83,11 +84,11 @@ TestsManagerBrowser.prototype = {
       'runUUID': this.currentlyRunningTest.runUUID,
       //!!!!!!!!!! 'runOrdinal': this.vueApp.resultsById[test.id] ? (this.vueApp.resultsById[test.id].length + 1) : 1
     };
-  
+
     //if (data.nativeSystemInfo && data.nativeSystemInfo.UUID) testData.hardwareUUID = data.nativeSystemInfo.UUID;
     //this.resultsServer.storeStart(testData);
   */
   }
-  
+
 
 }

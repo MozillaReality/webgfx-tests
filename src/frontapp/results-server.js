@@ -1,5 +1,4 @@
-var resultsServerUrl = 'http://localhost:3333/';
-
+var resultsServerUrl = window.location.origin + '/';
 var uploadResultsToResultsServer = true;
 
 export default class ResultsServer {
@@ -9,27 +8,30 @@ export default class ResultsServer {
   storeStart(results) {
     if (!uploadResultsToResultsServer) return;
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", resultsServerUrl + "store_test_start", true);
+    var url = `${resultsServerUrl}store_test_start`;
+    xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(results));
-    console.log('ResultsServer: Recorded test start to ' + resultsServerUrl + "store_test_start");
+    console.log(`ResultsServer: Recorded test start to ${url}`);
   }
 
   storeSystemInfo(results) {
     if (!uploadResultsToResultsServer) return;
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", resultsServerUrl + "store_system_info", true);
+    var url = `${resultsServerUrl}store_system_info`;
+    xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(results));
-    console.log('ResultsServer: Uploaded system info to ' + resultsServerUrl + "store_system_info");
+    console.log(`ResultsServer: Uploaded system info to ${url}`);
   }
 
   storeTestResults(results) {
     if (!uploadResultsToResultsServer) return;
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", resultsServerUrl + "store_test_results", true);
+    var url = `${resultsServerUrl}store_test_results`;
+    xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(results));
-    console.log('ResultsServer: Recorded test finish to ' + resultsServerUrl + "store_test_results");
-  }  
+    console.log(`ResultsServer: Recorded test finish to ${url}`);
+  }
 };
