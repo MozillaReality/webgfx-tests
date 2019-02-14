@@ -57,11 +57,11 @@ function getTestsDb(configFile) {
   return testsDb;
 }
 
-function TestsManager(device, tests, browsers, onFinish, options) {
+function TestsManager(device, tests, browsers, options) {
   this.tests = tests;
   this.device = device;
   this.browsers = browsers;
-  this.onFinish = onFinish;
+  // this.onFinish = onFinish;
   this.options = options;
   this.testsToRun = [];
   this.runningTest = null;
@@ -69,25 +69,30 @@ function TestsManager(device, tests, browsers, onFinish, options) {
 
 TestsManager.prototype = {
   runTests: function() {
-    this.testsToRun = [];
-    this.browsers.forEach(browser => {
-      this.tests.forEach(test => {
-        for (let i = 0; i < this.options.numTimes; i++) {
-          this.testsToRun.push({
-            test: test,
-            browser: browser
-          });
-        }
+    return new Promise(resolve => {
+      this.testsToRun = [];
+      this.browsers.forEach(browser => {
+        this.tests.forEach(test => {
+          for (let i = 0; i < this.options.numTimes; i++) {
+            this.testsToRun.push({
+              test: test,
+              browser: browser
+            });
+          }
+        });
       });
+      this.resolve = resolve;
+      this.runNextQueuedTest();
     });
-    this.runNextQueuedTest();
   },
-  runNextQueuedTest: function() {
+  runNextQueuedTest: function(resolve) {
     if (this.testsToRun.length > 0) {
       this.runningTest = this.testsToRun.shift();
       this.runTest(this.runningTest.browser, this.runningTest.test);
-    } else if (this.onFinish) {
-      this.onFinish();
+    } else if (this.resolve()) {
+      console.log(this.resolve);
+      this.resolve();
+      //this.onFinish();
     }
   },
   getRunningTest: function() {

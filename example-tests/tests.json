@@ -5,7 +5,7 @@
     "url": "threejs/misc_fps.html",
     "name": "fps controls",
     "mobile": true,
-    "numframes": 20,
+    "numframes": 100,
     "interactive": true,
     "input": "input/misc_fps.json"
   },
@@ -15,7 +15,7 @@
     "url": "threejs/webgl_interactive_draggablecubes.html",
     "name": "interactive draggable cubes",
     "mobile": true,
-    "numframes": 20,
+    "numframes": 100,
     "interactive": true,
     "referenceCompareThreshold": 0.5,
     "referencePercentageFail": 1.5,
@@ -28,7 +28,7 @@
     "url": "threejs/index.html",
     "name": "instanced circle billboards",
     "mobile": true,
-    "numframes": 20,
+    "numframes": 100,
     "interactive": true,
     "skipReferenceImageTest": true
   },

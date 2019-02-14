@@ -126,8 +126,9 @@ program
   .option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
-  .option("-b, --browser <browsers name>", "Which browsers to use (Comma separated)")
+  .option("-b, --browser <browser names>", "Which browsers to use (Comma separated)")
   .option("-a, --adb [devices]", "Use android devices through ADB")
+  .option("-p, --package <package names>", "Browser packages (apk) to install and execute the tests (Comma separated)")
   .option("-n, --numtimes <number>", "Number of times to run each test")
   .option("-o, --outputfile <file>", "Store test results on a local file")
   .action((testIDs, options) => {
@@ -212,9 +213,65 @@ program
       var testsManagers = {};
       var numRunningDevices = devices.length;
 
-      devices.forEach(device => {
-        console.log(`Running on device: ${chalk.yellow(device.name)} (serial: ${chalk.yellow(device.serial)})`);
-        device.getInstalledBrowsers().then(browsers => {
+      devices.forEach(async device => {
+        if (options.package) {
+          var browsersData = [
+            {
+              name: 'Firefox Reality', 
+              code: 'fxr', 
+              package: 'org.mozilla.vrbrowser'
+            },
+            {
+              name: 'Chrome', 
+              code: 'chrome',
+              package: 'com.android.chrome'
+            },
+            {
+              name: 'Chrome Canary', 
+              code: 'canary',
+              package: 'com.chrome.canary'
+            },
+            {
+              name: 'Oculus Browser', 
+              code: 'oculus',
+              package: 'com.oculus.browser'
+            }
+          ];
+          
+          async function asyncForEach(array, callback) {
+            for (let index = 0; index < array.length; index++) {
+              await callback(array[index], index, array);
+            }
+          }
+
+          var apks = options.package.split(',');
+
+          await asyncForEach(apks, async apk => {
+            var reader = await require('node-apk-parser-promise').load(apk)
+            var manifest = await reader.readManifest();
+            
+            // Got the APK's AndroidManifest.xml object
+            var browserData = browsersData.find(browserData => browserData.package === manifest.package);
+
+            if (!browserData) {
+              console.log('Unrecognized browser: ', manifest.package);
+            } else {
+              console.log(`Installing package ${chalk.yellow(apk)} (${chalk.yellow(browserData.name + ' v.' + manifest.versionName + ' - c.' + manifest.versionCode)}) on device: ${chalk.yellow(device.name)} (serial: ${chalk.yellow(device.serial)})`);
+
+              await device.removePackage(browserData.package);
+              await device.installAPK(apk);
+              var browsers = await device.getInstalledBrowsers();
+              var browsersToRun = browsers.filter(b => browserData.package === b.package);
+              var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, {numTimes: options.numtimes || 1});
+              await testsManager.runTests();
+            }
+            reader.close();
+          });
+          onTestsFinish();
+        } else {
+          var browsersToRun;
+          console.log(`Running on device: ${chalk.yellow(device.name)} (serial: ${chalk.yellow(device.serial)})`);
+          var browsers = await device.getInstalledBrowsers();
           browsersToRun = browsers;
           if (options.browser && options.browser !== 'all') {
             var browserOptions = options.browser.split(',');
@@ -229,10 +286,10 @@ program
   
           console.log(`Browsers to run on device ${chalk.green(device.name)}:`, browsersToRun.map(b => chalk.yellow(b.name)).join(', '));
     
-          var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, onTestsFinish, {numTimes: options.numtimes || 1});
-          testsManager.runTests();
-          //TestUtils.runTests(testsToRun, browsersToRun, onTestsFinish, {numTimes: options.numtimes || 1});
-        });          
+          var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, {numTimes: options.numtimes || 1});
+          await testsManager.runTests();
+          onTestsFinish();
+        }    
       });
     }
 });
