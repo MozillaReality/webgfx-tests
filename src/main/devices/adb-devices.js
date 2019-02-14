@@ -30,6 +30,16 @@ function ADB() {
           this.launchUrl(url, browser.code);
           resolve();
         });
+      },
+      removePackage: function(packageName) {
+        return new Promise(resolve => {
+          this.uninstallPackage(packageName, resolve);
+        });
+      },
+      installAPK: function(package) {
+        return new Promise(resolve => {
+          this.installPackage(package, resolve);
+        });
       }
     });
   });

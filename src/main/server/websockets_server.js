@@ -1,5 +1,6 @@
 var http = require('http');
 const PrettyPrint = require('../prettyprint');
+const chalk = require('chalk');
 
 
 function initWebSocketServer(port, testFinishedCallback) {
@@ -34,14 +35,13 @@ function initWebSocketServer(port, testFinishedCallback) {
     });
 
     socket.on('benchmark_started', (data) => {
-      console.log(`**********************************************************************\n* Benchmark started: `);
-      PrettyPrint.json(data);
+      console.log(`**********************************************************************\n* Benchmark started: ${chalk.yellow(data.id)}`);
     });
 
     socket.on('benchmark_finish', function (data) {
       console.log('* Benchmark has finished');
-      PrettyPrint.json(data);
-      console.log('\n');
+      //PrettyPrint.json(data);
+      //console.log('\n');
       if (data.test_id === 'instancing') {
         socket.emit('next_benchmark', {url: '/static/index2.html'});
       } else {
