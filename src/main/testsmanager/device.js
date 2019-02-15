@@ -22,7 +22,6 @@ var config = null;
 var testsDb = null;
 
 function getConfig(configFile) {
-  console.log(configFile);
   configFile = path.resolve(configFile);
   try {
     if (fs.lstatSync(configFile).isDirectory()) {
@@ -90,7 +89,6 @@ TestsManager.prototype = {
       this.runningTest = this.testsToRun.shift();
       this.runTest(this.runningTest.browser, this.runningTest.test);
     } else if (this.resolve()) {
-      console.log(this.resolve);
       this.resolve();
       //this.onFinish();
     }
@@ -110,7 +108,6 @@ TestsManager.prototype = {
     //@fixme port from params
     const baseURL = `http://${serverIP}:3000/`;
   
-    console.log(browser.info);
     var options = {
       showKeys: false,
       showMouse: false,

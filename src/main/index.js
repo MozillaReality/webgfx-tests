@@ -252,15 +252,17 @@ program
             var reader = await require('node-apk-parser-promise').load(apk)
             var manifest = await reader.readManifest();
             
-            // Got the APK's AndroidManifest.xml object
+            // Get the APK's AndroidManifest.xml object
             var browserData = browsersData.find(browserData => browserData.package === manifest.package);
 
             if (!browserData) {
               console.log('Unrecognized browser: ', manifest.package);
             } else {
               console.log(`Installing package ${chalk.yellow(apk)} (${chalk.yellow(browserData.name + ' v.' + manifest.versionName + ' - c.' + manifest.versionCode)}) on device: ${chalk.yellow(device.name)} (serial: ${chalk.yellow(device.serial)})`);
-
-              await device.removePackage(browserData.package);
+              
+              if (device.existAPK) {
+                await device.removeAPK(browserData.package);
+              }
               await device.installAPK(apk);
               var browsers = await device.getInstalledBrowsers();
 
@@ -299,10 +301,6 @@ program
           }
 
           browsersToRun.forEach(browser => {
-            //browser.apk = 'oculus-cpu.apk';
-            //browser.branch = 'oculus';
-            //const branch = browser.branch ? ' @' + browser.branch : '';
-            //const extraInfo = browser.apk + branch;
             const extraInfo = '';
             const versionName = browser.versionName ? 'v.' + browser.versionName : '';
             const versionCode = browser.versionCode ? 'v.' + browser.versionCode : '';

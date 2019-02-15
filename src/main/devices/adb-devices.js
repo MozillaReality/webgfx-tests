@@ -31,7 +31,7 @@ function ADB() {
           resolve();
         });
       },
-      removePackage: function(packageName) {
+      removeAPK: function(packageName) {
         return new Promise(resolve => {
           this.uninstallPackage(packageName, resolve);
         });
@@ -40,6 +40,9 @@ function ADB() {
         return new Promise(resolve => {
           this.installPackage(package, resolve);
         });
+      },
+      existAPK: function(packageName) {
+        return this.existPackage(packageName);
       }
     });
   });
