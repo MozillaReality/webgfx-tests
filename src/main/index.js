@@ -324,7 +324,7 @@ program
             const versionName = browser.versionName ? 'v.' + browser.versionName : '';
             const versionCode = browser.versionCode ? 'v.' + browser.versionCode : '';
 
-            browser.info = `${browser.name} ${versionName} ${versionCode} (${extraInfo})`;
+            browser.info = `${browser.name} ${versionName} ${versionCode} ${extraInfo}`;
           });
   
           console.log(`Browsers to run on device ${chalk.green(device.name)}:`, browsersToRun.map(b => chalk.yellow(b.name)).join(', '));

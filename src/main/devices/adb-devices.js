@@ -27,6 +27,11 @@ function ADB() {
       },
       launchBrowser: function(browser, url) {
         return new Promise(resolve => {
+          url = url.replace(/\(/gi, '%28');
+          url = url.replace(/\)/gi, '%29');
+          //url = encodeURI(url);
+          url = url.replace(/\&/gi, '\\&');
+      
           this.launchUrl(url, browser.code, {silent: false});
           resolve();
         });
