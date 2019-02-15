@@ -51,13 +51,6 @@ function initWebSocketServer(port, testFinishedCallback, verbose) {
       if (verbose) {
         PrettyPrint.json(data);
       }
-      //log('\n');
-      if (data.test_id === 'instancing') {
-        socket.emit('next_benchmark', {url: '/static/index2.html'});
-      } else {
-        //log(`**********************************************************************\nFINISHED.`);
-        // process.exit(0); 
-      }
       io.emit('benchmark_finished', data);
       if (testFinishedCallback) {
         testFinishedCallback(data);
