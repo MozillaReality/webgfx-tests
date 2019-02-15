@@ -173,7 +173,7 @@ program
 
     function onTestsFinish() {
       if (--numRunningDevices === 0) {
-        console.log('TESTS FINISHED!');
+        console.log(`\n${chalk.yellow('TESTS FINISHED')}!`);
         if (options.outputfile) {
           fs.appendFile(options.outputfile, ']', (err) => {  
             if (err) throw err;

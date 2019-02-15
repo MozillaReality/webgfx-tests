@@ -42,12 +42,12 @@ function initWebSocketServer(port, testFinishedCallback, verbose) {
     });
 
     socket.on('test_started', (data) => {
-      log(`* Test started: ${chalk.yellow(data.id)}`);
+      log(`  - Test started: ${chalk.yellow(data.id)}`);
     });
 
     socket.on('test_finish', function (data) {
       var res = data.result === 'pass' ? chalk.green('pass') : chalk.red(`failed (${data.failReason})`);
-      log(`  * Completed in ${ data.totalTime.toFixed(2) }ms. Result: ${res}`);
+      log(`  - Completed in ${ data.totalTime.toFixed(2) }ms. Result: ${res}`);
       if (verbose) {
         PrettyPrint.json(data);
       }
@@ -60,7 +60,7 @@ function initWebSocketServer(port, testFinishedCallback, verbose) {
   });
 
   server.listen(port, function () {
-    log('* WebSocket results server listening on *:' + port);
+    log('- WebSocket results server listening on *:' + port);
   });
 }
 
