@@ -27,7 +27,7 @@ function ADB() {
       },
       launchBrowser: function(browser, url) {
         return new Promise(resolve => {
-          this.launchUrl(url, browser.code);
+          this.launchUrl(url, browser.code, {silent: false});
           resolve();
         });
       },

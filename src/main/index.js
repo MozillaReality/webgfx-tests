@@ -9,6 +9,7 @@ const LocalDevice = require('./devices/local-device');
 const TestUtils = require('./testsmanager/device');
 const PrettyPrint = require('./prettyprint');
 const packageInfo = require('../../package.json');
+const path = require('path');
 
 program
   .version(packageInfo.version);
@@ -129,6 +130,7 @@ program
   .option("-b, --browser <browser names>", "Which browsers to use (Comma separated)")
   .option("-a, --adb [devices]", "Use android devices through ADB")
   .option("-p, --package <package names>", "Browser packages (apk) to install and execute the tests (Comma separated)")
+  .option("-i, --info <extra info>", "Add extra info to be displayed on the browser when running the test (eg: browser codename)")
   .option("-n, --numtimes <number>", "Number of times to run each test")
   .option("-o, --outputfile <file>", "Store test results on a local file")
   .action((testIDs, options) => {
@@ -261,7 +263,19 @@ program
               await device.removePackage(browserData.package);
               await device.installAPK(apk);
               var browsers = await device.getInstalledBrowsers();
+
               var browsersToRun = browsers.filter(b => browserData.package === b.package);
+
+              var browser = browsersToRun[0];
+
+              const apkFilename = path.basename(apk);
+              const extraInfo = `(${apkFilename} ${options.info ? options.info : ''})`;
+
+              const versionName = browser.versionName ? 'v.' + browser.versionName : '';
+              const versionCode = browser.versionCode ? 'v.' + browser.versionCode : '';
+
+              browser.info = `${browser.name} (${browser.package}) ${versionName} ${versionCode} ${extraInfo}`;
+
               var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, {numTimes: options.numtimes || 1});
               await testsManager.runTests();
             }
@@ -283,10 +297,22 @@ program
               if (err) throw err;
             });
           }
+
+          browsersToRun.forEach(browser => {
+            //browser.apk = 'oculus-cpu.apk';
+            //browser.branch = 'oculus';
+            //const branch = browser.branch ? ' @' + browser.branch : '';
+            //const extraInfo = browser.apk + branch;
+            const extraInfo = '';
+            const versionName = browser.versionName ? 'v.' + browser.versionName : '';
+            const versionCode = browser.versionCode ? 'v.' + browser.versionCode : '';
+
+            browser.info = `${browser.name} ${versionName} ${versionCode} (${extraInfo})`;
+          });
   
           console.log(`Browsers to run on device ${chalk.green(device.name)}:`, browsersToRun.map(b => chalk.yellow(b.name)).join(', '));
     
-          var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, {numTimes: options.numtimes || 1});
+          var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, {numTimes: options.numtimes || 1}, {});
           await testsManager.runTests();
           onTestsFinish();
         }    

@@ -12,7 +12,7 @@ export function TestsManagerBrowser(tests, options) {
 
 TestsManagerBrowser.prototype = {
   runFiltered: function(filterFn, generalOptions, testsOptions) {
-    this.options = testsOptions;
+    this.options = testsOptions; // ?
     this.selectedTests = this.tests.filter(filterFn);
     const numTimesToRunEachTest = Math.min(Math.max(parseInt(generalOptions.numTimesToRunEachTest), 1), 1000); // Clamp
     this.progress = {

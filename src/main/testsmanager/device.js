@@ -57,12 +57,12 @@ function getTestsDb(configFile) {
   return testsDb;
 }
 
-function TestsManager(device, tests, browsers, options) {
+function TestsManager(device, tests, browsers, generalOptions) {
   this.tests = tests;
   this.device = device;
   this.browsers = browsers;
   // this.onFinish = onFinish;
-  this.options = options;
+  this.generalOptions = generalOptions;
   this.testsToRun = [];
   this.runningTest = null;
 }
@@ -73,7 +73,7 @@ TestsManager.prototype = {
       this.testsToRun = [];
       this.browsers.forEach(browser => {
         this.tests.forEach(test => {
-          for (let i = 0; i < this.options.numTimes; i++) {
+          for (let i = 0; i < this.generalOptions.numTimes; i++) {
             this.testsToRun.push({
               test: test,
               browser: browser
@@ -110,10 +110,12 @@ TestsManager.prototype = {
     //@fixme port from params
     const baseURL = `http://${serverIP}:3000/`;
   
+    console.log(browser.info);
     var options = {
       showKeys: false,
       showMouse: false,
-      noCloseOnFail: false
+      noCloseOnFail: false,
+      infoOverlay: browser.info
     };
   
     console.log('* Running test:', chalk.yellow(test.id), 'on browser', chalk.yellow(browser.name),'on device', chalk.green(this.device.deviceProduct));
@@ -124,7 +126,6 @@ TestsManager.prototype = {
 
     var url = buildTestURL(baseURL, test, mode, options, progress);
     url = addGET(url, 'test-uuid=' + testUUID);
-    
     const killOnStart = false; //true;
   
     if (killOnStart) {

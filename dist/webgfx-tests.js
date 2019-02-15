@@ -2629,6 +2629,7 @@
 	const parameters = queryString.parse(location.search);
 
 	window.TESTER = {
+	  testtttt: 'qwer',
 	  ready: false,
 
 	  // Currently executing frame.
@@ -3200,6 +3201,30 @@
 	    });
 	  },
 
+	  addInfoOverlay: function() {
+	    window.onload = () => {
+	      console.log('>>>>', parameters['info-overlay']);
+	      if (typeof parameters['info-overlay'] === 'undefined') {
+	        return;
+	      }
+
+	      var divOverlay = document.createElement('div');
+	      divOverlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        font-family: Monospace;
+        color: #fff;
+        font-size: 12px;
+        text-align: center;
+        font-weight: normal;
+        background-color: rgb(95, 40, 136);
+        width: 100%;
+        padding: 5px`;
+	      document.body.appendChild(divOverlay);
+	      divOverlay.innerText = parameters['info-overlay'];
+	    };
+	  },
+
 	  addProgressBar: function() {
 	    window.onload = () => {
 	      if (typeof parameters['order-global'] === 'undefined') {
@@ -3242,34 +3267,7 @@
 	          divProgress.innerText = text;      }
 
 	      addProgressBarSection(`${orderTest}/${totalTest} ${percTest}%`, '#5bc0de', percTest);
-	      addProgressBarSection(`${orderGlobal}/${totalGlobal} ${percGlobal}%`, '#337ab7', percGlobal);
-	      return;
-	      /*
-			<div class="progress" style="width: 100%">
-					<div id="progressbar2" class="progress-bar" role="progressbar" style="width: 50%; background-color: #f0ad4e">
-						1/100 10%
-					</div>
-				</div>	
-	*/
-	      var div = document.createElement('div');
-	      var text = document.createTextNode('Test finished!');
-	      div.appendChild(text);
-	      div.style.cssText=`
-        align-items: center;
-        background-color: #999;
-        bottom: 0;
-        display: flex;
-        font-family: sans-serif
-        font-size: 100px;
-        justify-content: center;
-        left: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-        z-index: 9999;
-      `;
-	      document.body.appendChild(div);
-	      // console.log('Time spent generating reference images:', TESTER.stats.timeGeneratingReferenceImages);  
+	      addProgressBarSection(`${orderGlobal}/${totalGlobal} ${percGlobal}%`, '#337ab7', percGlobal); 
 	    };
 	  },
 
@@ -3315,6 +3313,7 @@
 	      this.hookRAF();
 	    }
 	    this.addProgressBar();
+	    this.addInfoOverlay();
 
 	    console.log('Frames to render:', this.numFramesToRender);
 

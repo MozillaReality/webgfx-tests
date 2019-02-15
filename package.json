@@ -9,8 +9,8 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w -m inline",
-    "start": "node src/main/index.js start-server -c example-tests/gfx-tests.config.json",
-    "test": "node src/main/index.js run all -c example-tests/gfx-tests.config.json",
+    "start": "node src/main/index.js start-server -c example-tests/webgfx-tests.config.json",
+    "test": "node src/main/index.js run all -c example-tests/webgfx-tests.config.json",
     "dev": "concurrently --names \"ROLLUP,SERVER\" -c \"bgGreen.bold,bgBlue.bold\" \"rollup -c -w -m inline\" \"npm run start\""
   },
   "repository": {
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/MozillaReality/webgfx-tests#readme",
   "dependencies": {
-    "adb-toolkit": "^0.4.5",
+    "adb-toolkit": "^0.4.8",
     "body-parser": "^1.18.3",
     "browser-features": "^1.2.1",
     "canvas-hook": "^0.4.0",

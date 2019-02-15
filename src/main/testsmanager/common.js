@@ -1,7 +1,8 @@
 const addGET = require('../../frontapp/utils').addGET;
 
 function buildTestURL(baseURL, test, mode, options, progress) {
-  var url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url;
+  //var url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url;
+  var url = '';
 
   if (mode !== 'interactive') {
     if (test.numframes) url = addGET(url, 'num-frames=' + test.numframes);
@@ -23,7 +24,18 @@ function buildTestURL(baseURL, test, mode, options, progress) {
     if (progress) {
       url = addGET(url, 'order-test=' + progress.tests[test.id].current + '&total-test=' + progress.tests[test.id].total);
       url = addGET(url, 'order-global=' + progress.currentGlobal + '&total-global=' + progress.totalGlobal);
-    }  
+    }
+
+    if (options.infoOverlay) {
+      url = addGET(url, 'info-overlay=' + encodeURI(options.infoOverlay));
+    }
+
+    url = url.replace(/\(/gi, '%28');
+    url = url.replace(/\)/gi, '%29');
+    //url = encodeURI(url);
+    url = url.replace(/\&/gi, '\\&');
+
+    url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url + url;
   }
   return url;
 }
