@@ -30,11 +30,6 @@ function buildTestURL(baseURL, test, mode, options, progress) {
       url = addGET(url, 'info-overlay=' + encodeURI(options.infoOverlay));
     }
 
-    url = url.replace(/\(/gi, '%28');
-    url = url.replace(/\)/gi, '%29');
-    //url = encodeURI(url);
-    url = url.replace(/\&/gi, '\\&');
-
     url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url + url;
   }
   return url;

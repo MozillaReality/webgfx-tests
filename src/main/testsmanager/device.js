@@ -122,6 +122,11 @@ TestsManager.prototype = {
     const progress = null;
 
     var url = buildTestURL(baseURL, test, mode, options, progress);
+    url = url.replace(/\(/gi, '%28');
+    url = url.replace(/\)/gi, '%29');
+    //url = encodeURI(url);
+    url = url.replace(/\&/gi, '\\&');
+
     url = addGET(url, 'test-uuid=' + testUUID);
     const killOnStart = false; //true;
   

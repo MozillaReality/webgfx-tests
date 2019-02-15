@@ -589,7 +589,6 @@ window.TESTER = {
 
   addInfoOverlay: function() {
     window.onload = () => {
-      console.log('>>>>', parameters['info-overlay']);
       if (typeof parameters['info-overlay'] === 'undefined') {
         return;
       }

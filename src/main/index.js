@@ -11,9 +11,15 @@ const PrettyPrint = require('./prettyprint');
 const packageInfo = require('../../package.json');
 const path = require('path');
 
+//-----------------------------------------------------------------------------
+// START SERVER
+//-----------------------------------------------------------------------------
 program
   .version(packageInfo.version);
 
+//-----------------------------------------------------------------------------
+// LIST TESTS
+//-----------------------------------------------------------------------------
 program
   .command('list-tests')
   .description('Lists tests')
@@ -25,7 +31,7 @@ program
     const configfile = options.configfile || 'webgfx-tests.config.json';
     const testsDb = TestUtils.getTestsDb(configfile);
     if (testsDb === false) {
-      console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
+      console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}. Please use ${chalk.yellow('-c <config filename>')}`);
       return;
     }
 
@@ -38,6 +44,9 @@ program
     }
   });
 
+//-----------------------------------------------------------------------------
+// LIST DEVICES
+//-----------------------------------------------------------------------------
 program
   .command('list-devices')
   .description('Lists ADB devices')
@@ -70,6 +79,9 @@ function getDevices(adb) {
   return devices;
 }
 
+//-----------------------------------------------------------------------------
+// LIST BROWSERS
+//-----------------------------------------------------------------------------
 program
   .command('list-browsers')
   .description('List browsers')
@@ -103,12 +115,16 @@ program
     });
   });
 
+//-----------------------------------------------------------------------------
+// START SERVER
+//-----------------------------------------------------------------------------
 program
   .command('start-server')
   .description('Start tests server')
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
   .option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
+  .option("-v, --verbose", "Show all the information available")
   .action(options => {
     const configfile = options.configfile || 'webgfx-tests.config.json';
 
@@ -116,11 +132,14 @@ program
     if (config === false) {
       console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
     } else {
-      initHTTPServer(options.port, config);
-      initWebSocketServer(options.wsport);  
+      initHTTPServer(options.port, config, options.verbose);
+      initWebSocketServer(options.wsport, null, options.verbose);
     }
   });
 
+//-----------------------------------------------------------------------------
+// RUN TESTS
+//-----------------------------------------------------------------------------
 program
   .command('run [testIDs]')
   .description('run tests')

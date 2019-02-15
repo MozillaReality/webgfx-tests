@@ -1193,13 +1193,7 @@
 	      url = addGET$1(url, 'info-overlay=' + encodeURI(options.infoOverlay));
 	    }
 
-	    url = url.replace(/\(/gi, '%28');
-	    url = url.replace(/\)/gi, '%29');
-	    //url = encodeURI(url);
-	    url = url.replace(/\&/gi, '\\&');
-
 	    url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url + url;
-	    console.log(url);
 	  }
 	  return url;
 	}

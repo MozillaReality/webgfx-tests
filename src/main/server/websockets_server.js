@@ -2,9 +2,16 @@ var http = require('http');
 const PrettyPrint = require('../prettyprint');
 const chalk = require('chalk');
 
-
-function initWebSocketServer(port, testFinishedCallback) {
+function initWebSocketServer(port, testFinishedCallback, verbose) {
+  verbose = verbose || false;
   port = port || 8888;
+
+  function log(msg) {
+    //if (verbose) 
+    { 
+      console.log(msg); 
+    }
+  }
 
   var server = http.createServer(function(req,res){
     // Set CORS headers
@@ -25,27 +32,30 @@ function initWebSocketServer(port, testFinishedCallback) {
   io.set('origins', '*:*');
 
   io.sockets.on('connection', function (socket) {
-    // console.log('Client connected');
+    // log('Client connected');
     socket.on('disconnect', () => {
 
     });
     
     socket.on('log', (data) => {
-      console.log(`[LOGGER]`, data);
+      log(`[LOGGER]`, data);
     });
 
     socket.on('benchmark_started', (data) => {
-      console.log(`**********************************************************************\n* Benchmark started: ${chalk.yellow(data.id)}`);
+      log(`* Test started: ${chalk.yellow(data.id)}`);
     });
 
     socket.on('benchmark_finish', function (data) {
-      console.log('* Benchmark has finished');
-      //PrettyPrint.json(data);
-      //console.log('\n');
+      var res = data.result === 'pass' ? chalk.green('pass') : chalk.red(`failed (${data.failReason})`);
+      log(`  * Completed in ${ data.totalTime.toFixed(2) }ms. Result: ${res}`);
+      if (verbose) {
+        PrettyPrint.json(data);
+      }
+      //log('\n');
       if (data.test_id === 'instancing') {
         socket.emit('next_benchmark', {url: '/static/index2.html'});
       } else {
-        //console.log(`**********************************************************************\nFINISHED.`);
+        //log(`**********************************************************************\nFINISHED.`);
         // process.exit(0); 
       }
       io.emit('benchmark_finished', data);
@@ -57,7 +67,7 @@ function initWebSocketServer(port, testFinishedCallback) {
   });
 
   server.listen(port, function () {
-    console.log('* WebSocket results server listening on *:' + port);
+    log('* WebSocket results server listening on *:' + port);
   });
 }
 
