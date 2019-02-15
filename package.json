@@ -28,7 +28,7 @@
     "body-parser": "^1.18.3",
     "browser-features": "^1.2.1",
     "canvas-hook": "^0.4.0",
-    "chalk": "^2.4.1",
+    "chalk": "^2.4.2",
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.19.0",
     "detect-browsers": "^3.3.0",
@@ -45,10 +45,10 @@
     "ps-node": "^0.1.6",
     "query-string": "^6.2.0",
     "seedrandom": "^2.4.4",
-    "socket.io": "^2.1.1",
+    "socket.io": "^2.2.0",
     "vue-json-pretty": "^1.4.1",
     "webgl-info": "^0.1.5",
-    "webgl-stats": "^0.2.0"
+    "webgl-stats": "^0.2.1"
   },
   "devDependencies": {
     "concurrently": "^4.1.0",
