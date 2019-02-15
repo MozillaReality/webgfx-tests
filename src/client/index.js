@@ -191,7 +191,7 @@ window.TESTER = {
 
     a.appendChild(label);
 
-    document.getElementById('benchmark_images').appendChild(a);
+    document.getElementById('test_images').appendChild(a);
   },
 
   // XHRs in the expected render output image, always 'reference.png' in the root directory of the test.
@@ -289,7 +289,7 @@ window.TESTER = {
               failReason: 'Reference image mismatch'
             };
               
-            var benchmarkDiv = document.getElementById('benchmark_finished');
+            var benchmarkDiv = document.getElementById('test_finished');
             benchmarkDiv.className = 'fail';
             benchmarkDiv.querySelector('h1').innerText = 'Test failed!';
 
@@ -302,7 +302,7 @@ window.TESTER = {
             resolve(result);
           }
         }).catch(() => {
-          var benchmarkDiv = document.getElementById('benchmark_finished');
+          var benchmarkDiv = document.getElementById('test_finished');
           benchmarkDiv.className = 'fail';
           benchmarkDiv.querySelector('h1').innerText = 'Test failed!';
 
@@ -345,7 +345,7 @@ window.TESTER = {
       console.log(error);
     });
 
-    this.socket.emit('benchmark_started', {id: GFXTESTS_CONFIG.id});
+    this.socket.emit('test_started', {id: GFXTESTS_CONFIG.id});
 
     this.socket.on('next_benchmark', (data) => {
       console.log('next_benchmark', data);
@@ -379,7 +379,7 @@ window.TESTER = {
       link.className = 'button';
       link.onclick = () => saveString(json, GFXTESTS_CONFIG.id + '.json', 'application/json');
       link.appendChild(document.createTextNode(`Download input JSON`)); // (${this.inputRecorder.events.length} events recorded)
-      document.getElementById('benchmark_finished').appendChild(link);
+      document.getElementById('test_finished').appendChild(link);
   },
 
   generateBenchmarkResult: function () {
@@ -431,7 +431,7 @@ window.TESTER = {
 
     var style = document.createElement('style');
     style.innerHTML = `
-      #benchmark_finished {
+      #test_finished {
         align-items: center;
         background-color: #ddd;
         bottom: 0;
@@ -449,25 +449,25 @@ window.TESTER = {
         flex-direction: column;
       }
       
-      #benchmark_finished.pass {
+      #test_finished.pass {
         background-color: #9f9;
       }
 
-      #benchmark_finished.fail {
+      #test_finished.fail {
         background-color: #f99;
       }
 
-      #benchmark_images {
+      #test_images {
         margin-bottom: 20px;
       }
 
-      #benchmark_images img {
+      #test_images img {
         width: 300px;
         border: 1px solid #007095;
       }
 
       /*
-      #benchmark_images img:hover {
+      #test_images img:hover {
         top: 0px; 
         left: 0px;
         height: 80%; 
@@ -476,7 +476,7 @@ window.TESTER = {
       }
       */
 
-      #benchmark_finished .button {
+      #test_finished .button {
         background-color: #007095;
         border-color: #007095;
         margin-bottom: 10px;
@@ -494,7 +494,7 @@ window.TESTER = {
         transition: background-color 300ms ease-out;
       }
 
-      #benchmark_finished .button:hover {
+      #test_finished .button:hover {
         background-color: #0078a0;
       }
     `;
@@ -502,7 +502,7 @@ window.TESTER = {
 
     var div = document.createElement('div');
     div.innerHTML = `<h1>Test finished!</h1>`;
-    div.id = 'benchmark_finished';
+    div.id = 'test_finished';
     div.style.visibility = 'hidden';
     
     var divReferenceError = document.createElement('div');
@@ -513,7 +513,7 @@ window.TESTER = {
 
     div.appendChild(divReferenceError);
     var divImg = document.createElement('div');
-    divImg.id = 'benchmark_images';
+    divImg.id = 'test_images';
     divReferenceError.appendChild(divImg);
 
     document.body.appendChild(div);
@@ -531,7 +531,7 @@ window.TESTER = {
     }
 
     if (this.inputRecorder) {
-      document.getElementById('benchmark_finished').style.visibility = 'visible';
+      document.getElementById('test_finished').style.visibility = 'visible';
       document.getElementById('reference-images-error').style.display = 'block';
     } else {
       this.generateBenchmarkResult().then(result => {
@@ -539,11 +539,11 @@ window.TESTER = {
           if (parameters['test-uuid']) {
             result.testUUID = parameters['test-uuid'];
           }
-          this.socket.emit('benchmark_finish', result);
+          this.socket.emit('test_finish', result);
           this.socket.disconnect();
         }
     
-        var benchmarkDiv = document.getElementById('benchmark_finished');
+        var benchmarkDiv = document.getElementById('test_finished');
         benchmarkDiv.className = result.result;
         if (result.result === 'pass') {
           benchmarkDiv.querySelector('h1').innerText = 'Test passed!';

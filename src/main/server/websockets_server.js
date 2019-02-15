@@ -41,17 +41,17 @@ function initWebSocketServer(port, testFinishedCallback, verbose) {
       log(`[LOGGER]`, data);
     });
 
-    socket.on('benchmark_started', (data) => {
+    socket.on('test_started', (data) => {
       log(`* Test started: ${chalk.yellow(data.id)}`);
     });
 
-    socket.on('benchmark_finish', function (data) {
+    socket.on('test_finish', function (data) {
       var res = data.result === 'pass' ? chalk.green('pass') : chalk.red(`failed (${data.failReason})`);
       log(`  * Completed in ${ data.totalTime.toFixed(2) }ms. Result: ${res}`);
       if (verbose) {
         PrettyPrint.json(data);
       }
-      io.emit('benchmark_finished', data);
+      io.emit('test_finished', data);
       if (testFinishedCallback) {
         testFinishedCallback(data);
       }

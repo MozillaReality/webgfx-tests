@@ -1360,7 +1360,7 @@
 	      console.log('Connected to testing server');
 	    });
 	    
-	    this.socket.on('benchmark_finished', (result) => {
+	    this.socket.on('test_finished', (result) => {
 	      result.json = JSON.stringify(result, null, 4);
 	      var options = JSON.parse(JSON.stringify(this.vueApp.options.tests));
 
