@@ -175,6 +175,7 @@ program
       if (--numRunningDevices === 0) {
         console.log(`\n${chalk.yellow('TESTS FINISHED')}!`);
         if (options.outputfile) {
+          console.log(`Writing output file: ${chalk.yellow(options.outputfile)}`);
           fs.appendFile(options.outputfile, ']', (err) => {  
             if (err) throw err;
             process.exit();
