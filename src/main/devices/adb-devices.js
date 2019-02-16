@@ -27,11 +27,16 @@ function ADB() {
       },
       launchBrowser: function(browser, url) {
         return new Promise(resolve => {
-          this.launchUrl(url, browser.code);
+          url = url.replace(/\(/gi, '%28');
+          url = url.replace(/\)/gi, '%29');
+          //url = encodeURI(url);
+          url = url.replace(/\&/gi, '\\&');
+      
+          this.launchUrl(url, browser.code, {silent: false});
           resolve();
         });
       },
-      removePackage: function(packageName) {
+      removeAPK: function(packageName) {
         return new Promise(resolve => {
           this.uninstallPackage(packageName, resolve);
         });
@@ -40,6 +45,9 @@ function ADB() {
         return new Promise(resolve => {
           this.installPackage(package, resolve);
         });
+      },
+      existAPK: function(packageName) {
+        return this.existPackage(packageName);
       }
     });
   });

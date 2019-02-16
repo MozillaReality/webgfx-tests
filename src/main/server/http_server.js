@@ -9,8 +9,13 @@ var bodyParser = require('body-parser')
 
 const baseFolder = '/../../../';
 
-function initServer(port, config) {
+function initServer(port, config, verbose) {
   port = port || 3000;
+  verbose = verbose || false;
+
+  function log(msg) {
+    if (verbose) { console.log(msg); }
+  }
 
   let server = express();
 
@@ -75,7 +80,8 @@ function initServer(port, config) {
     });
   
   server.listen(port, function(){
-    console.log('* HTTP Tests server listening on ' + chalk.yellow('*:' + port));
+    var serverIP = internalIp.v4.sync() || 'localhost';
+    console.log('* HTTP Tests server listening on ' + chalk.yellow(serverIP + ':' + port));
   });  
 }
 

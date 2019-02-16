@@ -2504,7 +2504,7 @@
 	    };
 	  }
 	  
-	  if (WebGL2RenderingContext) {
+	  if ('WebGL2RenderingContext' in window) {
 	    WebGL2RenderingContext.prototype.drawArraysInstanced = _h( WebGL2RenderingContext.prototype.drawArraysInstanced, function () {
 	      data.numDrawArraysInstancedCalls++;
 	      data.numDrawCalls++;
@@ -2629,6 +2629,7 @@
 	const parameters = queryString.parse(location.search);
 
 	window.TESTER = {
+	  testtttt: 'qwer',
 	  ready: false,
 
 	  // Currently executing frame.
@@ -2804,7 +2805,7 @@
 
 	    a.appendChild(label);
 
-	    document.getElementById('benchmark_images').appendChild(a);
+	    document.getElementById('test_images').appendChild(a);
 	  },
 
 	  // XHRs in the expected render output image, always 'reference.png' in the root directory of the test.
@@ -2902,7 +2903,7 @@
 	              failReason: 'Reference image mismatch'
 	            };
 	              
-	            var benchmarkDiv = document.getElementById('benchmark_finished');
+	            var benchmarkDiv = document.getElementById('test_finished');
 	            benchmarkDiv.className = 'fail';
 	            benchmarkDiv.querySelector('h1').innerText = 'Test failed!';
 
@@ -2915,7 +2916,7 @@
 	            resolve(result);
 	          }
 	        }).catch(() => {
-	          var benchmarkDiv = document.getElementById('benchmark_finished');
+	          var benchmarkDiv = document.getElementById('test_finished');
 	          benchmarkDiv.className = 'fail';
 	          benchmarkDiv.querySelector('h1').innerText = 'Test failed!';
 
@@ -2958,7 +2959,7 @@
 	      console.log(error);
 	    });
 
-	    this.socket.emit('benchmark_started', {id: GFXTESTS_CONFIG.id});
+	    this.socket.emit('test_started', {id: GFXTESTS_CONFIG.id});
 
 	    this.socket.on('next_benchmark', (data) => {
 	      console.log('next_benchmark', data);
@@ -2992,7 +2993,7 @@
 	      link.className = 'button';
 	      link.onclick = () => saveString(json, GFXTESTS_CONFIG.id + '.json', 'application/json');
 	      link.appendChild(document.createTextNode(`Download input JSON`)); // (${this.inputRecorder.events.length} events recorded)
-	      document.getElementById('benchmark_finished').appendChild(link);
+	      document.getElementById('test_finished').appendChild(link);
 	  },
 
 	  generateBenchmarkResult: function () {
@@ -3044,7 +3045,7 @@
 
 	    var style = document.createElement('style');
 	    style.innerHTML = `
-      #benchmark_finished {
+      #test_finished {
         align-items: center;
         background-color: #ddd;
         bottom: 0;
@@ -3062,25 +3063,25 @@
         flex-direction: column;
       }
       
-      #benchmark_finished.pass {
+      #test_finished.pass {
         background-color: #9f9;
       }
 
-      #benchmark_finished.fail {
+      #test_finished.fail {
         background-color: #f99;
       }
 
-      #benchmark_images {
+      #test_images {
         margin-bottom: 20px;
       }
 
-      #benchmark_images img {
+      #test_images img {
         width: 300px;
         border: 1px solid #007095;
       }
 
       /*
-      #benchmark_images img:hover {
+      #test_images img:hover {
         top: 0px; 
         left: 0px;
         height: 80%; 
@@ -3089,7 +3090,7 @@
       }
       */
 
-      #benchmark_finished .button {
+      #test_finished .button {
         background-color: #007095;
         border-color: #007095;
         margin-bottom: 10px;
@@ -3107,7 +3108,7 @@
         transition: background-color 300ms ease-out;
       }
 
-      #benchmark_finished .button:hover {
+      #test_finished .button:hover {
         background-color: #0078a0;
       }
     `;
@@ -3115,7 +3116,7 @@
 
 	    var div = document.createElement('div');
 	    div.innerHTML = `<h1>Test finished!</h1>`;
-	    div.id = 'benchmark_finished';
+	    div.id = 'test_finished';
 	    div.style.visibility = 'hidden';
 	    
 	    var divReferenceError = document.createElement('div');
@@ -3126,7 +3127,7 @@
 
 	    div.appendChild(divReferenceError);
 	    var divImg = document.createElement('div');
-	    divImg.id = 'benchmark_images';
+	    divImg.id = 'test_images';
 	    divReferenceError.appendChild(divImg);
 
 	    document.body.appendChild(div);
@@ -3144,7 +3145,7 @@
 	    }
 
 	    if (this.inputRecorder) {
-	      document.getElementById('benchmark_finished').style.visibility = 'visible';
+	      document.getElementById('test_finished').style.visibility = 'visible';
 	      document.getElementById('reference-images-error').style.display = 'block';
 	    } else {
 	      this.generateBenchmarkResult().then(result => {
@@ -3152,11 +3153,11 @@
 	          if (parameters['test-uuid']) {
 	            result.testUUID = parameters['test-uuid'];
 	          }
-	          this.socket.emit('benchmark_finish', result);
+	          this.socket.emit('test_finish', result);
 	          this.socket.disconnect();
 	        }
 	    
-	        var benchmarkDiv = document.getElementById('benchmark_finished');
+	        var benchmarkDiv = document.getElementById('test_finished');
 	        benchmarkDiv.className = result.result;
 	        if (result.result === 'pass') {
 	          benchmarkDiv.querySelector('h1').innerText = 'Test passed!';
@@ -3198,6 +3199,29 @@
 	        };
 	      }
 	    });
+	  },
+
+	  addInfoOverlay: function() {
+	    window.onload = () => {
+	      if (typeof parameters['info-overlay'] === 'undefined') {
+	        return;
+	      }
+
+	      var divOverlay = document.createElement('div');
+	      divOverlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        font-family: Monospace;
+        color: #fff;
+        font-size: 12px;
+        text-align: center;
+        font-weight: normal;
+        background-color: rgb(95, 40, 136);
+        width: 100%;
+        padding: 5px`;
+	      document.body.appendChild(divOverlay);
+	      divOverlay.innerText = parameters['info-overlay'];
+	    };
 	  },
 
 	  addProgressBar: function() {
@@ -3242,34 +3266,7 @@
 	          divProgress.innerText = text;      }
 
 	      addProgressBarSection(`${orderTest}/${totalTest} ${percTest}%`, '#5bc0de', percTest);
-	      addProgressBarSection(`${orderGlobal}/${totalGlobal} ${percGlobal}%`, '#337ab7', percGlobal);
-	      return;
-	      /*
-			<div class="progress" style="width: 100%">
-					<div id="progressbar2" class="progress-bar" role="progressbar" style="width: 50%; background-color: #f0ad4e">
-						1/100 10%
-					</div>
-				</div>	
-	*/
-	      var div = document.createElement('div');
-	      var text = document.createTextNode('Test finished!');
-	      div.appendChild(text);
-	      div.style.cssText=`
-        align-items: center;
-        background-color: #999;
-        bottom: 0;
-        display: flex;
-        font-family: sans-serif
-        font-size: 100px;
-        justify-content: center;
-        left: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-        z-index: 9999;
-      `;
-	      document.body.appendChild(div);
-	      // console.log('Time spent generating reference images:', TESTER.stats.timeGeneratingReferenceImages);  
+	      addProgressBarSection(`${orderGlobal}/${totalGlobal} ${percGlobal}%`, '#337ab7', percGlobal); 
 	    };
 	  },
 
@@ -3315,6 +3312,7 @@
 	      this.hookRAF();
 	    }
 	    this.addProgressBar();
+	    this.addInfoOverlay();
 
 	    console.log('Frames to render:', this.numFramesToRender);
 

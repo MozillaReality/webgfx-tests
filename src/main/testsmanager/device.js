@@ -22,7 +22,6 @@ var config = null;
 var testsDb = null;
 
 function getConfig(configFile) {
-  console.log(configFile);
   configFile = path.resolve(configFile);
   try {
     if (fs.lstatSync(configFile).isDirectory()) {
@@ -57,12 +56,12 @@ function getTestsDb(configFile) {
   return testsDb;
 }
 
-function TestsManager(device, tests, browsers, options) {
+function TestsManager(device, tests, browsers, generalOptions) {
   this.tests = tests;
   this.device = device;
   this.browsers = browsers;
   // this.onFinish = onFinish;
-  this.options = options;
+  this.generalOptions = generalOptions;
   this.testsToRun = [];
   this.runningTest = null;
 }
@@ -73,7 +72,7 @@ TestsManager.prototype = {
       this.testsToRun = [];
       this.browsers.forEach(browser => {
         this.tests.forEach(test => {
-          for (let i = 0; i < this.options.numTimes; i++) {
+          for (let i = 0; i < this.generalOptions.numTimes; i++) {
             this.testsToRun.push({
               test: test,
               browser: browser
@@ -90,7 +89,6 @@ TestsManager.prototype = {
       this.runningTest = this.testsToRun.shift();
       this.runTest(this.runningTest.browser, this.runningTest.test);
     } else if (this.resolve()) {
-      console.log(this.resolve);
       this.resolve();
       //this.onFinish();
     }
@@ -113,7 +111,8 @@ TestsManager.prototype = {
     var options = {
       showKeys: false,
       showMouse: false,
-      noCloseOnFail: false
+      noCloseOnFail: false,
+      infoOverlay: browser.info
     };
   
     console.log('* Running test:', chalk.yellow(test.id), 'on browser', chalk.yellow(browser.name),'on device', chalk.green(this.device.deviceProduct));
@@ -123,8 +122,8 @@ TestsManager.prototype = {
     const progress = null;
 
     var url = buildTestURL(baseURL, test, mode, options, progress);
+
     url = addGET(url, 'test-uuid=' + testUUID);
-    
     const killOnStart = false; //true;
   
     if (killOnStart) {

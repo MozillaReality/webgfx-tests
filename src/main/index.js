@@ -9,10 +9,17 @@ const LocalDevice = require('./devices/local-device');
 const TestUtils = require('./testsmanager/device');
 const PrettyPrint = require('./prettyprint');
 const packageInfo = require('../../package.json');
+const path = require('path');
 
+//-----------------------------------------------------------------------------
+// START SERVER
+//-----------------------------------------------------------------------------
 program
   .version(packageInfo.version);
 
+//-----------------------------------------------------------------------------
+// LIST TESTS
+//-----------------------------------------------------------------------------
 program
   .command('list-tests')
   .description('Lists tests')
@@ -24,7 +31,7 @@ program
     const configfile = options.configfile || 'webgfx-tests.config.json';
     const testsDb = TestUtils.getTestsDb(configfile);
     if (testsDb === false) {
-      console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
+      console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}. Please use ${chalk.yellow('-c <config filename>')}`);
       return;
     }
 
@@ -37,6 +44,9 @@ program
     }
   });
 
+//-----------------------------------------------------------------------------
+// LIST DEVICES
+//-----------------------------------------------------------------------------
 program
   .command('list-devices')
   .description('Lists ADB devices')
@@ -69,6 +79,9 @@ function getDevices(adb) {
   return devices;
 }
 
+//-----------------------------------------------------------------------------
+// LIST BROWSERS
+//-----------------------------------------------------------------------------
 program
   .command('list-browsers')
   .description('List browsers')
@@ -102,12 +115,16 @@ program
     });
   });
 
+//-----------------------------------------------------------------------------
+// START SERVER
+//-----------------------------------------------------------------------------
 program
   .command('start-server')
   .description('Start tests server')
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
   .option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
+  .option("-v, --verbose", "Show all the information available")
   .action(options => {
     const configfile = options.configfile || 'webgfx-tests.config.json';
 
@@ -115,11 +132,14 @@ program
     if (config === false) {
       console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
     } else {
-      initHTTPServer(options.port, config);
-      initWebSocketServer(options.wsport);  
+      initHTTPServer(options.port, config, options.verbose);
+      initWebSocketServer(options.wsport, null, options.verbose);
     }
   });
 
+//-----------------------------------------------------------------------------
+// RUN TESTS
+//-----------------------------------------------------------------------------
 program
   .command('run [testIDs]')
   .description('run tests')
@@ -129,6 +149,7 @@ program
   .option("-b, --browser <browser names>", "Which browsers to use (Comma separated)")
   .option("-a, --adb [devices]", "Use android devices through ADB")
   .option("-p, --package <package names>", "Browser packages (apk) to install and execute the tests (Comma separated)")
+  .option("-i, --info <extra info>", "Add extra info to be displayed on the browser when running the test (eg: browser codename)")
   .option("-n, --numtimes <number>", "Number of times to run each test")
   .option("-o, --outputfile <file>", "Store test results on a local file")
   .action((testIDs, options) => {
@@ -152,8 +173,9 @@ program
 
     function onTestsFinish() {
       if (--numRunningDevices === 0) {
-        console.log('TESTS FINISHED!');
+        console.log(`\n${chalk.yellow('TESTS FINISHED')}!`);
         if (options.outputfile) {
+          console.log(`Writing output file: ${chalk.yellow(options.outputfile)}`);
           fs.appendFile(options.outputfile, ']', (err) => {  
             if (err) throw err;
             process.exit();
@@ -250,18 +272,32 @@ program
             var reader = await require('node-apk-parser-promise').load(apk)
             var manifest = await reader.readManifest();
             
-            // Got the APK's AndroidManifest.xml object
+            // Get the APK's AndroidManifest.xml object
             var browserData = browsersData.find(browserData => browserData.package === manifest.package);
 
             if (!browserData) {
               console.log('Unrecognized browser: ', manifest.package);
             } else {
               console.log(`Installing package ${chalk.yellow(apk)} (${chalk.yellow(browserData.name + ' v.' + manifest.versionName + ' - c.' + manifest.versionCode)}) on device: ${chalk.yellow(device.name)} (serial: ${chalk.yellow(device.serial)})`);
-
-              await device.removePackage(browserData.package);
+              
+              if (device.existAPK) {
+                await device.removeAPK(browserData.package);
+              }
               await device.installAPK(apk);
               var browsers = await device.getInstalledBrowsers();
+
               var browsersToRun = browsers.filter(b => browserData.package === b.package);
+
+              var browser = browsersToRun[0];
+
+              const apkFilename = path.basename(apk);
+              const extraInfo = `(${apkFilename} ${options.info ? options.info : ''})`;
+
+              const versionName = browser.versionName ? 'v.' + browser.versionName : '';
+              const versionCode = browser.versionCode ? 'v.' + browser.versionCode : '';
+
+              browser.info = `${browser.name} (${browser.package}) ${versionName} ${versionCode} ${extraInfo}`;
+
               var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, {numTimes: options.numtimes || 1});
               await testsManager.runTests();
             }
@@ -283,10 +319,18 @@ program
               if (err) throw err;
             });
           }
+
+          browsersToRun.forEach(browser => {
+            const extraInfo = '';
+            const versionName = browser.versionName ? 'v.' + browser.versionName : '';
+            const versionCode = browser.versionCode ? 'v.' + browser.versionCode : '';
+
+            browser.info = `${browser.name} ${versionName} ${versionCode} ${extraInfo}`;
+          });
   
           console.log(`Browsers to run on device ${chalk.green(device.name)}:`, browsersToRun.map(b => chalk.yellow(b.name)).join(', '));
     
-          var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, {numTimes: options.numtimes || 1});
+          var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, {numTimes: options.numtimes || 1}, {});
           await testsManager.runTests();
           onTestsFinish();
         }    

@@ -1,6 +1,6 @@
 {
   "name": "webgfx-tests",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Graphics Tests on the Web",
   "bin": {
     "webgfx-tests": "src/main/index.js"
@@ -9,8 +9,8 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w -m inline",
-    "start": "node src/main/index.js start-server -c example-tests/gfx-tests.config.json",
-    "test": "node src/main/index.js run all -c example-tests/gfx-tests.config.json",
+    "start": "node src/main/index.js start-server -c example-tests/webgfx-tests.config.json",
+    "test": "node src/main/index.js run all -c example-tests/webgfx-tests.config.json",
     "dev": "concurrently --names \"ROLLUP,SERVER\" -c \"bgGreen.bold,bgBlue.bold\" \"rollup -c -w -m inline\" \"npm run start\""
   },
   "repository": {
@@ -24,11 +24,11 @@
   },
   "homepage": "https://github.com/MozillaReality/webgfx-tests#readme",
   "dependencies": {
-    "adb-toolkit": "^0.4.5",
+    "adb-toolkit": "^0.4.9",
     "body-parser": "^1.18.3",
     "browser-features": "^1.2.1",
     "canvas-hook": "^0.4.0",
-    "chalk": "^2.4.1",
+    "chalk": "^2.4.2",
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.19.0",
     "detect-browsers": "^3.3.0",
@@ -45,10 +45,10 @@
     "ps-node": "^0.1.6",
     "query-string": "^6.2.0",
     "seedrandom": "^2.4.4",
-    "socket.io": "^2.1.1",
+    "socket.io": "^2.2.0",
     "vue-json-pretty": "^1.4.1",
     "webgl-info": "^0.1.5",
-    "webgl-stats": "^0.2.0"
+    "webgl-stats": "^0.2.1"
   },
   "devDependencies": {
     "concurrently": "^4.1.0",
