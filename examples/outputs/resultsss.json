@@ -1,0 +1,605 @@
+[{
+  "test_id": "misc_fps",
+  "stats": {
+    "perf": {
+      "fps": {
+        "min": 51.021591409467796,
+        "max": 60.403308243226306,
+        "avg": 58.69946394803884,
+        "standard_deviation": 3.1439824771407654
+      },
+      "dt": {
+        "min": 3.9899999974295497,
+        "max": 55.20500001148321,
+        "avg": 17.564350000029666,
+        "standard_deviation": 6.466207375617077
+      },
+      "cpu": {
+        "min": 1.8320316295546506,
+        "max": 96.24128247293886,
+        "avg": 11.143989846276508,
+        "standard_deviation": 13.187096185962913
+      }
+    },
+    "webgl": {
+      "drawCalls": {
+        "min": 1,
+        "max": 2,
+        "avg": 1.99009900990099,
+        "standard_deviation": 0.09900990099009906
+      },
+      "useProgramCalls": {
+        "min": 1,
+        "max": 2,
+        "avg": 1.99009900990099,
+        "standard_deviation": 0.09900990099009906
+      },
+      "faces": {
+        "min": 12,
+        "max": 12,
+        "avg": 12,
+        "standard_deviation": 0
+      },
+      "vertices": {
+        "min": 36,
+        "max": 1332,
+        "avg": 1319.1683168316833,
+        "standard_deviation": 128.31683168316823
+      },
+      "bindTextures": {
+        "min": 0,
+        "max": 2,
+        "avg": 1.9603960396039606,
+        "standard_deviation": 0.24049421389091324
+      }
+    }
+  },
+  "numFrames": 100,
+  "totalTime": 2121.624999999767,
+  "timeToFirstFrame": 196.35499999276362,
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "avgFps": 51.94076674940981,
+  "result": "fail",
+  "numStutterEvents": 5,
+  "totalRenderTime": 1925.2700000070035,
+  "cpuTime": 215.06000010413118,
+  "cpuIdleTime": 1541.374999898835,
+  "cpuIdlePerc": 80.06019934311696,
+  "pageLoadTime": 151.70999999099877,
+  "diffPerc": 6.4750000000000005,
+  "numDiffPixels": 124320,
+  "failReason": "Reference image mismatch",
+  "testUUID": "1",
+  "browser": {
+    "name": "Firefox",
+    "code": "Firefox",
+    "versionCode": "",
+    "versionName": "",
+    "package": "master.apk"
+  },
+  "device": {
+    "name": "PC",
+    "deviceProduct": "localdevice",
+    "serial": ""
+  }
+},{
+  "test_id": "misc_fps",
+  "stats": {
+    "perf": {
+      "fps": {
+        "min": 54.76178622974252,
+        "max": 60.49466018362852,
+        "avg": 59.28250521640155,
+        "standard_deviation": 1.8618327273862634
+      },
+      "dt": {
+        "min": 4.304999994928949,
+        "max": 63.1499999872176,
+        "avg": 17.48220000008587,
+        "standard_deviation": 6.272506050068816
+      },
+      "cpu": {
+        "min": 4.570278816557191,
+        "max": 96.48456057751521,
+        "avg": 11.488484702273649,
+        "standard_deviation": 12.665244455694822
+      }
+    },
+    "webgl": {
+      "drawCalls": {
+        "min": 1,
+        "max": 2,
+        "avg": 1.99009900990099,
+        "standard_deviation": 0.09900990099009906
+      },
+      "useProgramCalls": {
+        "min": 1,
+        "max": 2,
+        "avg": 1.99009900990099,
+        "standard_deviation": 0.09900990099009906
+      },
+      "faces": {
+        "min": 12,
+        "max": 12,
+        "avg": 12,
+        "standard_deviation": 0
+      },
+      "vertices": {
+        "min": 36,
+        "max": 1332,
+        "avg": 1319.1683168316833,
+        "standard_deviation": 128.31683168316823
+      },
+      "bindTextures": {
+        "min": 0,
+        "max": 2,
+        "avg": 1.9603960396039606,
+        "standard_deviation": 0.24049421389091324
+      }
+    }
+  },
+  "numFrames": 100,
+  "totalTime": 2177.125000001979,
+  "timeToFirstFrame": 245.1100000034785,
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "avgFps": 51.75943250962214,
+  "result": "fail",
+  "numStutterEvents": 1,
+  "totalRenderTime": 1932.0149999985006,
+  "cpuTime": 234.11999999370892,
+  "cpuIdleTime": 1514.1000000148779,
+  "cpuIdlePerc": 78.36895676358894,
+  "pageLoadTime": 194.44999999541324,
+  "diffPerc": 6.4750000000000005,
+  "numDiffPixels": 124320,
+  "failReason": "Reference image mismatch",
+  "testUUID": "2",
+  "browser": {
+    "name": "Firefox",
+    "code": "Firefox",
+    "versionCode": "",
+    "versionName": "",
+    "package": "master.apk"
+  },
+  "device": {
+    "name": "PC",
+    "deviceProduct": "localdevice",
+    "serial": ""
+  }
+},{
+  "test_id": "misc_fps",
+  "stats": {
+    "perf": {
+      "fps": {
+        "min": 55.64701245377799,
+        "max": 60.268891979419145,
+        "avg": 59.35647442505112,
+        "standard_deviation": 1.5250328504320227
+      },
+      "dt": {
+        "min": 8.835000000544824,
+        "max": 61.65000000328291,
+        "avg": 17.430949999979934,
+        "standard_deviation": 5.808004765075477
+      },
+      "cpu": {
+        "min": 4.954407290463529,
+        "max": 95.70965125653943,
+        "avg": 11.37468573030913,
+        "standard_deviation": 12.195199174871739
+      }
+    },
+    "webgl": {
+      "drawCalls": {
+        "min": 1,
+        "max": 2,
+        "avg": 1.99009900990099,
+        "standard_deviation": 0.09900990099009906
+      },
+      "useProgramCalls": {
+        "min": 1,
+        "max": 2,
+        "avg": 1.99009900990099,
+        "standard_deviation": 0.09900990099009906
+      },
+      "faces": {
+        "min": 12,
+        "max": 12,
+        "avg": 12,
+        "standard_deviation": 0
+      },
+      "vertices": {
+        "min": 36,
+        "max": 1332,
+        "avg": 1319.1683168316833,
+        "standard_deviation": 128.31683168316823
+      },
+      "bindTextures": {
+        "min": 0,
+        "max": 2,
+        "avg": 1.9603960396039606,
+        "standard_deviation": 0.24049421389091324
+      }
+    }
+  },
+  "numFrames": 100,
+  "totalTime": 2149.4800000073155,
+  "timeToFirstFrame": 223.6750000010943,
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "avgFps": 51.92633729774144,
+  "result": "fail",
+  "numStutterEvents": 1,
+  "totalRenderTime": 1925.8050000062212,
+  "cpuTime": 232.8699999197852,
+  "cpuIdleTime": 1510.2250000782078,
+  "cpuIdlePerc": 78.4204527495426,
+  "pageLoadTime": 170.42500000388827,
+  "diffPerc": 6.4750000000000005,
+  "numDiffPixels": 124320,
+  "failReason": "Reference image mismatch",
+  "testUUID": "3",
+  "browser": {
+    "name": "Firefox",
+    "code": "Firefox",
+    "versionCode": "",
+    "versionName": "",
+    "package": "new.apk"
+  },
+  "device": {
+    "name": "PC",
+    "deviceProduct": "localdevice",
+    "serial": ""
+  }
+},{
+  "test_id": "instancing",
+  "stats": {
+    "perf": {
+      "fps": {
+        "min": 49.91888181755206,
+        "max": 60.155942713167825,
+        "avg": 58.560623646758806,
+        "standard_deviation": 3.5300104329980178
+      },
+      "dt": {
+        "min": 6.0649999941233546,
+        "max": 53.455000001122244,
+        "avg": 17.159999999972626,
+        "standard_deviation": 5.26510448688746
+      },
+      "cpu": {
+        "min": 0.41156112938672046,
+        "max": 4.61665281447501,
+        "avg": 2.3989635540895375,
+        "standard_deviation": 0.6451234761440356
+      }
+    },
+    "webgl": {
+      "drawCalls": {
+        "min": 1,
+        "max": 1,
+        "avg": 1,
+        "standard_deviation": 0
+      },
+      "useProgramCalls": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      },
+      "faces": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      },
+      "vertices": {
+        "min": 3,
+        "max": 3,
+        "avg": 3,
+        "standard_deviation": 0
+      },
+      "bindTextures": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      }
+    }
+  },
+  "numFrames": 100,
+  "totalTime": 2265.849999996135,
+  "timeToFirstFrame": 336.31500000774395,
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "avgFps": 51.825958067929136,
+  "result": "pass",
+  "numStutterEvents": 1,
+  "totalRenderTime": 1929.534999988391,
+  "cpuTime": 38.88499997265171,
+  "cpuIdleTime": 1659.9550000246381,
+  "cpuIdlePerc": 86.0287582259262,
+  "pageLoadTime": 334.8950000072364,
+  "testUUID": "4",
+  "browser": {
+    "name": "Firefox",
+    "code": "Firefox",
+    "versionCode": "",
+    "versionName": "",
+    "package": "master.apk"
+  },
+  "device": {
+    "name": "PC",
+    "deviceProduct": "localdevice",
+    "serial": ""
+  }
+},{
+  "test_id": "instancing",
+  "stats": {
+    "perf": {
+      "fps": {
+        "min": 59.71246152818028,
+        "max": 60.28007048084851,
+        "avg": 60.0455056461637,
+        "standard_deviation": 0.19543857370000733
+      },
+      "dt": {
+        "min": 2.0700000022770837,
+        "max": 64.74499999603722,
+        "avg": 17.39989898980106,
+        "standard_deviation": 6.636834540561278
+      },
+      "cpu": {
+        "min": 0.5174144563112252,
+        "max": 12.560386493806504,
+        "avg": 2.3903423900408103,
+        "standard_deviation": 1.1654739557264608
+      }
+    },
+    "webgl": {
+      "drawCalls": {
+        "min": 1,
+        "max": 1,
+        "avg": 1,
+        "standard_deviation": 0
+      },
+      "useProgramCalls": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      },
+      "faces": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      },
+      "vertices": {
+        "min": 3,
+        "max": 3,
+        "avg": 3,
+        "standard_deviation": 0
+      },
+      "bindTextures": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      }
+    }
+  },
+  "numFrames": 100,
+  "totalTime": 2310.414999999921,
+  "timeToFirstFrame": 361.575000002631,
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "avgFps": 51.312575686120496,
+  "result": "pass",
+  "numStutterEvents": 2,
+  "totalRenderTime": 1948.8399999972899,
+  "cpuTime": 37.72000008029863,
+  "cpuIdleTime": 1684.8699999100063,
+  "cpuIdlePerc": 86.45501939165602,
+  "pageLoadTime": 360.7999999949243,
+  "testUUID": "5",
+  "browser": {
+    "name": "Firefox",
+    "code": "Firefox",
+    "versionCode": "",
+    "versionName": "",
+    "package": "master.apk"
+  },
+  "device": {
+    "name": "PC",
+    "deviceProduct": "localdevice",
+    "serial": ""
+  }
+},{
+  "test_id": "instancing",
+  "stats": {
+    "perf": {
+      "fps": {
+        "min": 49.9600319725236,
+        "max": 60.38647342883359,
+        "avg": 58.51522882264618,
+        "standard_deviation": 3.502805004965191
+      },
+      "dt": {
+        "min": 4.975000003469177,
+        "max": 60.560000012628734,
+        "avg": 17.47146464641456,
+        "standard_deviation": 5.961249160842428
+      },
+      "cpu": {
+        "min": 0.6109643473674881,
+        "max": 7.33668340944219,
+        "avg": 2.4793929735962377,
+        "standard_deviation": 0.7347853820488277
+      }
+    },
+    "webgl": {
+      "drawCalls": {
+        "min": 1,
+        "max": 1,
+        "avg": 1,
+        "standard_deviation": 0
+      },
+      "useProgramCalls": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      },
+      "faces": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      },
+      "vertices": {
+        "min": 3,
+        "max": 3,
+        "avg": 3,
+        "standard_deviation": 0
+      },
+      "bindTextures": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      }
+    }
+  },
+  "numFrames": 100,
+  "totalTime": 2270.925000004354,
+  "timeToFirstFrame": 313.4100000024773,
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "avgFps": 51.085176869604645,
+  "result": "pass",
+  "numStutterEvents": 2,
+  "totalRenderTime": 1957.5150000018766,
+  "cpuTime": 40.59499998402316,
+  "cpuIdleTime": 1689.0800000110175,
+  "cpuIdlePerc": 86.28695054747465,
+  "pageLoadTime": 312.39500000083353,
+  "testUUID": "6",
+  "browser": {
+    "name": "Firefox",
+    "code": "Firefox",
+    "versionCode": "",
+    "versionName": "",
+    "package": "master.apk"
+  },
+  "device": {
+    "name": "PC",
+    "deviceProduct": "localdevice",
+    "serial": ""
+  }
+},{
+  "test_id": "instancing",
+  "stats": {
+    "perf": {
+      "fps": {
+        "min": 49.9600319725236,
+        "max": 60.38647342883359,
+        "avg": 58.51522882264618,
+        "standard_deviation": 3.502805004965191
+      },
+      "dt": {
+        "min": 4.975000003469177,
+        "max": 60.560000012628734,
+        "avg": 17.47146464641456,
+        "standard_deviation": 5.961249160842428
+      },
+      "cpu": {
+        "min": 0.6109643473674881,
+        "max": 7.33668340944219,
+        "avg": 2.4793929735962377,
+        "standard_deviation": 0.7347853820488277
+      }
+    },
+    "webgl": {
+      "drawCalls": {
+        "min": 1,
+        "max": 1,
+        "avg": 1,
+        "standard_deviation": 0
+      },
+      "useProgramCalls": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      },
+      "faces": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      },
+      "vertices": {
+        "min": 3,
+        "max": 3,
+        "avg": 3,
+        "standard_deviation": 0
+      },
+      "bindTextures": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      }
+    }
+  },
+  "numFrames": 100,
+  "totalTime": 2270.925000004354,
+  "timeToFirstFrame": 313.4100000024773,
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "avgFps": 51.085176869604645,
+  "result": "pass",
+  "numStutterEvents": 2,
+  "totalRenderTime": 1957.5150000018766,
+  "cpuTime": 40.59499998402316,
+  "cpuIdleTime": 1689.0800000110175,
+  "cpuIdlePerc": 86.28695054747465,
+  "pageLoadTime": 312.39500000083353,
+  "testUUID": "6",
+  "browser": {
+    "name": "Firefox",
+    "code": "Firefox",
+    "versionCode": "",
+    "versionName": "",
+    "package": "new.apk"
+  },
+  "device": {
+    "name": "PC",
+    "deviceProduct": "localdevice",
+    "serial": ""
+  }
+}]

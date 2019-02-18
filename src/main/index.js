@@ -10,12 +10,26 @@ const TestUtils = require('./testsmanager/device');
 const PrettyPrint = require('./prettyprint');
 const packageInfo = require('../../package.json');
 const path = require('path');
+const Summary = require('./summary');
 
 //-----------------------------------------------------------------------------
 // START SERVER
 //-----------------------------------------------------------------------------
 program
   .version(packageInfo.version);
+
+//-----------------------------------------------------------------------------
+// SUMMARY
+//-----------------------------------------------------------------------------
+program
+.command('summary [fileList...]')
+.description('Generate a summary from JSON results')
+//.option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
+//.option("-v, --verbose", "Show all the information available")
+.action((fileList, options) => {
+  var results = Summary.mergeResultsFromFiles(fileList);
+  Summary.printComparisonTable(results);
+});
 
 //-----------------------------------------------------------------------------
 // LIST TESTS
