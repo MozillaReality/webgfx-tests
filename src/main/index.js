@@ -10,12 +10,26 @@ const TestUtils = require('./testsmanager/device');
 const PrettyPrint = require('./prettyprint');
 const packageInfo = require('../../package.json');
 const path = require('path');
+const Summary = require('./summary');
 
 //-----------------------------------------------------------------------------
 // START SERVER
 //-----------------------------------------------------------------------------
 program
   .version(packageInfo.version);
+
+//-----------------------------------------------------------------------------
+// SUMMARY
+//-----------------------------------------------------------------------------
+program
+.command('summary <groupBy> [fileList...]')
+.description('Generate a summary from JSON results')
+//.option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
+//.option("-v, --verbose", "Show all the information available")
+.action((groupBy, fileList, options) => {
+  var results = Summary.mergeResultsFromFiles(fileList);
+  Summary.printComparisonTable(results, groupBy);
+});
 
 //-----------------------------------------------------------------------------
 // LIST TESTS
@@ -152,6 +166,7 @@ program
   .option("-i, --info <extra info>", "Add extra info to be displayed on the browser when running the test (eg: browser codename)")
   .option("-n, --numtimes <number>", "Number of times to run each test")
   .option("-o, --outputfile <file>", "Store test results on a local file")
+  .option("-v, --verbose", "Show all the info available")
   .action((testIDs, options) => {
     const configfile = options.configfile || 'webgfx-tests.config.json';
 
@@ -199,7 +214,7 @@ program
         return;
       }
 
-      initHTTPServer(options.port, config);
+      initHTTPServer(options.port, config, options.verbose);
       initWebSocketServer(options.wsport, function (data) {
         if (options.outputfile) {
           var testRunData = TestUtils.TestsData.getTestData(data.testUUID);
@@ -230,7 +245,7 @@ program
         testRunData.device.killBrowser(testsManager.getRunningTest().browser).then(() => {
           testsManager.runNextQueuedTest();
         });
-      });
+      }, options.verbose);
       
       var testsManagers = {};
       var numRunningDevices = devices.length;
