@@ -24,13 +24,13 @@ program
 program
 .command('summary [fileList...]')
 .description('Generate a summary from JSON results')
-.option("-g, --groupBy [attribute]", "Group by: test (default), device, browser, file", 'test')
+.option("-g, --groupby [attribute]", "Group by: test (default), device, browser, file", 'test')
 .option("-f, --filter [attributes]", 'List of attributes to show (Comma separated)')
 //.option("-v, --verbose", "Show all the information available")
 .action((fileList, options) => {
   var results = Summary.mergeResultsFromFiles(fileList);
   var filter = typeof options.filter !== 'undefined' ? options.filter.split(',') : null;
-  Summary.printComparisonTable(results, options.groupBy, filter);
+  Summary.printComparisonTable(results, options.groupby, filter);
 });
 
 //-----------------------------------------------------------------------------
