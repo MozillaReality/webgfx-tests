@@ -5,7 +5,7 @@ module.exports = function flatten(results) {
       'avgFps', 'numStutterEvents', 'totalRenderTime', 'cpuTime', 'cpuIdleTime', 'cpuIdlePerc', 'pageLoadTime', 'diffPerc', 'numDiffPixels', 'totalTime', 'timeToFirstFrame'
     ];
     statsAttrs.forEach(attr => {
-      if (test[attr]) {
+      if (attr in test) {
         values[attr] = test[attr];
       }
     })
