@@ -195,5 +195,5 @@ function printTable(dataTable) {
     suffix: ' |',
     rowSeparation: " |\n| "
     }).output();
-  console.log(chalk.yellow('* the lower the better'));
+  //console.log(chalk.yellow('* the lower the better'));
 }
