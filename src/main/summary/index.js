@@ -73,15 +73,15 @@ module.exports = {
   printComparisonTable: printComparisonTable
 };
 
-function printComparisonTable(results, groupBy) {
+function printComparisonTable(results, groupBy, filter) {
   var testSummary = getSummaryGroupByAttribute(results, groupBy);
-  var comparison = getComparison(testSummary);
+  var comparison = getComparison(testSummary, filter);
   var comparisonTable = getComparisonTable(testSummary, comparison);
 
   printTable(comparisonTable);
 }
 
-function getComparison(testSummary) {
+function getComparison(testSummary, filter) {
   var comparison = {};
   var attributes = null;
 
@@ -93,7 +93,9 @@ function getComparison(testSummary) {
       attributes = [];
       var hash = Object.keys(test)[0];
       for (name in test[hash]) {
-        attributes.push(name);
+        if (!filter || filter.indexOf(name) !== -1) {
+          attributes.push(name);
+        }
       }
     }
   

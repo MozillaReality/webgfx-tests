@@ -22,13 +22,15 @@ program
 // SUMMARY
 //-----------------------------------------------------------------------------
 program
-.command('summary <groupBy> [fileList...]')
+.command('summary [fileList...]')
 .description('Generate a summary from JSON results')
-//.option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
+.option("-g, --groupBy [attribute]", "Group by: test (default), device, browser, file", 'test')
+.option("-f, --filter [attributes]", 'List of attributes to show (Comma separated)')
 //.option("-v, --verbose", "Show all the information available")
-.action((groupBy, fileList, options) => {
+.action((fileList, options) => {
   var results = Summary.mergeResultsFromFiles(fileList);
-  Summary.printComparisonTable(results, groupBy);
+  var filter = typeof options.filter !== 'undefined' ? options.filter.split(',') : null;
+  Summary.printComparisonTable(results, options.groupBy, filter);
 });
 
 //-----------------------------------------------------------------------------
