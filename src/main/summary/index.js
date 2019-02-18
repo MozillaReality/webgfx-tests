@@ -12,16 +12,13 @@ function getHash(value) {
 }
 
 function getSummaryGroupByAttribute(results, groupBy) {
-  if (groupBy === 'test') {
-    return getSummaryGroupByTest(results);
-  }
   var testSummary = {
     hashList: {},
     tests: {}
   };
 
   results.forEach(test => {
-    var testId = test.info.test.id;
+    var testId = groupBy === 'test' ? 'tests' : test.info.test.name;
     if (!testSummary.tests[testId]) {
       testSummary.tests[testId] = {};
     }
@@ -56,33 +53,6 @@ function getSummaryGroupByAttribute(results, groupBy) {
   return testSummary;
 }
 
-function getSummaryGroupByTest(results) {
-  var summary = {};
-  results.forEach(test => {
-    var testId = test.info.test.id;
-    if (!summary[testId]) {
-      summary[testId] = {};
-
-      for (name in test.values) {
-        summary[testId][name] = new Stats();
-      }
-    }
-
-    for (name in test.values) {
-      summary[testId][name].update(test.values[name]);
-    }
-  });
-
-  for (testId in summary) {
-    var result = summary[testId];
-    for (name in result) {
-      result[name] = result[name].mean;
-    }
-  }
-
-  return summary;
-}
-
 function mergeResultsFromFiles(fileList) {
   var results = [];
   fileList.forEach(filename => {
@@ -103,25 +73,18 @@ module.exports = {
   printComparisonTable: printComparisonTable
 };
 
-//var testSummary = getSummaryGroupByTest(results, 'browser');
-//var testSummary = getSummaryGroupByTest(results, 'file');
-//var testSummary = getSummaryGroupByTest(results, 'device');
-//var testSummary = getGroupByTest(results);
-
-var attributes = null;
-
 function printComparisonTable(results, groupBy) {
   var testSummary = getSummaryGroupByAttribute(results, groupBy);
   var comparison = getComparison(testSummary);
-  
   var comparisonTable = getComparisonTable(testSummary, comparison);
-  console.log(comparisonTable);
 
   printTable(comparisonTable);
 }
 
 function getComparison(testSummary) {
   var comparison = {};
+  var attributes = null;
+
   for (testId in testSummary.tests) {
     var test = testSummary.tests[testId];
     comparison[testId] = {};

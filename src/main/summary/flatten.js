@@ -20,8 +20,8 @@ module.exports = function flatten(results) {
       values: values,
       info: {
         test: {
-          id: test.test_id,
-          testUUID: test.testUUID
+          name: test.test_id,
+          //testUUID: test.testUUID
         },
         browser: test.browser,
         device: test.device
