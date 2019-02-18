@@ -22,13 +22,13 @@ program
 // SUMMARY
 //-----------------------------------------------------------------------------
 program
-.command('summary [fileList...]')
+.command('summary <groupBy> [fileList...]')
 .description('Generate a summary from JSON results')
 //.option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
 //.option("-v, --verbose", "Show all the information available")
-.action((fileList, options) => {
+.action((groupBy, fileList, options) => {
   var results = Summary.mergeResultsFromFiles(fileList);
-  Summary.printComparisonTable(results);
+  Summary.printComparisonTable(results, groupBy);
 });
 
 //-----------------------------------------------------------------------------

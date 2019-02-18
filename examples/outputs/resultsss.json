@@ -258,7 +258,7 @@
     "package": "new.apk"
   },
   "device": {
-    "name": "PC",
+    "name": "Daydream Lenovo",
     "deviceProduct": "localdevice",
     "serial": ""
   }
@@ -343,7 +343,7 @@
     "package": "master.apk"
   },
   "device": {
-    "name": "PC",
+    "name": "Oculus Go",
     "deviceProduct": "localdevice",
     "serial": ""
   }

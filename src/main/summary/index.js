@@ -46,8 +46,8 @@ function getSummaryGroupByAttribute(results, groupBy) {
 
   for (testId in testSummary.tests) {
     var test = testSummary.tests[testId];
-    for (browserCode in test) {
-      var result = test[browserCode];
+    for (hash in test) {
+      var result = test[hash];
       for (name in result) {
         result[name] = result[name].mean;
       }
@@ -88,7 +88,7 @@ function mergeResultsFromFiles(fileList) {
   fileList.forEach(filename => {
     var file = flatten(JSON.parse(fs.readFileSync(filename, 'utf8')));
     file.forEach(test => {
-      test.info.file = path.basename(filename).replace(/\.[^/.]+$/, '');
+      test.info.file = {name: path.basename(filename).replace(/\.[^/.]+$/, '')};
     });
     results = results.concat(file);
   });
@@ -111,9 +111,12 @@ module.exports = {
 var attributes = null;
 
 function printComparisonTable(results, groupBy) {
-  var testSummary = getSummaryGroupByAttribute(results, 'browser');
+  var testSummary = getSummaryGroupByAttribute(results, groupBy);
   var comparison = getComparison(testSummary);
+  
   var comparisonTable = getComparisonTable(testSummary, comparison);
+  console.log(comparisonTable);
+
   printTable(comparisonTable);
 }
 
@@ -175,6 +178,7 @@ function getComparisonTable(testSummary, comparison) {
     var titleRow = ['COUNTER'];
   
     for (hash in testSummary.tests[testId]) {
+      // @todo Remove the specifics from package
       var desc = testSummary.hashList[hash].name + ' ' + (testSummary.hashList[hash].package ? testSummary.hashList[hash].package : '');
       titleRow.push(desc);
     }
