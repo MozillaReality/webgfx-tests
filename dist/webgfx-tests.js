@@ -3014,9 +3014,7 @@
 	        numFrames: this.numFramesToRender,
 	        totalTime: totalTime,
 	        timeToFirstFrame: this.firstFrameTime - pageInitTime,
-	        logs: this.logs,
 	        avgFps: fps,
-	        result: 'pass',
 	        numStutterEvents: this.numStutterEvents,
 	        totalTime: totalTime,
 	        totalRenderTime: totalRenderTime,
@@ -3024,6 +3022,8 @@
 	        cpuIdleTime: this.stats.totalTimeOutsideMainLoop,
 	        cpuIdlePerc: this.stats.totalTimeOutsideMainLoop * 100 / totalRenderTime,
 	        pageLoadTime: this.pageLoadTime,
+	        result: 'pass',
+	        logs: this.logs
 	      };
 
 	      // @todo Indicate somehow that no reference test has been performed
