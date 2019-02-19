@@ -218,7 +218,10 @@ program
           fs.unlinkSync(options.outputfile);
         } catch(err) {
           //console.error(err)
-        }        
+        }
+        fs.writeFile(options.outputfile, '[', err => {
+          if (err) throw err;
+        });
       }
 
       initHTTPServer(options.port, config, options.verbose);
@@ -289,7 +292,6 @@ program
           }
 
           var apks = options.package.split(',');
-
           await asyncForEach(apks, async apk => {
             var reader = await require('node-apk-parser-promise').load(apk)
             var manifest = await reader.readManifest();
@@ -336,12 +338,6 @@ program
             browsersToRun = browsers.filter(b => browserOptions.indexOf(b.code) !== -1);
           } 
   
-          if (options.outputfile) {
-            fs.writeFile(options.outputfile, '[', err => {
-              if (err) throw err;
-            });
-          }
-
           browsersToRun.forEach(browser => {
             const extraInfo = '';
             const versionName = browser.versionName ? 'v.' + browser.versionName : '';
