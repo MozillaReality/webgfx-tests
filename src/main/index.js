@@ -12,9 +12,6 @@ const packageInfo = require('../../package.json');
 const path = require('path');
 const Summary = require('./summary');
 
-//-----------------------------------------------------------------------------
-// START SERVER
-//-----------------------------------------------------------------------------
 program
   .version(packageInfo.version);
 
