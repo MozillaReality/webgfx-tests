@@ -212,6 +212,14 @@ program
         console.log('ERROR: No device found!');
         return;
       }
+      
+      if (options.outputfile) {
+        try {
+          fs.unlinkSync(options.outputfile);
+        } catch(err) {
+          //console.error(err)
+        }        
+      }
 
       initHTTPServer(options.port, config, options.verbose);
       initWebSocketServer(options.wsport, function (data) {
