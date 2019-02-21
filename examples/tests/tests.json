@@ -1,5 +1,14 @@
 [
   {
+    "id": "webvr_cubes",
+    "engine": "three.js",
+    "url": "threejs/webvr_cubes.html",
+    "name": "webvr cubes",
+    "mobile": true,
+    "numframes": 400,
+    "interactive": true
+  },
+  {
     "id": "misc_fps",
     "engine": "three.js",
     "url": "threejs/misc_fps.html",
