@@ -1,5 +1,14 @@
 [
   {
+    "id": "webvr_info_3",
+    "engine": "webvr.info",
+    "url": "webvr.info/03-vr-presentation.html",
+    "name": "webvr info",
+    "mobile": true,
+    "numframes": 400,
+    "interactive": true
+  },
+  {
     "id": "webvr_cubes",
     "engine": "three.js",
     "url": "threejs/webvr_cubes.html",
