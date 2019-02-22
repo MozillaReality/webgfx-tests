@@ -41,7 +41,19 @@
 			var INTERSECTED;
 			var crosshair;
 
+			var first = false;
+
 			init();
+			// Autoenter VR
+			setTimeout(() => {
+						scene.background = new THREE.Color( 0xff0000 );
+						navigator.getVRDisplays().then(displays => {
+							device = displays[0];
+							//if (device.isPresenting) device.exitPresent();
+							device.requestPresent( [ { source: renderer.domElement } ] );
+						})
+					}, 2000);
+
 			animate();
 
 			function init() {
@@ -273,7 +285,6 @@
 				}
 
 				renderer.render( scene, camera );
-
 			}
 
 		</script>
