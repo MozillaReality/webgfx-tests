@@ -161,7 +161,8 @@ program
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
   .option("-b, --browser <browser names>", "Which browsers to use (Comma separated)")
   .option("-a, --adb [devices]", "Use android devices through ADB")
-  .option("-p, --package <package names>", "Browser packages (apk) to install and execute the tests (Comma separated)")
+  .option("-l, --launchparams [additional parameters]", "Additional parameters to launch the browser")
+  .option("-k, --package <package names>", "Browser packages (apk) to install and execute the tests (Comma separated)")
   .option("-i, --info <extra info>", "Add extra info to be displayed on the browser when running the test (eg: browser codename)")
   .option("-n, --numtimes <number>", "Number of times to run each test")
   .option("-o, --outputfile <file>", "Store test results on a local file")
@@ -169,6 +170,8 @@ program
   .action((testIDs, options) => {
     const configfile = options.configfile || 'webgfx-tests.config.json';
 
+    console.log(options.launchparams);
+    
     const config = TestUtils.getConfig(configfile);
     if (config === false) {
       console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
@@ -348,7 +351,11 @@ program
   
           console.log(`Browsers to run on device ${chalk.green(device.name)}:`, browsersToRun.map(b => chalk.yellow(b.name)).join(', '));
     
-          var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, {numTimes: options.numtimes || 1}, {});
+          var generalOptions = {
+            numTimes: options.numtimes || 1,
+            extraParams: options.launchparams
+          };
+          var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions, {});
           await testsManager.runTests();
           onTestsFinish();
         }    

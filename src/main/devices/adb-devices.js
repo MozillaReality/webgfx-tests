@@ -25,14 +25,14 @@ function ADB() {
           this.forceStop(browser.package, resolve);
         });  
       },
-      launchBrowser: function(browser, url) {
+      launchBrowser: function(browser, url, extraParams) {
         return new Promise(resolve => {
           url = url.replace(/\(/gi, '%28');
           url = url.replace(/\)/gi, '%29');
           //url = encodeURI(url);
           url = url.replace(/\&/gi, '\\&');
-      
-          this.launchUrl(url, browser.code, {silent: false});
+          console.log('>>>', extraParams);
+          this.launchUrl(url, browser.code, extraParams);
           resolve();
         });
       },

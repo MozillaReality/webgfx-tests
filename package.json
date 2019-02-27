@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/MozillaReality/webgfx-tests#readme",
   "dependencies": {
-    "adb-toolkit": "^0.4.9",
+    "adb-toolkit": "^0.4.10",
     "body-parser": "^1.18.3",
     "browser-features": "^1.2.1",
     "canvas-hook": "^0.4.0",

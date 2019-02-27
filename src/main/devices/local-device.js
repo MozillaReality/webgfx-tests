@@ -48,7 +48,7 @@ module.exports = {
       });  
     });  
   },
-  launchBrowser: function(browser, url) {
+  launchBrowser: function(browser, url, extraParams) {
     return new Promise(resolve => {
       /*
       if (browser.code === 'safari') {
@@ -77,6 +77,8 @@ module.exports = {
         browser.launchCmd = 'open';
         options = ['-a', 'Safari'];
       }
+      //options.push(extraParams);
+
       options.push(url);
       this.lastOpenProcess = spawn(browser.launchCmd, options);
       resolve(this.lastOpenProcess);
