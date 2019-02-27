@@ -5,6 +5,7 @@ function buildTestURL(baseURL, test, mode, options, progress) {
   var url = '';
 
   if (mode !== 'interactive') {
+    if (test['autoenter-xr']) url = addGET(url, 'autoenter-xr=true');
     if (test.numframes) url = addGET(url, 'num-frames=' + test.numframes);
     if (test.windowsize) url = addGET(url, 'width=' + test.windowsize.width + '&height=' + test.windowsize.height);  
     if (options.fakeWebGL) url = addGET(url, 'fake-webgl');

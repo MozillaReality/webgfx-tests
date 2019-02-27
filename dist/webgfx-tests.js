@@ -2629,7 +2629,6 @@
 	const parameters = queryString.parse(location.search);
 
 	window.TESTER = {
-	  testtttt: 'qwer',
 	  ready: false,
 
 	  // Currently executing frame.
@@ -2690,10 +2689,15 @@
 	        if (CanvasHook.webglContexts) {
 	          this.canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1].canvas;
 	        }
+	        //@fixme else
 	      }
 
 	      if (this.referenceTestFrameNumber === 0) {
 	        WebGLStats$1.setupExtensions(CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1]);
+	        if ('autoenter-xr' in parameters) {
+	          console.log('!!!!!!!!!!!!!INJECTING');
+	          this.injectAutoEnterXR(this.canvas);
+	        }
 	      }
 
 	      if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
@@ -3344,6 +3348,17 @@
 
 	    this.referenceTestFrameNumber = 0;
 	    this.timeStart = performance.realNow();
+	  },
+
+	  injectAutoEnterXR: function(canvas) {
+	    if (navigator.getVRDisplays) {
+	      setTimeout(() => {
+	        navigator.getVRDisplays().then(displays => {
+	          var device = displays[0];
+	          //if (device.isPresenting) device.exitPresent();
+	          device.requestPresent( [ { source: canvas } ] );
+	        }), 2000;}); // @fix to make it work on FxR
+	    }
 	  },
 
 	  handleSize: function() {

@@ -1168,6 +1168,7 @@
 	  var url = '';
 
 	  if (mode !== 'interactive') {
+	    if (test['autoenter-xr']) url = addGET$1(url, 'autoenter-xr=true');
 	    if (test.numframes) url = addGET$1(url, 'num-frames=' + test.numframes);
 	    if (test.windowsize) url = addGET$1(url, 'width=' + test.windowsize.width + '&height=' + test.windowsize.height);  
 	    if (options.fakeWebGL) url = addGET$1(url, 'fake-webgl');

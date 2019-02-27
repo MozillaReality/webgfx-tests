@@ -31,8 +31,7 @@ function ADB() {
           url = url.replace(/\)/gi, '%29');
           //url = encodeURI(url);
           url = url.replace(/\&/gi, '\\&');
-          console.log('>>>', extraParams);
-          this.launchUrl(url, browser.code, extraParams);
+          this.launchUrl(url, browser.code, extraParams || '');
           resolve();
         });
       },

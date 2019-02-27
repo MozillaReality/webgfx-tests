@@ -15,7 +15,9 @@
     "name": "webvr cubes",
     "mobile": true,
     "numframes": 400,
-    "interactive": true
+    "interactive": true,
+    "autoenter-xr": true,
+    "skipReferenceImageTest": true
   },
   {
     "id": "misc_fps",
