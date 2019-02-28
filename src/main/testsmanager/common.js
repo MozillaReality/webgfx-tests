@@ -30,9 +30,10 @@ function buildTestURL(baseURL, test, mode, options, progress) {
     if (options.infoOverlay) {
       url = addGET(url, 'info-overlay=' + encodeURI(options.infoOverlay));
     }
-
-    url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url + url;
   }
+  
+  url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url + url;
+  
   return url;
 }
 
