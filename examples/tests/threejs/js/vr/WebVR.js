@@ -4,7 +4,7 @@
  *
  * Based on @tojiro's vr-samples-utils.js
  */
-
+var map = new Map();
 var WEBVR = {
 
 	createButton: function ( renderer, options ) {
@@ -34,6 +34,7 @@ var WEBVR = {
 
 			};
 
+			console.log('show entervr', device);
 			renderer.vr.setDevice( device );
 
 		}
@@ -156,8 +157,40 @@ var WEBVR = {
 			stylizeElement( button );
 
 			window.addEventListener( 'vrdisplayconnect', function ( event ) {
+				console.log('connect');
+				function FakeVRDisplay(gl) {
+					this.gl = gl;
+					for (var key in gl) {
+						if (typeof gl[key] === 'function') {
+							/*
+							if (original.indexOf(key) !== -1) {
+								this[key] = gl[key].bind(gl);
+							} else if (nulls.indexOf(key) !== -1) {
+								this[key] = function(){return null;};
+							} else if (return0.indexOf(key) !== -1) {
+								this[key] = function(){return 0;};
+							} else if (return1.indexOf(key) !== -1) {
+								this[key] = function(){return 1;};
+							} else if (emptyString.indexOf(key) !== -1) {
+								this[key] = function(){return '';};
+							} else */
+							{
+								// this[key] = function(){};
+								this[key] = gl[key].bind(gl);
+							}
+						} else {
+							this[key] = gl[key];
+						}
+					}
+				}
 
-				showEnterVR( event.display );
+				var display = event.display;
+				display.getPose = function () {
+					console.log('asdfasdf');
+					return null;
+				}
+				console.log(display.getPose());
+				showEnterVR( display );
 
 			}, false );
 
@@ -174,14 +207,13 @@ var WEBVR = {
 			}, false );
 
 			window.addEventListener( 'vrdisplayactivate', function ( event ) {
-
-				event.display.requestPresent( [ { source: renderer.domElement } ] );
+				display.requestPresent( [ { source: renderer.domElement } ] );
 
 			}, false );
 
 			navigator.getVRDisplays()
 				.then( function ( displays ) {
-
+					console.log(displays);
 					if ( displays.length > 0 ) {
 
 						showEnterVR( displays[ 0 ] );

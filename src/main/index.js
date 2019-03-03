@@ -161,7 +161,7 @@ program
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
   .option("-b, --browser <browser names>", "Which browsers to use (Comma separated)")
   .option("-a, --adb [devices]", "Use android devices through ADB")
-  .option("-l, --launchparams [additional parameters]", "Additional parameters to launch the browser")
+  .option("-l, --launchparams <additional parameters>", "Additional parameters to launch the browser")
   .option("-k, --package <package names>", "Browser packages (apk) to install and execute the tests (Comma separated)")
   .option("-i, --info <extra info>", "Add extra info to be displayed on the browser when running the test (eg: browser codename)")
   .option("-n, --numtimes <number>", "Number of times to run each test")
@@ -169,8 +169,6 @@ program
   .option("-v, --verbose", "Show all the info available")
   .action((testIDs, options) => {
     const configfile = options.configfile || 'webgfx-tests.config.json';
-
-    console.log(options.launchparams);
     
     const config = TestUtils.getConfig(configfile);
     if (config === false) {

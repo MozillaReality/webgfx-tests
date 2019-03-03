@@ -21141,8 +21141,8 @@
 				animation.start();
 
 			} else if ( scope.enabled ) {
-
-				renderer.setDrawingBufferSize( currentSize.width, currentSize.height, currentPixelRatio );
+				if (currentSize)
+					renderer.setDrawingBufferSize( currentSize.width, currentSize.height, currentPixelRatio );
 
 				animation.stop();
 
