@@ -58,9 +58,9 @@ TestsManagerBrowser.prototype = {
     }
     console.log('Running test:', test.name);
 
-    const baseURL = 'http://localhost:3000/';
+    const baseURL = window.location.origin;
     const url = buildTestURL(baseURL, test, mode, options, this.progress);
-  
+
     this.currentlyRunningTest.test = test;
     this.currentlyRunningTest.startTime = yyyymmddhhmmss();
     this.currentlyRunningTest.runUUID = generateUUID();
