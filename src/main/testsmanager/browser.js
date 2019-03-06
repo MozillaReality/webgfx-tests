@@ -58,7 +58,7 @@ TestsManagerBrowser.prototype = {
     }
     console.log('Running test:', test.name);
 
-    const baseURL = window.location.origin;
+    const baseURL = window.location.origin + '/';
     const url = buildTestURL(baseURL, test, mode, options, this.progress);
 
     this.currentlyRunningTest.test = test;
