@@ -31,6 +31,7 @@
     "chalk": "^2.4.2",
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.19.0",
+    "compression": "^1.7.3",
     "detect-browsers": "^3.3.0",
     "express": "^4.16.4",
     "fake-timers": "^0.1.0",

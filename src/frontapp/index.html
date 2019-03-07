@@ -97,7 +97,7 @@
                       <b-checkbox size="is-small" v-model="options.tests.showKeys"> keystrokes</b-checkbox>
                       <b-checkbox size="is-small" v-model="options.tests.showMouse"> mouse</b-checkbox>
                     </b-field>
-                  </b-field>                      
+                  </b-field>
                 </div>
                 <div class="column">
                   <button class="button is-primary" v-on:click="runSelectedTests()" id='runTests'>Run tests ({{tests.filter(x => x.selected).length}} selected)</button>
@@ -115,14 +115,14 @@
                     narrowed
                     v-if="results.length > 0"
                 >
-                
+
                   <template slot-scope="props">
                       <b-table-column field="test_id" label="ID" width="40" sortable>
                           {{ props.row.test_id }}
                       </b-table-column>
                       <b-table-column field="options" label="Options" sortable>
                           {{ props.row.options }}
-                      </b-table-column>    
+                      </b-table-column>
                       <b-table-column field="result" label="Result" sortable>
                           <span v-if="props.row.result === 'fail'" class="tag is-danger">fail</span>
                           <span v-else class="tag is-success">pass</span>

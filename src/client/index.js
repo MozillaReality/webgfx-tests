@@ -72,8 +72,10 @@ window.TESTER = {
         // If that's different, the test should have a custom code to return that canvas
         if (CanvasHook.webglContexts) {
           this.canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1].canvas;
+          // To prevent width & height 100%
+          this.canvas.style.cssText = 'width: auto !important; height: auto ! important;';
         }
-        //@fixme else
+        //@fixme else for canvas 2d without webgl
       }
 
       if (this.referenceTestFrameNumber === 0) {
