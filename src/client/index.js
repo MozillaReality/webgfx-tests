@@ -80,7 +80,7 @@ window.TESTER = {
             document.body.appendChild(node);
           }
 
-          addStyleString('.gfxtests-canvas {width: auto !important; height: auto !important;}');
+          addStyleString(`.gfxtests-canvas {width: ${this.windowSize.width}px !important; height: ${this.windowSize.height}px !important;}`);
           this.canvas.classList.add('gfxtests-canvas');
           this.canvas.width = this.windowSize.width;
           this.canvas.height = this.windowSize.height;

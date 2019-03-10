@@ -1,5 +1,5 @@
 process.env.NODE_ENV = 'production';
-
+var compression = require('compression');
 var express = require('express');
 var path = require('path');
 var fs = require('fs');
@@ -25,8 +25,10 @@ function initServer(port, config, verbose) {
   var testsFolder = path.resolve(path.join(configFilePath, config.testsFolder));
   var definitionFolder = path.join(configFilePath, config.definitions);
 
-  server.get('*.gz', (req, res, next) => {
+  server.use(compression());
+  server.get('*gz', (req, res, next) => {
     res.set('Content-Encoding', 'gzip');
+    //res.set('Content-Type', 'application/octet-stream');
     res.set('Content-Type', 'application/javascript');
     res.set('Cache-Control','no-cache, must-revalidate');
     res.set('Connection','close');
@@ -34,6 +36,7 @@ function initServer(port, config, verbose) {
     res.set('Access-Control-Allow-Origin', '*');
     next();
   });
+
 
   server
     .use('/', express.static(path.join(__dirname, '../../frontapp')))
