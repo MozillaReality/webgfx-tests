@@ -12,6 +12,21 @@ import WebGLStats from 'webgl-stats';
 
 const parameters = queryString.parse(location.search);
 
+function onReady(callback) {
+  if (
+    document.readyState === "complete" ||
+    (document.readyState !== "loading" && !document.documentElement.doScroll)
+  ) {
+    callback();
+  } else {
+    document.addEventListener("DOMContentLoaded", callback);
+  }
+}
+
+
+// Hacks to fix some Unity demos
+console.logError = (msg) => console.error(msg);
+
 window.TESTER = {
   ready: false,
 
@@ -173,8 +188,13 @@ window.TESTER = {
     }
 */
     this.referenceTestFrameNumber++;
+    if (this.frameProgressBar) {
+      var perc = parseInt(100 * this.referenceTestFrameNumber / this.numFramesToRender);
+      this.frameProgressBar.style.width = perc + "%";
+    }
+
     FakeTimers.fakedTime++; // But game time advances immediately after the preloadable XHRs are finished.
-  
+
     if (this.referenceTestFrameNumber === 1) {
       this.firstFrameTime = performance.realNow();
       console.log('First frame submitted at (ms):', this.firstFrameTime - pageInitTime);
@@ -603,7 +623,7 @@ window.TESTER = {
   },
 
   addInfoOverlay: function() {
-    window.onload = () => {
+    onReady(() => {
       if (typeof parameters['info-overlay'] === 'undefined') {
         return;
       }
@@ -622,33 +642,32 @@ window.TESTER = {
         padding: 5px`;
       document.body.appendChild(divOverlay);
       divOverlay.innerText = parameters['info-overlay'];
-    }
+    })
   },
 
   addProgressBar: function() {
-    window.onload = () => {
-      if (typeof parameters['order-global'] === 'undefined') {
-        return;
-      }
-
+    onReady(() => {
       var divProgressBars = document.createElement('div');
-      divProgressBars.style.cssText = 'position: absolute; bottom: 0; background-color: #333; width: 200px; padding: 10px 10px 0px 10px;';
+      divProgressBars.style.cssText = 'position: absolute; left: 0; bottom: 0; background-color: #333; width: 200px; padding: 5px 5px 0px 5px;';
       document.body.appendChild(divProgressBars);
-      
+
       var orderGlobal = parameters['order-global'];
       var totalGlobal = parameters['total-global'];
       var percGlobal = Math.round(orderGlobal/totalGlobal * 100);
       var orderTest = parameters['order-test'];
       var totalTest = parameters['total-test'];
       var percTest = Math.round(orderTest/totalTest * 100);
-      
-      function addProgressBarSection(text, color, perc) {
+
+      function addProgressBarSection(text, color, perc, id) {
         var div = document.createElement('div');
-        div.style.cssText='width: 100%; height: 20px; margin-bottom: 10px; overflow: hidden; background-color: #f5f5f5; border-radius: 4px; -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1); box-shadow: inset 0 1px 2px rgba(0,0,0,.1);';
+        div.style.cssText='width: 100%; height: 20px; margin-bottom: 5px; overflow: hidden; background-color: #f5f5f5;';
         divProgressBars.appendChild(div);
-        
+
         var divProgress = document.createElement('div');
         div.appendChild(divProgress);
+        if (id) {
+          divProgress.id = id;
+        }
         divProgress.style.cssText=`
           width: ${perc}%;background-color: ${color} float: left;
           height: 100%;
@@ -667,9 +686,15 @@ window.TESTER = {
           divProgress.innerText = text;;
       }
 
-      addProgressBarSection(`${orderTest}/${totalTest} ${percTest}%`, '#5bc0de', percTest);
-      addProgressBarSection(`${orderGlobal}/${totalGlobal} ${percGlobal}%`, '#337ab7', percGlobal); 
-    }
+      if (typeof parameters['order-global'] !== 'undefined') {
+        addProgressBarSection(`${orderTest}/${totalTest} ${percTest}%`, '#5bc0de', percTest);
+        addProgressBarSection(`${orderGlobal}/${totalGlobal} ${percGlobal}%`, '#337ab7', percGlobal);
+      }
+
+      addProgressBarSection('', '#337ab7', 0, 'numframes');
+      this.frameProgressBar = document.getElementById('numframes');
+
+    });
   },
 
   hookModals: function() {
@@ -713,6 +738,7 @@ window.TESTER = {
     if (!GFXTESTS_CONFIG.providesRafIntegration) {
       this.hookRAF();
     }
+
     this.addProgressBar();
     this.addInfoOverlay();
 
