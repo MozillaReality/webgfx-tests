@@ -25,8 +25,13 @@ function initServer(port, config, verbose) {
   var testsFolder = path.resolve(path.join(configFilePath, config.testsFolder));
   var definitionFolder = path.join(configFilePath, config.definitions);
 
-  server.get('*gz', (req, res, next) => {
+  server.get('*.gz', (req, res, next) => {
     res.set('Content-Encoding', 'gzip');
+    res.set('Content-Type', 'application/javascript');
+    res.set('Cache-Control','no-cache, must-revalidate');
+    res.set('Connection','close');
+    res.set('Expires','-1');
+    res.set('Access-Control-Allow-Origin', '*');
     next();
   });
 
@@ -85,7 +90,7 @@ function initServer(port, config, verbose) {
         res.sendFile(pathf);
       }
     });
-  
+
   server.listen(port, function(){
     var serverIP = internalIp.v4.sync() || 'localhost';
     console.log('* HTTP Tests server listening on ' + chalk.yellow(serverIP + ':' + port));
