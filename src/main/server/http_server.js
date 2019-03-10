@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'production';
+
 var express = require('express');
 var path = require('path');
 var fs = require('fs');
@@ -23,13 +25,18 @@ function initServer(port, config, verbose) {
   var testsFolder = path.resolve(path.join(configFilePath, config.testsFolder));
   var definitionFolder = path.join(configFilePath, config.definitions);
 
+  server.get('*gz', (req, res, next) => {
+    res.set('Content-Encoding', 'gzip');
+    next();
+  });
+
   server
     .use('/', express.static(path.join(__dirname, '../../frontapp')))
     .use('/static', express.static(testsFolder))
     .use('/app.bundle.js', express.static(path.join(__dirname,'../../../dist/app.bundle.js')))
     .use('/tests.json', express.static(definitionFolder))
     .use(bodyParser.json());
-  
+
   server
     .get('/webgfx-tests.js', (req, res) => {
       var html = fs.readFileSync(__dirname + baseFolder + 'dist/webgfx-tests.js', 'utf8');

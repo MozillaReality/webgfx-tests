@@ -25,7 +25,7 @@
     "url": "threejs/misc_fps.html",
     "name": "fps controls",
     "mobile": true,
-    "numframes": 100,
+    "numframes": 500,
     "interactive": true,
     "input": "input/misc_fps.json"
   },

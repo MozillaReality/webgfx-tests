@@ -43,7 +43,7 @@ window.TESTER = {
 
   randomSeed: 1,
 
-  numFramesToRender: typeof parameters['num-frames'] === 'undefined' ? 500 : parseInt(parameters['num-frames']),
+  numFramesToRender: typeof parameters['num-frames'] === 'undefined' ? 1200 : parseInt(parameters['num-frames']),
 
   // Guard against recursive calls to referenceTestPreTick+referenceTestTick from multiple rAFs.
   referenceTestPreTickCalledCount: 0,
@@ -70,26 +70,37 @@ window.TESTER = {
       if (!this.canvas) {
         // We assume the last webgl context being initialized is the one used to rendering
         // If that's different, the test should have a custom code to return that canvas
-        if (CanvasHook.webglContexts) {
-          this.canvas = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1].canvas;
+        if (CanvasHook.webglContexts.length > 0) {
+          var context = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1];
+          this.canvas = context.canvas;
           // To prevent width & height 100%
-          this.canvas.style.cssText = 'width: auto !important; height: auto ! important;';
+          function addStyleString(str) {
+            var node = document.createElement('style');
+            node.innerHTML = str;
+            document.body.appendChild(node);
+          }
+
+          addStyleString('.gfxtests-canvas {width: auto !important; height: auto !important;}');
+          this.canvas.classList.add('gfxtests-canvas');
+          this.canvas.width = this.windowSize.width;
+          this.canvas.height = this.windowSize.height;
+
+          WebGLStats.setupExtensions(context);
+
+          if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
+            this.inputRecorder = new InputRecorder(this.canvas);
+            this.inputRecorder.enable();
+          }
         }
         //@fixme else for canvas 2d without webgl
       }
 
       if (this.referenceTestFrameNumber === 0) {
-        WebGLStats.setupExtensions(CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1]);
         if ('autoenter-xr' in parameters) {
           this.injectAutoEnterXR(this.canvas);
         }
       }
 
-      if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
-        this.inputRecorder = new InputRecorder(this.canvas);
-        this.inputRecorder.enable();
-      }
-      
       if (typeof parameters['replay'] !== 'undefined' && !this.inputReplayer) {
         if (GFXTESTS_CONFIG.input) {
           // @fixme Prevent multiple fetch while waiting
@@ -133,9 +144,8 @@ window.TESTER = {
       this.inputReplayer.tick(this.referenceTestFrameNumber);
     }
 
-/*    
-    ensureNoClientHandlers();
-*/  
+    this.eventListener.ensureNoClientHandlers();
+
     var timeNow = performance.realNow();
 
     var frameDuration = timeNow - this.lastFrameTick;
@@ -730,7 +740,8 @@ window.TESTER = {
     // this.wrapErrors();
 
     this.eventListener = new EventListenerManager();
-    if (typeof parameters['replay'] !== 'undefined') {
+    //if (typeof parameters['recording'] !== 'undefined') {
+    if (typeof parameters['recording'] === 'undefined') {
       this.eventListener.enable();
     }
 

@@ -46,6 +46,7 @@ export default class TestApp {
     fetch('tests.json')
       .then(response => { return response.json(); })
       .then(json => {
+        json = json.filter(test => test.available !== false);
         json.forEach(test => {
           test.selected = true;
         });

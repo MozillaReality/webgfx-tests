@@ -30,8 +30,8 @@ export default class EventListenerManager {
   
     this.ensureNoClientHandlers();
   }
- 
-  //if (injectingInputStream) 
+
+  //if (injectingInputStream)
   enable() {
 
     // Filter the page event handlers to only pass programmatically generated events to the site - all real user input needs to be discarded since we are
@@ -40,6 +40,7 @@ export default class EventListenerManager {
       'click', 'dblclick', 'keydown', 'keypress', 'keyup',
       'pointerlockchange', 'pointerlockerror', 'webkitpointerlockchange', 'webkitpointerlockerror', 'mozpointerlockchange', 'mozpointerlockerror', 'mspointerlockchange', 'mspointerlockerror', 'opointerlockchange', 'opointerlockerror',
       'devicemotion', 'deviceorientation',
+      'mouseenter', 'mouseleave',
       'mousewheel', 'wheel', 'WheelEvent', 'DOMMouseScroll', 'contextmenu',
       'blur', 'focus', 'visibilitychange', 'beforeunload', 'unload', 'error',
       'pagehide', 'pageshow', 'orientationchange', 'gamepadconnected', 'gamepaddisconnected',
@@ -48,12 +49,12 @@ export default class EventListenerManager {
       'touchstart', 'touchmove', 'touchend', 'touchcancel',
       'webglcontextlost', 'webglcontextrestored',
       'mouseover', 'mouseout', 'pointerout', 'pointerdown', 'pointermove', 'pointerup', 'transitionend'];
-  
-    // Some game demos programmatically fire the resize event. For Firefox and Chrome, 
+
+    // Some game demos programmatically fire the resize event. For Firefox and Chrome,
     // we detect this via event.isTrusted and know to correctly pass it through, but to make Safari happy,
     // it's just easier to let resize come through for those demos that need it.
     // if (!Module['pageNeedsResizeEvent']) overriddenMessageTypes.push('resize');
-  
+
     // If context is specified, addEventListener is called using that as the 'this' object. Otherwise the current this is used.
     var self = this;
     var dispatchMouseEventsViaDOM = false;
@@ -66,22 +67,21 @@ export default class EventListenerManager {
           var registerListenerToDOM =
                (type.indexOf('mouse') === -1 || dispatchMouseEventsViaDOM)
             && (type.indexOf('key') === -1 || dispatchKeyEventsViaDOM);
-          //var filteredEventListener = function(e) { try { if (e.programmatic || !e.isTrusted) listener(e); } catch(e) {} };
-          var filteredEventListener = listener;
+          var filteredEventListener = function(e) { try { if (e.programmatic || !e.isTrusted) listener(e); } catch(e) {} };
+          //!!! var filteredEventListener = listener;
           if (registerListenerToDOM) realAddEventListener.call(context || this, type, filteredEventListener, useCapture);
-
           self.registeredEventListeners.push({
-            context: context || this, 
-            type: type, 
-            fun: filteredEventListener, 
+            context: context || this,
+            type: type,
+            fun: filteredEventListener,
             useCapture: useCapture
           });
         } else {
           realAddEventListener.call(context || this, type, listener, useCapture);
           self.registeredEventListeners.push({
-            context: context || this, 
-            type: type, 
-            fun: listener, 
+            context: context || this,
+            type: type,
+            fun: listener,
             useCapture: useCapture
           });
         }
@@ -90,7 +90,7 @@ export default class EventListenerManager {
       var realRemoveEventListener = obj.removeEventListener;
 
       obj.removeEventListener = function(type, listener, useCapture) {
-        // if (registerListenerToDOM) 
+        // if (registerListenerToDOM)
         //realRemoveEventListener.call(context || this, type, filteredEventListener, useCapture);
         for (var i = 0; i < self.registeredEventListeners.length; i++) {
           var eventListener = self.registeredEventListeners[i];
