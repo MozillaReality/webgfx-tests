@@ -1,6 +1,7 @@
 function addGET(url, parameter) {
-  if (url.indexOf('?') != -1) return url + '&' + parameter;
-  else return url + '?' + parameter;
+  //if (url.indexOf('?') != -1)
+  return url + '&' + parameter;
+  //else return url + '?' + parameter;
 }
 
 function yyyymmddhhmmss() {

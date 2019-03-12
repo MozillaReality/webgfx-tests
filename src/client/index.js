@@ -88,6 +88,10 @@ window.TESTER = {
         if (CanvasHook.webglContexts.length > 0) {
           var context = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1];
           this.canvas = context.canvas;
+
+          // Prevent events not defined as event-listeners
+          this.canvas.onmousedown = this.canvas.onmouseup = this.canvas.onmousemove = () => {};
+
           // To prevent width & height 100%
           function addStyleString(str) {
             var node = document.createElement('style');
@@ -766,6 +770,7 @@ window.TESTER = {
     // this.wrapErrors();
 
     this.eventListener = new EventListenerManager();
+
     //if (typeof parameters['recording'] !== 'undefined') {
     if (typeof parameters['recording'] === 'undefined') {
       this.eventListener.enable();
