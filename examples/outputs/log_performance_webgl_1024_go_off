@@ -1,0 +1,169 @@
+[{
+  "test_id": "performance_webgl",
+  "stats": {
+    "perf": {
+      "fps": {
+        "min": 0.9716473308847818,
+        "max": 9.550186228631539,
+        "avg": 6.474851603180839,
+        "standard_deviation": 1.31832905734539
+      },
+      "dt": {
+        "min": 96.87999999999738,
+        "max": 1953.38,
+        "avg": 158.2001167639699,
+        "standard_deviation": 65.09010571921428
+      },
+      "cpu": {
+        "min": 50.60459306432952,
+        "max": 98.20930821859733,
+        "avg": 88.51153963316774,
+        "standard_deviation": 5.998223263691609
+      }
+    },
+    "webgl": {
+      "drawCalls": {
+        "min": 0,
+        "max": 1024,
+        "avg": 1023.1466666666671,
+        "standard_deviation": 29.548014409695202
+      },
+      "useProgramCalls": {
+        "min": 0,
+        "max": 1,
+        "avg": 0.0008333333333333356,
+        "standard_deviation": 0.02885548282196799
+      },
+      "faces": {
+        "min": 0,
+        "max": 990208,
+        "avg": 989382.8266666675,
+        "standard_deviation": 28572.92993417522
+      },
+      "vertices": {
+        "min": 0,
+        "max": 2970624,
+        "avg": 2968148.4800000037,
+        "standard_deviation": 85718.78980252586
+      },
+      "bindTextures": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      }
+    }
+  },
+  "numFrames": 1200,
+  "totalTime": 190241.80000000002,
+  "timeToFirstFrame": 363.59999999999945,
+  "avgFps": 6.319840824275772,
+  "numStutterEvents": 172,
+  "totalRenderTime": 189878.2,
+  "cpuTime": 166975.2199999997,
+  "cpuIdleTime": 22706.720000000285,
+  "cpuIdlePerc": 11.958571336783413,
+  "pageLoadTime": 354.97999999999956,
+  "result": "pass",
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "testUUID": "1",
+  "browser": {
+    "name": "Firefox Reality",
+    "code": "fxr",
+    "versionCode": "130091627",
+    "versionName": "1.1.2"
+  },
+  "device": {
+    "name": "Oculus Go",
+    "deviceProduct": "Pacific",
+    "serial": "1KWPH812ZF8202"
+  }
+},{
+  "test_id": "performance_webgl",
+  "stats": {
+    "perf": {
+      "fps": {
+        "min": 0.48690232739449385,
+        "max": 21.276595745945663,
+        "avg": 17.90608249679512,
+        "standard_deviation": 2.151983142488775
+      },
+      "dt": {
+        "min": 40.69999999774154,
+        "max": 2985.5999999999767,
+        "avg": 58.393661384495516,
+        "standard_deviation": 85.6163374648102
+      },
+      "cpu": {
+        "min": 51.47928993586075,
+        "max": 94.73684211014923,
+        "avg": 80.6695458242066,
+        "standard_deviation": 5.515050689622222
+      }
+    },
+    "webgl": {
+      "drawCalls": {
+        "min": 0,
+        "max": 1024,
+        "avg": 1023.1466666666671,
+        "standard_deviation": 29.548014409695202
+      },
+      "useProgramCalls": {
+        "min": 0,
+        "max": 1,
+        "avg": 0.0008333333333333356,
+        "standard_deviation": 0.02885548282196799
+      },
+      "faces": {
+        "min": 0,
+        "max": 990208,
+        "avg": 989382.8266666675,
+        "standard_deviation": 28572.92993417522
+      },
+      "vertices": {
+        "min": 0,
+        "max": 2970624,
+        "avg": 2968148.4800000037,
+        "standard_deviation": 85718.78980252586
+      },
+      "bindTextures": {
+        "min": 0,
+        "max": 0,
+        "avg": 0,
+        "standard_deviation": 0
+      }
+    }
+  },
+  "numFrames": 1200,
+  "totalTime": 71615.99999999453,
+  "timeToFirstFrame": 1307.7999999950407,
+  "avgFps": 17.067710451981544,
+  "numStutterEvents": 97,
+  "totalRenderTime": 70308.19999999949,
+  "cpuTime": 55673.09999989811,
+  "cpuIdleTime": 14340.900000112015,
+  "cpuIdlePerc": 20.397194068561163,
+  "pageLoadTime": 1278.9000000047963,
+  "result": "pass",
+  "logs": {
+    "errors": [],
+    "warnings": [],
+    "catchErrors": []
+  },
+  "testUUID": "2",
+  "browser": {
+    "name": "Oculus Browser",
+    "code": "oculus",
+    "versionCode": "146202809",
+    "versionName": "5.7.8.144932646"
+  },
+  "device": {
+    "name": "Oculus Go",
+    "deviceProduct": "Pacific",
+    "serial": "1KWPH812ZF8202"
+  }
+}]

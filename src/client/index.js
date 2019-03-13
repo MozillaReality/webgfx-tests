@@ -800,8 +800,8 @@ window.TESTER = {
       setTimeout(() => {
         navigator.getVRDisplays().then(displays => {
           var device = displays[0];
-          //if (device.isPresenting) device.exitPresent();
           if (device) {
+            //if (device.isPresenting) device.exitPresent();
             device.requestPresent( [ { source: canvas } ] );
           }
         }), 2000}); // @fix to make it work on FxR

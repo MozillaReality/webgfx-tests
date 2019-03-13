@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>WebAudio decode blocking</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background:#fff;
+				padding:0;
+				margin:0;
+				font-weight: bold;
+				overflow:hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<span>No worry, this test renders nothing.</span>
+
+		<script>
+
+			function loadOption( key ) {
+
+				var options = location.href.split( '?' )[ 1 ];
+
+				if ( ! options ) return null;
+
+				var optionArray = options.split( '&' );
+
+				for ( var i = 0, il = optionArray.length; i < il; i ++ ) {
+
+					var tmp = optionArray[ i ].split( '=' );
+
+					if ( tmp[ 0 ].toLowerCase() === key ) return tmp[ 1 ];
+
+				}
+
+				return null;
+
+			}
+
+			var num = parseInt( loadOption( 'num' ) ) || 5;
+			var format = loadOption( 'format' ) || '';
+
+			var decodingNum = 0;
+			var playingNum = 0;
+
+			startMusic();
+			animate();
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+			}
+
+			function startMusics() {
+
+				var url = format.toLowerCase() === 'mp3' ? '358232_j_s_song.mp3' : '358232_j_s_song.ogg';
+				var context = new AudioContext();
+
+				for ( var i = 0; i < n; i ++ ) {
+
+					loadMusics( url, context );
+
+				}
+
+			}
+
+			function loadMusics( url, context ) {
+
+				fetch( url )
+					.then( response => {
+
+						return response.arrayBuffer();
+
+					} )
+					.then( arrayBuffer => {
+
+						if ( decodingNum === 0 && playingNum === 0 ) {
+
+							startProfile();
+
+						}
+
+						decodingNum ++;
+						return context.decodeAudioData( arrayBuffer );
+
+					} )
+					.then( audioBuffer => {
+
+						decodingNum --;
+						playingNum ++;
+
+						if ( playingNum === num ) {
+
+							endProfile();
+
+						}
+
+						var source = context.createBufferSource();
+						source.buffer = audioBuffer;
+						source.connect( context.destination );
+						source.start( 0, 0, 10 );
+
+					} );
+
+			}
+
+		</script>
+
+	</body>
+</html>
