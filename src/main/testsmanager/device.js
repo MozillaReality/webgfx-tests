@@ -15,7 +15,7 @@ function loadJSON(path) {
     return JSON.parse(fs.readFileSync(path, 'utf8'));
   } catch(err) {
     throw err;
-  }  
+  }
 }
 
 var config = null;
@@ -26,7 +26,7 @@ function getConfig(configFile) {
   try {
     if (fs.lstatSync(configFile).isDirectory()) {
       configFile = path.join(configFile, 'webgfx-tests.config.json');
-    }  
+    }
   } catch(err) {
 
   }
@@ -38,8 +38,8 @@ function getConfig(configFile) {
       config = loadJSON(configFile);
       config.path = path.resolve(configFile);
       testsDb = loadJSON(path.join(path.dirname(configFile), config.definitions));
-      config.tests = testsDb;  
-      return config;  
+      config.tests = testsDb;
+      return config;
     } catch(err) {
       return false;
     }
@@ -112,9 +112,10 @@ TestsManager.prototype = {
       showKeys: false,
       showMouse: false,
       noCloseOnFail: false,
-      infoOverlay: browser.info
+      infoOverlay: browser.info,
+      fakeWebGL: this.generalOptions.fakeWebGL || false
     };
-  
+
     console.log('* Running test:', chalk.yellow(test.id), 'on browser', chalk.yellow(browser.name),'on device', chalk.green(this.device.deviceProduct));
 
     // @fixme
@@ -129,11 +130,11 @@ TestsManager.prototype = {
     if (killOnStart) {
       this.device.killBrowser(browser).then(() => {
         this.device.launchBrowser(browser, url, this.generalOptions.extraParams); //.then(runNextQueuedTest);
-      });  
+      });
     } else {
       this.device.launchBrowser(browser, url, this.generalOptions.extraParams); //.then(runNextQueuedTest);
     }
-  }  
+  }
 };
 
 function TestsData() {

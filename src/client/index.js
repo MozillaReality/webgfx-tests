@@ -12,6 +12,28 @@ import WebGLStats from 'webgl-stats';
 
 const parameters = queryString.parse(location.search);
 
+var old
+
+function FakeGL( gl ) {
+
+  this.gl = gl;
+
+  for ( var key in gl ) {
+
+    if ( typeof gl[ key ] !== 'function' ) {
+
+      if (key === 'getShaderPrecisionFormat') {
+        return this.gl.getParameter.apply( this.gl, arguments );
+      }
+      this[ key ] = gl[ key ];
+
+    }
+
+  }
+
+}
+
+
 function onReady(callback) {
   if (
     document.readyState === "complete" ||

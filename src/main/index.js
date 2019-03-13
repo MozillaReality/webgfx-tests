@@ -165,11 +165,12 @@ program
   .option("-k, --package <package names>", "Browser packages (apk) to install and execute the tests (Comma separated)")
   .option("-i, --info <extra info>", "Add extra info to be displayed on the browser when running the test (eg: browser codename)")
   .option("-n, --numtimes <number>", "Number of times to run each test")
+  .option("-f, --fakewebgl", "Force fake webgl")
   .option("-o, --outputfile <file>", "Store test results on a local file")
   .option("-v, --verbose", "Show all the info available")
   .action((testIDs, options) => {
     const configfile = options.configfile || 'webgfx-tests.config.json';
-    
+
     const config = TestUtils.getConfig(configfile);
     if (config === false) {
       console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
@@ -191,13 +192,13 @@ program
         console.log(`\n${chalk.yellow('TESTS FINISHED')}!`);
         if (options.outputfile) {
           console.log(`Writing output file: ${chalk.yellow(options.outputfile)}`);
-          fs.appendFile(options.outputfile, ']', (err) => {  
+          fs.appendFile(options.outputfile, ']', (err) => {
             if (err) throw err;
             process.exit();
           });
         } else {
           process.exit();
-        }  
+        }
       } else {
         console.log('-- Device finished. Remaining: ', numRunningDevices);
       }
@@ -213,7 +214,7 @@ program
         console.log('ERROR: No device found!');
         return;
       }
-      
+
       if (options.outputfile) {
         try {
           fs.unlinkSync(options.outputfile);
@@ -240,7 +241,7 @@ program
             deviceProduct: testRunData.device.deviceProduct,
             serial: testRunData.device.serial
           };
-          fs.appendFile(options.outputfile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {  
+          fs.appendFile(options.outputfile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {
             if (err) throw err;
             numOutputTests++;
           });
@@ -257,7 +258,7 @@ program
           testsManager.runNextQueuedTest();
         });
       }, options.verbose);
-      
+
       var testsManagers = {};
       var numRunningDevices = devices.length;
 
@@ -265,8 +266,8 @@ program
         if (options.package) {
           var browsersData = [
             {
-              name: 'Firefox Reality', 
-              code: 'fxr', 
+              name: 'Firefox Reality',
+              code: 'fxr',
               package: 'org.mozilla.vrbrowser'
             },
             {
@@ -351,12 +352,13 @@ program
     
           var generalOptions = {
             numTimes: options.numtimes || 1,
+            fakeWebGL: options.fakewebgl,
             extraParams: options.launchparams
           };
           var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions, {});
           await testsManager.runTests();
           onTestsFinish();
-        }    
+        }
       });
     }
 });

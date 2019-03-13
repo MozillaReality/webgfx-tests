@@ -89,29 +89,30 @@
 	  timeScale: 1.0,
 	  fakedTime: 0,
 	  enabled: false,
-	  refreshRate: 60,
 	  needsFakeMonotonouslyIncreasingTimer: false,
 	  setFakedTime: function( newFakedTime ) {
 	    this.fakedTime = newFakedTime;
 	  },
 	  enable: function () {
 	    Date = MockDate;
-
+	    
 	    var self = this;
 	    if (this.needsFakeMonotonouslyIncreasingTimer) {
-	      performance.now = Date.now = function() { self.fakedTime += self.timeScale; return self.fakedTime; };
+	      Date.now = function() { self.fakedTime += self.timeScale; return self.fakedTime; };
+	      performance.now = function() { self.fakedTime += self.timeScale; return self.fakedTime; };
 	    } else {
-	      performance.now = Date.now = function() { return self.fakedTime * 1000.0 * self.timeScale / this.refreshRate; };
+	      Date.now = function() { return self.fakedTime * 1000.0 * self.timeScale / 60.0; };
+	      performance.now = function() { return self.fakedTime * 1000.0 * self.timeScale / 60.0; };
 	    }
-
+	  
 	    this.enabled = true;
 	  },
 	  disable: function () {
-	    if (!this.enabled) { return; }
-	    Date = RealDate;
+	    if (!this.enabled) { return; }    
+	    Date = RealDate;    
 	    performance.now = realPerformance.now;
-
-	    this.enabled = false;
+	    
+	    this.enabled = false;    
 	  }
 	};
 
@@ -2626,6 +2627,7 @@
 	var WebGLStats$1 = WebGLStats();
 
 	const parameters = queryString.parse(location.search);
+
 
 	function onReady(callback) {
 	  if (
