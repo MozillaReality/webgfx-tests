@@ -104,10 +104,8 @@ Tests list
     "url": "threejs/index2.html",
     "name": "instancing demo (single triangle)",
     "mobile": true,
-    "windowsize": {
-      "width": 500,
-      "height": 500
-    },
+    "canvasWidth": 500,
+    "canvasHeight": 500,
     "interactive": true,
     "skipReferenceImageTest": true
   },

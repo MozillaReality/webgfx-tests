@@ -5,7 +5,7 @@
     "url": "webvr.info/03-vr-presentation.html",
     "name": "webvr info",
     "mobile": true,
-    "numframes": 400,
+    "numFrames": 400,
     "interactive": true
   },
   {
@@ -14,9 +14,9 @@
     "url": "threejs/webvr_cubes.html",
     "name": "webvr cubes",
     "mobile": true,
-    "numframes": 400,
+    "numFrames": 500,
     "interactive": true,
-    "autoenter-xr": true,
+    "autoenterXR": true,
     "skipReferenceImageTest": true
   },
   {
@@ -25,7 +25,7 @@
     "url": "threejs/misc_fps.html",
     "name": "fps controls",
     "mobile": true,
-    "numframes": 500,
+    "numFrames": 500,
     "interactive": true,
     "input": "input/misc_fps.json"
   },
@@ -35,7 +35,7 @@
     "url": "threejs/webgl_interactive_draggablecubes.html",
     "name": "interactive draggable cubes",
     "mobile": true,
-    "numframes": 100,
+    "numFrames": 100,
     "interactive": true,
     "referenceCompareThreshold": 0.5,
     "referencePercentageFail": 1.5,
@@ -48,7 +48,7 @@
     "url": "threejs/index.html",
     "name": "instanced circle billboards",
     "mobile": true,
-    "numframes": 100,
+    "numFrames": 100,
     "interactive": true,
     "skipReferenceImageTest": true
   },
@@ -58,10 +58,8 @@
     "url": "threejs/index2.html",
     "name": "instancing demo (single triangle)",
     "mobile": true,
-    "windowsize": {
-      "width": 500,
-      "height": 500
-    },
+    "canvasWidth": 500,
+    "canvasHeight": 500,
     "interactive": true,
     "skipReferenceImageTest": true
   },
@@ -72,7 +70,7 @@
     "name": "simple example",
     "mobile": true,
     "interactive": true,
-    "numframes": 200,
+    "numFrames": 200,
     "skipReferenceImageTest": true
   },
   {

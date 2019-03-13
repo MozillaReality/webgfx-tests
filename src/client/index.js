@@ -121,10 +121,10 @@ window.TESTER = {
             document.body.appendChild(node);
           }
 
-          addStyleString(`.gfxtests-canvas {width: ${this.windowSize.width}px !important; height: ${this.windowSize.height}px !important;}`);
+          addStyleString(`.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
           this.canvas.classList.add('gfxtests-canvas');
-          this.canvas.width = this.windowSize.width;
-          this.canvas.height = this.windowSize.height;
+          this.canvas.width = this.canvasWidth;
+          this.canvas.height = this.canvasHeight;
 
           WebGLStats.setupExtensions(context);
 
@@ -777,7 +777,7 @@ window.TESTER = {
     Math.random = seedrandom(this.randomSeed);
 
     this.handleSize();
-    CanvasHook.enable(Object.assign({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'}, this.windowSize));
+    CanvasHook.enable(Object.assign({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'}, {width: this.canvasWidth, height: this.canvasHeight}));
     this.hookModals();
 
     this.initServer();
@@ -816,14 +816,14 @@ window.TESTER = {
   handleSize: function() {
     const DEFAULT_WIDTH = 800;
     const DEFAULT_HEIGHT = 600;
-    this.windowSize = {};
+    this.canvasWidth = DEFAULT_WIDTH;
+    this.canvasHeight = DEFAULT_HEIGHT;
+
     if (typeof parameters['keep-window-size'] === 'undefined') {
-      this.windowSize = {
-        width: typeof parameters['width'] === 'undefined' ? DEFAULT_WIDTH : parseInt(parameters['width']),
-        height: typeof parameters['height'] === 'undefined' ? DEFAULT_HEIGHT : parseInt(parameters['height'])
-      }
-      window.innerWidth = this.windowSize.width;
-      window.innerHeight = this.windowSize.height;
+      this.canvasWidth = typeof parameters['width'] === 'undefined' ? DEFAULT_WIDTH : parseInt(parameters['width']);
+      this.canvasHeight = typeof parameters['height'] === 'undefined' ? DEFAULT_HEIGHT : parseInt(parameters['height']);
+      window.innerWidth = this.canvasWidth;
+      window.innerHeight = this.canvasHeight;
     }
   }
 };

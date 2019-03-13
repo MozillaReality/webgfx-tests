@@ -4,21 +4,27 @@ function buildTestURL(baseURL, test, mode, options, progress) {
   //var url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url;
   var url = '';
 
+  function getOption(name) {
+    return options[name] || test[name];
+  }
+
   if (mode !== 'interactive') {
-    if (test['autoenter-xr']) url = addGET(url, 'autoenter-xr=true');
-    if (test.numframes) url = addGET(url, 'num-frames=' + test.numframes);
-    if (test.windowsize) url = addGET(url, 'width=' + test.windowsize.width + '&height=' + test.windowsize.height);
-    if (options.fakeWebGL) url = addGET(url, 'fake-webgl');
+    if (getOption('autoenterXR')) url = addGET(url, 'autoenter-xr=true');
+    if (getOption('numFrames')) url = addGET(url, 'num-frames=' + getOption('numFrames'));
+    if (getOption('canvasWidth')) url = addGET(url, 'width=' + getOption('canvasWidth'));
+    if (getOption('canvasHeight')) url = addGET(url, 'height=' + getOption('canvasHeight'));
+
+    if (getOption('fakeWebGL')) url = addGET(url, 'fake-webgl');
 
     if (mode === 'record') {
       url = addGET(url, 'recording');
     } else if (test.input && mode === 'replay') {
       url = addGET(url, 'replay');
-      if (options.showKeys) url = addGET(url, 'show-keys');
-      if (options.showMouse) url = addGET(url, 'show-mouse');
+      if (getOption('showKeys')) url = addGET(url, 'show-keys');
+      if (getOption('showMouse')) url = addGET(url, 'show-mouse');
     }
 
-    if (options.noCloseOnFail) url = addGET(url, 'no-close-on-fail');
+    if (getOption('noCloseOnFail')) url = addGET(url, 'no-close-on-fail');
     if (test.skipReferenceImageTest) url = addGET(url, 'skip-reference-image-test');
     if (test.referenceImage) url = addGET(url, 'reference-image');
 
@@ -27,8 +33,8 @@ function buildTestURL(baseURL, test, mode, options, progress) {
       url = addGET(url, 'order-global=' + progress.currentGlobal + '&total-global=' + progress.totalGlobal);
     }
 
-    if (options.infoOverlay) {
-      url = addGET(url, 'info-overlay=' + encodeURI(options.infoOverlay));
+    if (getOption('infoOverlay')) {
+      url = addGET(url, 'info-overlay=' + encodeURI(getOption('infoOverlay')));
     }
   }
 

@@ -165,7 +165,7 @@ program
   .option("-k, --package <package names>", "Browser packages (apk) to install and execute the tests (Comma separated)")
   .option("-i, --info <extra info>", "Add extra info to be displayed on the browser when running the test (eg: browser codename)")
   .option("-n, --numtimes <number>", "Number of times to run each test")
-  .option("-f, --fakewebgl", "Force fake webgl")
+  .option("-r, --overrideparams <additional parameters>", "Override parameters on individual execution (eg: \"fake-webgl&width=800&height=600\"")
   .option("-o, --outputfile <file>", "Store test results on a local file")
   .option("-v, --verbose", "Show all the info available")
   .action((testIDs, options) => {
@@ -281,12 +281,12 @@ program
               package: 'com.chrome.canary'
             },
             {
-              name: 'Oculus Browser', 
+              name: 'Oculus Browser',
               code: 'oculus',
               package: 'com.oculus.browser'
             }
           ];
-          
+
           async function asyncForEach(array, callback) {
             for (let index = 0; index < array.length; index++) {
               await callback(array[index], index, array);
@@ -338,8 +338,8 @@ program
           if (options.browser && options.browser !== 'all') {
             var browserOptions = options.browser.split(',');
             browsersToRun = browsers.filter(b => browserOptions.indexOf(b.code) !== -1);
-          } 
-  
+          }
+
           browsersToRun.forEach(browser => {
             const extraInfo = '';
             const versionName = browser.versionName ? 'v.' + browser.versionName : '';
@@ -347,14 +347,15 @@ program
 
             browser.info = `${browser.name} ${versionName} ${versionCode} ${extraInfo}`;
           });
-  
+
           console.log(`Browsers to run on device ${chalk.green(device.name)}:`, browsersToRun.map(b => chalk.yellow(b.name)).join(', '));
-    
+
           var generalOptions = {
             numTimes: options.numtimes || 1,
-            fakeWebGL: options.fakewebgl,
+            overrideParams: options.overrideparams,
             extraParams: options.launchparams
           };
+
           var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions, {});
           await testsManager.runTests();
           onTestsFinish();

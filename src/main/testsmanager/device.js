@@ -107,7 +107,7 @@ TestsManager.prototype = {
     const serverIP = internalIp.v4.sync() || 'localhost';
     //@fixme port from params
     const baseURL = `http://${serverIP}:3000/`;
-  
+
     var options = {
       showKeys: false,
       showMouse: false,
@@ -115,6 +115,15 @@ TestsManager.prototype = {
       infoOverlay: browser.info,
       fakeWebGL: this.generalOptions.fakeWebGL || false
     };
+
+    if (this.generalOptions.overrideParams) {
+      var overrideParams = this.generalOptions.overrideParams.split(' ');
+      overrideParams.forEach(param => {
+        param = param.split('=');
+        var camelCased = param[0].replace(/-([a-z])/g, g => g[1].toUpperCase());
+        options[camelCased] = param[1] === 'true' ? true : param[1] === 'false' ? false : param[1];
+      });
+    }
 
     console.log('* Running test:', chalk.yellow(test.id), 'on browser', chalk.yellow(browser.name),'on device', chalk.green(this.device.deviceProduct));
 
