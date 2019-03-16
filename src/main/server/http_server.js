@@ -95,14 +95,14 @@ function initServer(port, config, verbose) {
           res.send('No test found: ' + url);
         }
       } else {
-        res.sendFile(pathf);
+        res.sendFile(decodeURI(pathf));
       }
     });
 
   server.listen(port, function(){
     var serverIP = internalIp.v4.sync() || 'localhost';
     console.log('* HTTP Tests server listening on ' + chalk.yellow(serverIP + ':' + port));
-  });  
+  });
 }
 
 module.exports = initServer;
