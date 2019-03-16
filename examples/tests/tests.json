@@ -27,7 +27,7 @@
     "mobile": true,
     "numFrames": 500,
     "interactive": true,
-    "input": "input/misc_fps.json"
+    "input": "misc_fps.json"
   },
   {
     "id": "webgl_interactive_draggablecubes",
@@ -40,7 +40,7 @@
     "referenceCompareThreshold": 0.5,
     "referencePercentageFail": 1.5,
     "referenceNumPixelsFail": 100,
-    "input": "input/webgl_interactive_draggablecubes.json"
+    "input": "webgl_interactive_draggablecubes.json"
   },
   {
     "id": "instancing",
