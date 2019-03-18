@@ -70,7 +70,7 @@
         >
         <template slot-scope="props">
           <b-table-column field="id" label="ID" sortable>
-            {{ props.row.id }}
+            <span style="white-space: nowrap">{{ props.row.id }}</span>
           </b-table-column>
           <b-table-column field="name" label="name" sortable>
             {{ props.row.name }}
