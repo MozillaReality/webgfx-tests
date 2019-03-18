@@ -1821,18 +1821,17 @@
 	    //    if (e.initKeyEvent) {
 	    //      e.initKeyEvent(eventType, true, true, window, false, false, false, false, keyCode, charCode);
 	    //  } else {
-	  
 	    var e = document.createEventObject ? document.createEventObject() : document.createEvent("Events");
-	      if (e.initEvent) {
-	        e.initEvent(eventType, true, true);
-	      }
-	  
+	    if (e.initEvent) {
+	      e.initEvent(eventType, true, true);
+	    }
+
 	    e.keyCode = parameters.keyCode;
 	    e.which = parameters.keyCode;
 	    e.charCode = parameters.charCode;
 	    e.programmatic = true;
 	    e.key = parameters.key;
-	  
+
 	    // Dispatch directly to Emscripten's html5.h API:
 	    if (Array.isArray(this.registeredEventListeners) && this.options.dispatchKeyEventsViaDOM) {
 	      for(var i = 0; i < this.registeredEventListeners.length; ++i) {
@@ -1846,7 +1845,7 @@
 	      element.dispatchEvent ? element.dispatchEvent(e) : element.fireEvent("on" + eventType, e);
 	    }
 	  }
-	  
+
 	  // eventType: "mousemove", "mousedown" or "mouseup".
 	  // x and y: Normalized coordinate in the range [0,1] where to inject the event.
 	  simulateMouseEvent(element, eventType, parameters) {
@@ -1857,7 +1856,7 @@
 	    x *= element.clientWidth;
 	    y *= element.clientHeight;
 	    var rect = element.getBoundingClientRect();
-	    
+
 	    // Offset the injected coordinate from top-left of the client area to the top-left of the canvas.
 	    x = Math.round(rect.left + x);
 	    y = Math.round(rect.top + y);
@@ -2723,9 +2722,20 @@
 	          }
 
 	          addStyleString(`.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
+
+	          // To fix A-Frame
+	          addStyleString(`a-scene .a-canvas.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
+
 	          this.canvas.classList.add('gfxtests-canvas');
-	          this.canvas.width = this.canvasWidth;
-	          this.canvas.height = this.canvasHeight;
+
+	          this.onResize();
+	/*
+	          var e = document.createEventObject ? document.createEventObject() : document.createEvent("Events");
+	          if (e.initEvent) {
+	            e.initEvent('resize', true, true);
+	          }
+	          window.dispatchEvent ? window.dispatchEvent(e) : window.fireEvent("on" + eventType, e);
+	          */
 
 	          WebGLStats$1.setupExtensions(context);
 
@@ -3130,8 +3140,8 @@
       #test_images img:hover {
         top: 0px; 
         left: 0px;
-        height: 80%; 
-        width: 80%; 
+        height: 80%;
+        width: 80%;
         position: fixed;
       }
       */
@@ -3374,9 +3384,11 @@
 
 	    Math.random = seedrandom$1(this.randomSeed);
 
-	    this.handleSize();
 	    CanvasHook.enable(Object.assign({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'}, {width: this.canvasWidth, height: this.canvasHeight}));
 	    this.hookModals();
+
+	    this.onResize();
+	    window.addEventListener('resize', this.onResize.bind(this));
 
 	    this.initServer();
 
@@ -3413,7 +3425,9 @@
 	    }
 	  },
 
-	  handleSize: function() {
+	  onResize: function (e) {
+	    if (e && e.origin === 'webgfxtest') return;
+
 	    const DEFAULT_WIDTH = 800;
 	    const DEFAULT_HEIGHT = 600;
 	    this.canvasWidth = DEFAULT_WIDTH;
@@ -3425,6 +3439,18 @@
 	      window.innerWidth = this.canvasWidth;
 	      window.innerHeight = this.canvasHeight;
 	    }
+
+	    if (this.canvas) {
+	      this.canvas.width = this.canvasWidth;
+	      this.canvas.height = this.canvasHeight;
+	    }
+
+	    var e = document.createEventObject ? document.createEventObject() : document.createEvent("Events");
+	    if (e.initEvent) {
+	      e.initEvent('resize', true, true);
+	    }
+	    e.origin = 'webgfxtest';
+	    window.dispatchEvent ? window.dispatchEvent(e) : window.fireEvent("on" + eventType, e);
 	  }
 	};
 
