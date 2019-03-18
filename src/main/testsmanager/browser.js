@@ -11,9 +11,11 @@ export function TestsManagerBrowser(tests, options) {
 }
 
 TestsManagerBrowser.prototype = {
-  runFiltered: function(filterFn, generalOptions, testsOptions) {
+  run: function(tests, generalOptions, testsOptions) {
+    this.tests = tests;
+    
     this.options = testsOptions; // ?
-    this.selectedTests = this.tests.filter(filterFn);
+    this.selectedTests = this.tests;
     const numTimesToRunEachTest = Math.min(Math.max(parseInt(generalOptions.numTimesToRunEachTest), 1), 1000); // Clamp
     this.progress = {
       totalGlobal: numTimesToRunEachTest * this.selectedTests.length,
@@ -83,11 +85,11 @@ TestsManagerBrowser.prototype = {
       'runUUID': this.currentlyRunningTest.runUUID,
       //!!!!!!!!!! 'runOrdinal': this.vueApp.resultsById[test.id] ? (this.vueApp.resultsById[test.id].length + 1) : 1
     };
-  
+
     //if (data.nativeSystemInfo && data.nativeSystemInfo.UUID) testData.hardwareUUID = data.nativeSystemInfo.UUID;
     //this.resultsServer.storeStart(testData);
   */
   }
-  
+
 
 }

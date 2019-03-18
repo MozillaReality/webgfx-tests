@@ -92,10 +92,6 @@
             <button class="button is-danger is-small" v-on:click="runTest(props.row, false, true)">record</button>
           </b-table-column>
         </template>
-
-        <template slot="bottom-left">
-          <b>Total checked</b>: {{ checkedTests.length }}
-        </template>
       </b-table>
 
       <br>
@@ -119,11 +115,11 @@
           </b-field>
         </div>
         <div class="column">
-          <button class="button is-primary" v-on:click="runSelectedTests()" id='runTests'>Run tests ({{tests.filter(x => x.selected).length}} selected)</button>
+          <button class="button is-primary" v-on:click="runSelectedTests()" id='runTests'>Run tests ({{checkedTests.length}} selected)</button>
         </div>
       </div>
       <br>
-      
+
       <template>
         <h2 class="subtitle">Results log</h2>
         <b-table

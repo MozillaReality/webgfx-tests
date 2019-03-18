@@ -177,8 +177,9 @@ export default class TestApp {
   }
 
   runSelectedTests() {
-    this.testsManager.runFiltered(
-      x => x.selected, 
+    console.log(this.vueApp.filteredTests);
+    this.testsManager.run(
+      this.vueApp.selectedTests,
       this.vueApp.options.general,
       this.vueApp.options.tests
     );

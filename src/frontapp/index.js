@@ -50,6 +50,9 @@ window.onload = (x) => {
       }
     },
     computed: {
+      selectedTests () {
+        return this.checkedTests; // @todo Apply filter here too
+      },
       filteredTests() {
         var filter = this.filter.toLowerCase();
         return this.tests.filter(test => {
