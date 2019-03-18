@@ -81,7 +81,7 @@
         </template>
 
         <template slot-scope="props">
-          <b-table-column field="id" label="ID" width="40" sortable>
+          <b-table-column field="id" label="ID" sortable>
             {{ props.row.id }}
           </b-table-column>
           <b-table-column field="name" label="name" sortable>
@@ -91,7 +91,7 @@
             {{ props.row.engine }}
           </b-table-column>
           <b-table-column field="apis" label="APIs" sortable>
-            {{ props.row.api }}
+            {{ props.row.apis &&  props.row.apis.sort().join(', ')}}
           </b-table-column>
           <b-table-column label="test">
             <button class="button is-small" v-on:click="runTest(props.row,false)">test</button>
