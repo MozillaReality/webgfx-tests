@@ -58,7 +58,7 @@
           </button>
           -->
           <div style="width: 200px; display: flex">
-            <b-label>Filter: </b-label>&nbsp;<b-input v-model="filter" size="is-small" width="40"></b-input>
+            Filter: &nbsp;<b-input v-model="filter" size="is-small" width="40"></b-input>
           </div>
         <b-table
         :data="filteredTests"
@@ -68,18 +68,6 @@
         :striped="true"
         narrowed
         >
-        <template slot-scope="props" slot="header">
-          <!--<div class="header-control" v-if="props.column.field === 'orgName'" @click.stop>
-            <v-select
-              v-model.sync="selectedOwnership"
-              placeholder="Filter by owner"
-              :options="allOrgs"></v-select>
-          </div>
-          <div class="header-control" v-if="props.column.field === 'engine'">
-          </div>-->
-          {{ props.column.label }}
-        </template>
-
         <template slot-scope="props">
           <b-table-column field="id" label="ID" sortable>
             {{ props.row.id }}
@@ -91,7 +79,7 @@
             {{ props.row.engine }}
           </b-table-column>
           <b-table-column field="apis" label="APIs" sortable>
-            {{ props.row.apis &&  props.row.apis.sort().join(', ')}}
+            {{ props.row.apis &&  props.row.apis.join(', ')}}
           </b-table-column>
           <b-table-column label="test">
             <button class="button is-small" v-on:click="runTest(props.row,false)">test</button>
