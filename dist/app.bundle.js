@@ -1315,7 +1315,7 @@
 	    if (typeof parameters['fake-webgl'] !== 'undefined') {
 	      this.vueApp.options.tests.fakeWebGL = true;
 	    }
-	    
+
 	    if (parameters['selected']) {
 	      const selected = parameters['selected'].split(',');
 	      this.vueApp.tests.forEach(test => test.selected = false);
@@ -1341,10 +1341,12 @@
 	      .then(response => { return response.json(); })
 	      .then(json => {
 	        json = json.filter(test => test.available !== false);
+	        /*
 	        json.forEach(test => {
 	          test.selected = true;
 	        });
-	        this.tests = vueApp.tests = json;
+	        */
+	        this.tests = vueApp.tests = vueApp.checkedTests = json;
 	        this.testsManager = new TestsManagerBrowser(this.tests);
 
 	        this.parseParameters();
@@ -1471,7 +1473,7 @@
 	  runSelectedTests() {
 	    this.testsManager.runFiltered(
 	      x => x.selected, 
-	      this.vueApp.options.general, 
+	      this.vueApp.options.general,
 	      this.vueApp.options.tests
 	    );
 	  }
@@ -1504,6 +1506,7 @@
 
 	var data = {
 	  tests: [],
+	  filter: '',
 	  show_json: false,
 	  browserInfo: null,
 	  webglInfo: null,
@@ -1519,6 +1522,7 @@
 	      noCloseOnFail: false
 	    }
 	  },
+	  checkedTests: [],
 	  results: [],
 	  resultsAverage: [],
 	  resultsById: {}
@@ -1548,9 +1552,20 @@
 	      getBrowserInfo: function () {
 	        return data.browserInfo ? data.browserInfo : 'Checking browser features...';
 	      }
+	    },
+	    computed: {
+	      filteredTests() {
+	        var filter = this.filter.toLowerCase();
+	        return this.tests.filter(test => {
+	          return test.id && test.id.toLowerCase().indexOf(filter) > -1 ||
+	          test.engine && test.engine.toLowerCase().indexOf(filter) > -1 ||
+	          test.apis && test.apis.join(' ').toLowerCase().indexOf(filter) > -1 ||
+	          test.name && test.name.toLowerCase().indexOf(filter) > -1;
+	       })
+	      }
 	    }
 	  });
-	  
+
 	  testApp = new TestApp(vueApp);
 
 	};

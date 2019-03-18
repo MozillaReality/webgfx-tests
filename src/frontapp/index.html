@@ -1,216 +1,248 @@
 <!DOCTYPE html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>webgfx-tests</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
-    <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>webgfx-tests</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="">
+  <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
 
-    <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/pretty-print-json@0.0/dist/pretty-print-json.css>
-    <script src=https://cdn.jsdelivr.net/npm/pretty-print-json@0.0/dist/pretty-print-json.min.js></script>
+  <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/pretty-print-json@0.0/dist/pretty-print-json.css>
+  <script src=https://cdn.jsdelivr.net/npm/pretty-print-json@0.0/dist/pretty-print-json.min.js></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
-  </head>
-  <style>
-    body {
-      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    }
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+</head>
+<style>
+  body {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  }
 
-    pre {
-      padding: 0;
-    }
+  pre {
+    padding: 0;
+  }
 
-    table {
-      width: 100%;      
-    }
-/*
-    tr.pass td {
-      background-color: #90EE90;
-    }
-*/
-    tr.fail td {
-      background-color: #f55;
-    }
+  table {
+    width: 100%;
+  }
+  /*
+  tr.pass td {
+    background-color: #90EE90;
+  }
+  */
+  tr.fail td {
+    background-color: #f55;
+  }
 
-    td {
-      padding: 10px;
-      background-color: #f3f3f3;
-    }
-    
-    .average-results td {
-      background-color: #AAA;
-    }
+  .average-results td {
+    background-color: #AAA;
+  }
 
-    th {
-      text-align: center;
-    }
-  </style>
-  <body>
-    <div id="app">
-      <div class="container">
-        <b-tabs>
-          <b-tab-item label="Tests">
-            <h1 class="title">Tests</h1>
-            <table>
-              <thead>
-                <th></th>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Engine</th>
-                <th>Test</th>
-                <th>Launch</th>
-                <th>Record</th>
-              </thead>
-                <tr v-for="test in tests">
-                  <td><b-checkbox v-model="test.selected"></b-checkbox></td>
-                  <td>{{test.id}}</td>
-                  <td>{{test.name}}</td>
-                  <td>{{test.engine}}</td>
-                  <td><button class="button is-small" v-on:click="runTest(test,false)">test</button></td>
-                  <td><button class="button is-small" v-on:click="runTest(test,true)">launch</button></td>
-                  <td><button class="button is-danger is-small" v-on:click="runTest(test, false, true)">record</button></td>
-                </tr>
-              <tbody>
-              </tbody>
-            </table>
-            <br>
-            <h2 class="subtitle">Options</h2>
-              <div class="columns">
-                <div class="column is-four-fifths">
-                  <b-field horizontal label="Num. times" custom-class="is-small">
-                    <input type="text" class="input is-small" style="width: 100px" v-model="options.general.numTimesToRunEachTest">
-                  </b-field>
-                  <b-field horizontal label="Fake WebGL" custom-class="is-small">
-                    <b-checkbox size="is-small" v-model="options.tests.fakeWebGL"></b-checkbox>
-                  </b-field>
-                  <b-field horizontal label="Keep window open" custom-class="is-small">
-                    <b-checkbox size="is-small" v-model="options.tests.noCloseOnFail"></b-checkbox>
-                  </b-field>
-                  <b-field horizontal label="Show input" custom-class="is-small">
-                    <b-field>
-                      <b-checkbox size="is-small" v-model="options.tests.showKeys"> keystrokes</b-checkbox>
-                      <b-checkbox size="is-small" v-model="options.tests.showMouse"> mouse</b-checkbox>
-                    </b-field>
-                  </b-field>
-                </div>
-                <div class="column">
-                  <button class="button is-primary" v-on:click="runSelectedTests()" id='runTests'>Run tests ({{tests.filter(x => x.selected).length}} selected)</button>
-                </div>
-              </div>
-              <br>
-              <template>
-                <h2 class="subtitle">Results log</h2>
-                <b-table
-                    :data="results"
-                    paginated
-                    per-page="10"
-                    detailed
-                    striped
-                    narrowed
-                    v-if="results.length > 0"
-                >
+</style>
+<body>
+  <div id="app">
+    <div class="container">
+      <b-tabs>
+        <b-tab-item label="Tests">
 
-                  <template slot-scope="props">
-                      <b-table-column field="test_id" label="ID" width="40" sortable>
-                          {{ props.row.test_id }}
-                      </b-table-column>
-                      <b-table-column field="options" label="Options" sortable>
-                          {{ props.row.options }}
-                      </b-table-column>
-                      <b-table-column field="result" label="Result" sortable>
-                          <span v-if="props.row.result === 'fail'" class="tag is-danger">fail</span>
-                          <span v-else class="tag is-success">pass</span>
-                      </b-table-column>
-                      <b-table-column field="totalTime" label="Total time" sortable>
-                          {{ formatNumeric(props.row.totalTime) }}
-                      </b-table-column>
-                      <b-table-column field="timeToFirstFrame" label="First frame" sortable>
-                          {{ formatNumeric(props.row.timeToFirstFrame) }}
-                      </b-table-column>
-                      <b-table-column field="avgFps" label="FPS" sortable>
-                          {{ formatNumeric(props.row.avgFps) }}
-                      </b-table-column>
-                      <b-table-column field="cpuTime" label="CPU Time" sortable>
-                          {{ formatNumeric(props.row.cpuTime) }}
-                      </b-table-column>
-                      <b-table-column field="cpuIdlePerc" label="CPU Idle" sortable>
-                          {{ formatNumeric(props.row.cpuIdlePerc) }}
-                      </b-table-column>
-                      <b-table-column field="numStutterEvents" label="# Janked frames" sortable>
-                          {{ props.row.numStutterEvents }}
-                      </b-table-column>
-                  </template>
-                  
-                  <template slot="detail" slot-scope="props">
-                    <pre v-html="prettyPrint(JSON.parse(props.row.json))"></pre>
-                  </template>
-                </b-table>
+          <h1 class="title">Tests</h1>
 
-                <div v-if="resultsAverage.length > 0">
-                  <h2 class="subtitle">Results average by test ID</h2>
-                  <b-table :data="resultsAverage">
-                    <template slot-scope="props">
-                      <b-table-column field="test_id" label="ID" width="40" sortable>
-                          <b>{{ props.row.test_id }}</b>
-                      </b-table-column>
-                      <b-table-column field="numSamples" label="# Samples" width="40" sortable>
-                        {{ props.row.numSamples }}
-                      </b-table-column>
-                      <b-table-column field="totalTime" label="Total Time" width="40" sortable>
-                          {{ formatNumeric(props.row.totalTime) }}
-                      </b-table-column>
-                      <b-table-column field="cpuIdlePerc" label="CPU Idle %" width="40" sortable>
-                          {{ formatNumeric(props.row.cpuIdlePerc) }}
-                      </b-table-column>
-                      <b-table-column field="cpuIdleTime" label="CPU Idle time" width="40" sortable>
-                          {{ formatNumeric(props.row.cpuIdleTime) }}
-                      </b-table-column>
-                      <b-table-column field="cpuTime" label="CPU Time" width="40" sortable>
-                          {{ formatNumeric(props.row.cpuTime) }}
-                      </b-table-column>
-                      <b-table-column field="pageLoadTime" label="Page load time" width="40" sortable>
-                          {{ formatNumeric(props.row.pageLoadTime) }}
-                      </b-table-column>
-                      <b-table-column field="avgFps" label="Avg. FPS" width="40" sortable>
-                          {{ formatNumeric(props.row.avgFps) }}
-                      </b-table-column>
-                      <b-table-column field="timeToFirstFrame" label="Time to first frame" width="40" sortable>
-                          {{ formatNumeric(props.row.timeToFirstFrame) }}
-                      </b-table-column>
-                      <b-table-column field="numStutterEvents" label="# Janked frames" width="40" sortable>
-                          {{ formatNumeric(props.row.numStutterEvents) }}
-                      </b-table-column>
-                    </template>
-                  </b-table>    
-                </div>
-              </template>
-          </b-tab-item>
-          <b-tab-item label="System info">
-            <h1 class="title">Browser environmnet</h1>
-            <h2 class="subtitle">Common features</h2>
-            <pre v-html="prettyPrint(getBrowserInfo())"></pre>
-            <hr>
-            <h2 class="subtitle">WebGL Support</h2>
-            <pre v-html="prettyPrint(webglInfo)"></pre>
-          </b-tab-item>
-        </b-tabs>
-        <!--
-        <footer class="footer">
-          <div class="content has-text-centered">
-            <p>
-              <strong>webgfx-tests</strong> by <a href="https://mixedreality.mozilla.org/">Mozilla Mixed Reality team</a>. The source code is available on <a href="https://github.com/MozillaReality/webgfx-tests">github.
-            </p>
+          <!--<button class="button field is-danger is-small" @click="checkedTests = []"
+            :disabled="!checkedTests.length">
+            <b-icon icon="close"></b-icon>
+            <span>Clear checked</span>
+          </button>
+          -->
+          <div style="width: 200px; display: flex">
+            <b-label>Filter: </b-label>&nbsp;<b-input v-model="filter" size="is-small" width="40"></b-input>
           </div>
-        </footer>-->
+        <b-table
+        :data="filteredTests"
+        :checked-rows.sync="checkedTests"
+        checkable
+        per-page="10"
+        :striped="true"
+        narrowed
+        >
+        <template slot-scope="props" slot="header">
+          <!--<div class="header-control" v-if="props.column.field === 'orgName'" @click.stop>
+            <v-select
+              v-model.sync="selectedOwnership"
+              placeholder="Filter by owner"
+              :options="allOrgs"></v-select>
+          </div>
+          <div class="header-control" v-if="props.column.field === 'engine'">
+          </div>-->
+          {{ props.column.label }}
+        </template>
+
+        <template slot-scope="props">
+          <b-table-column field="id" label="ID" width="40" sortable>
+            {{ props.row.id }}
+          </b-table-column>
+          <b-table-column field="name" label="name" sortable>
+            {{ props.row.name }}
+          </b-table-column>
+          <b-table-column field="engine" label="engine" sortable>
+            {{ props.row.engine }}
+          </b-table-column>
+          <b-table-column field="apis" label="APIs" sortable>
+            {{ props.row.api }}
+          </b-table-column>
+          <b-table-column label="test">
+            <button class="button is-small" v-on:click="runTest(props.row,false)">test</button>
+          </b-table-column>
+          <b-table-column label="launch">
+            <button class="button is-small" v-on:click="runTest(props.row,true)">launch</button>
+          </b-table-column>
+          <b-table-column label="record">
+            <button class="button is-danger is-small" v-on:click="runTest(props.row, false, true)">record</button>
+          </b-table-column>
+        </template>
+
+        <template slot="bottom-left">
+          <b>Total checked</b>: {{ checkedTests.length }}
+        </template>
+      </b-table>
+
+      <br>
+      <h2 class="subtitle">Options</h2>
+      <div class="columns">
+        <div class="column is-four-fifths">
+          <b-field horizontal label="Num. times" custom-class="is-small">
+            <input type="text" class="input is-small" style="width: 100px" v-model="options.general.numTimesToRunEachTest">
+          </b-field>
+          <b-field horizontal label="Fake WebGL" custom-class="is-small">
+            <b-checkbox size="is-small" v-model="options.tests.fakeWebGL"></b-checkbox>
+          </b-field>
+          <b-field horizontal label="Keep window open" custom-class="is-small">
+            <b-checkbox size="is-small" v-model="options.tests.noCloseOnFail"></b-checkbox>
+          </b-field>
+          <b-field horizontal label="Show input" custom-class="is-small">
+            <b-field>
+              <b-checkbox size="is-small" v-model="options.tests.showKeys"> keystrokes</b-checkbox>
+              <b-checkbox size="is-small" v-model="options.tests.showMouse"> mouse</b-checkbox>
+            </b-field>
+          </b-field>
+        </div>
+        <div class="column">
+          <button class="button is-primary" v-on:click="runSelectedTests()" id='runTests'>Run tests ({{tests.filter(x => x.selected).length}} selected)</button>
+        </div>
       </div>
-    </div>
-    <!--<script src="index.js" async defer></script>-->
-    <script src="app.bundle.js" async defer></script>
-  </body>
+      <br>
+      
+      <h2 class="subtitle">Results log</h2>
+      <template>
+        <h2 class="subtitle">Results log</h2>
+        <b-table
+        :data="results"
+        paginated
+        per-page="10"
+        detailed
+        :striped="true"
+        narrowed
+        v-if="results.length > 0"
+        >
+
+        <template slot-scope="props">
+          <b-table-column field="test_id" label="ID" width="40" sortable>
+            {{ props.row.test_id }}
+          </b-table-column>
+          <b-table-column field="options" label="Options" sortable>
+            {{ props.row.options }}
+          </b-table-column>
+          <b-table-column field="result" label="Result" sortable>
+            <span v-if="props.row.result === 'fail'" class="tag is-danger">fail</span>
+            <span v-else class="tag is-success">pass</span>
+          </b-table-column>
+          <b-table-column field="totalTime" label="Total time" sortable>
+            {{ formatNumeric(props.row.totalTime) }}
+          </b-table-column>
+          <b-table-column field="timeToFirstFrame" label="First frame" sortable>
+            {{ formatNumeric(props.row.timeToFirstFrame) }}
+          </b-table-column>
+          <b-table-column field="avgFps" label="FPS" sortable>
+            {{ formatNumeric(props.row.avgFps) }}
+          </b-table-column>
+          <b-table-column field="cpuTime" label="CPU Time" sortable>
+            {{ formatNumeric(props.row.cpuTime) }}
+          </b-table-column>
+          <b-table-column field="cpuIdlePerc" label="CPU Idle" sortable>
+            {{ formatNumeric(props.row.cpuIdlePerc) }}
+          </b-table-column>
+          <b-table-column field="numStutterEvents" label="# Janked frames" sortable>
+            {{ props.row.numStutterEvents }}
+          </b-table-column>
+        </template>
+        
+        <template slot="detail" slot-scope="props">
+          <pre v-html="prettyPrint(JSON.parse(props.row.json))"></pre>
+        </template>
+      </b-table>
+      
+      <div v-if="resultsAverage.length > 0">
+        <h2 class="subtitle">Results average by test ID</h2>
+        <b-table :data="resultsAverage">
+          <template slot-scope="props">
+            <b-table-column field="test_id" label="ID" width="40" sortable>
+              <b>{{ props.row.test_id }}</b>
+            </b-table-column>
+            <b-table-column field="numSamples" label="# Samples" width="40" sortable>
+              {{ props.row.numSamples }}
+            </b-table-column>
+            <b-table-column field="totalTime" label="Total Time" width="40" sortable>
+              {{ formatNumeric(props.row.totalTime) }}
+            </b-table-column>
+            <b-table-column field="cpuIdlePerc" label="CPU Idle %" width="40" sortable>
+              {{ formatNumeric(props.row.cpuIdlePerc) }}
+            </b-table-column>
+            <b-table-column field="cpuIdleTime" label="CPU Idle time" width="40" sortable>
+              {{ formatNumeric(props.row.cpuIdleTime) }}
+            </b-table-column>
+            <b-table-column field="cpuTime" label="CPU Time" width="40" sortable>
+              {{ formatNumeric(props.row.cpuTime) }}
+            </b-table-column>
+            <b-table-column field="pageLoadTime" label="Page load time" width="40" sortable>
+              {{ formatNumeric(props.row.pageLoadTime) }}
+            </b-table-column>
+            <b-table-column field="avgFps" label="Avg. FPS" width="40" sortable>
+              {{ formatNumeric(props.row.avgFps) }}
+            </b-table-column>
+            <b-table-column field="timeToFirstFrame" label="Time to first frame" width="40" sortable>
+              {{ formatNumeric(props.row.timeToFirstFrame) }}
+            </b-table-column>
+            <b-table-column field="numStutterEvents" label="# Janked frames" width="40" sortable>
+              {{ formatNumeric(props.row.numStutterEvents) }}
+            </b-table-column>
+          </template>
+        </b-table>    
+      </div>
+    </template>
+  </b-tab-item>
+  <b-tab-item label="System info">
+    <h1 class="title">Browser environmnet</h1>
+    <h2 class="subtitle">Common features</h2>
+    <pre v-html="prettyPrint(getBrowserInfo())"></pre>
+    <hr>
+    <h2 class="subtitle">WebGL Support</h2>
+    <pre v-html="prettyPrint(webglInfo)"></pre>
+  </b-tab-item>
+</b-tabs>
+<!--
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <p>
+        <strong>webgfx-tests</strong> by <a href="https://mixedreality.mozilla.org/">Mozilla Mixed Reality team</a>. The source code is available on <a href="https://github.com/MozillaReality/webgfx-tests">github.
+        </p>
+      </div>
+    </footer>-->
+  </div>
+</div>
+<!--<script src="index.js" async defer></script>-->
+<script src="app.bundle.js" async defer></script>
+</body>
 </html>

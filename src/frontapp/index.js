@@ -2,6 +2,7 @@ import TestApp from './app';
 
 var data = {
   tests: [],
+  filter: '',
   show_json: false,
   browserInfo: null,
   webglInfo: null,
@@ -17,6 +18,7 @@ var data = {
       noCloseOnFail: false
     }
   },
+  checkedTests: [],
   results: [],
   resultsAverage: [],
   resultsById: {}
@@ -46,9 +48,20 @@ window.onload = (x) => {
       getBrowserInfo: function () {
         return data.browserInfo ? data.browserInfo : 'Checking browser features...';
       }
+    },
+    computed: {
+      filteredTests() {
+        var filter = this.filter.toLowerCase();
+        return this.tests.filter(test => {
+          return test.id && test.id.toLowerCase().indexOf(filter) > -1 ||
+          test.engine && test.engine.toLowerCase().indexOf(filter) > -1 ||
+          test.apis && test.apis.join(' ').toLowerCase().indexOf(filter) > -1 ||
+          test.name && test.name.toLowerCase().indexOf(filter) > -1;
+       })
+      }
     }
   });
-  
+
   testApp = new TestApp(vueApp);
 
 }

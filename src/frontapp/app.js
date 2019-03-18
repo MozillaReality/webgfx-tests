@@ -21,7 +21,7 @@ export default class TestApp {
     if (typeof parameters['fake-webgl'] !== 'undefined') {
       this.vueApp.options.tests.fakeWebGL = true;
     }
-    
+
     if (parameters['selected']) {
       const selected = parameters['selected'].split(',');
       this.vueApp.tests.forEach(test => test.selected = false);
@@ -47,10 +47,12 @@ export default class TestApp {
       .then(response => { return response.json(); })
       .then(json => {
         json = json.filter(test => test.available !== false);
+        /*
         json.forEach(test => {
           test.selected = true;
         });
-        this.tests = vueApp.tests = json;
+        */
+        this.tests = vueApp.tests = vueApp.checkedTests = json;
         this.testsManager = new TestsManagerBrowser(this.tests);
 
         this.parseParameters();
@@ -177,7 +179,7 @@ export default class TestApp {
   runSelectedTests() {
     this.testsManager.runFiltered(
       x => x.selected, 
-      this.vueApp.options.general, 
+      this.vueApp.options.general,
       this.vueApp.options.tests
     );
   }

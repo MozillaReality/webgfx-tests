@@ -5,6 +5,10 @@
     "url": "webvr.info/03-vr-presentation.html",
     "name": "webvr info",
     "mobile": true,
+    "apis": [
+      "WebGL",
+      "WebVR"
+    ],
     "numFrames": 400,
     "interactive": true
   },
@@ -15,6 +19,10 @@
     "name": "webvr cubes",
     "mobile": true,
     "numFrames": 500,
+    "apis": [
+      "WebGL",
+      "WebVR"
+    ],
     "interactive": true,
     "autoenterXR": true,
     "skipReferenceImageTest": true
