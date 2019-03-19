@@ -371,7 +371,7 @@ program
               var generalOptions = {
                 numTimes: options.numtimes || 1,
                 overrideParams: options.overrideparams,
-                extraParams: options.launchparams
+                extraParams: options.launchparams // @todo Rename to browserLaunchExtraParams
               };
 
               var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions);

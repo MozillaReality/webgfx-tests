@@ -125,6 +125,8 @@ TestsManager.prototype = {
       });
     }
 
+    console.log(options);
+
     console.log('* Running test:', chalk.yellow(test.id), 'on browser', chalk.yellow(browser.name),'on device', chalk.green(this.device.deviceProduct));
 
     // @fixme

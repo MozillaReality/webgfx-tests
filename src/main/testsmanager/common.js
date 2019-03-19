@@ -5,7 +5,12 @@ function buildTestURL(baseURL, test, mode, options, progress) {
   var url = '';
 
   function getOption(name) {
-    return options[name] || test[name];
+    if (typeof options[name] !== 'undefined') {
+      var value = options[name];
+      delete options[name];
+      return value;
+    }
+    return test[name];
   }
 
   if (mode !== 'interactive') {
@@ -36,6 +41,11 @@ function buildTestURL(baseURL, test, mode, options, progress) {
     if (getOption('infoOverlay')) {
       url = addGET(url, 'info-overlay=' + encodeURI(getOption('infoOverlay')));
     }
+
+    Object.keys(options).forEach(key => {
+      url = addGET(url, key + '=' + options[key]);
+    });
+    console.log(url);
   }
 
   url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url + (test.url.indexOf('?') !== -1 ? '' : '?') + url;
