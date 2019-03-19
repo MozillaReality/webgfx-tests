@@ -350,7 +350,7 @@ program
               console.log('Unrecognized browser: ', manifest.package);
             } else {
               console.log(`Installing package ${chalk.yellow(apk)} (${chalk.yellow(browserData.name + ' v.' + manifest.versionName + ' - c.' + manifest.versionCode)}) on device: ${chalk.yellow(device.name)} (serial: ${chalk.yellow(device.serial)})`);
-              
+
               if (device.existAPK) {
                 await device.removeAPK(browserData.package);
               }
@@ -368,8 +368,13 @@ program
               const versionCode = browser.versionCode ? 'v.' + browser.versionCode : '';
 
               browser.info = `${browser.name} (${browser.package}) ${versionName} ${versionCode} ${extraInfo}`;
+              var generalOptions = {
+                numTimes: options.numtimes || 1,
+                overrideParams: options.overrideparams,
+                extraParams: options.launchparams
+              };
 
-              var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, {numTimes: options.numtimes || 1});
+              var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions);
               await testsManager.runTests();
             }
             reader.close();
@@ -400,6 +405,8 @@ program
             overrideParams: options.overrideparams,
             extraParams: options.launchparams
           };
+
+          console.log(generalOptions);
 
           var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions, {});
           await testsManager.runTests();

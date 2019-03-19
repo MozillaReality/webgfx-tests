@@ -34,7 +34,7 @@ TestsManagerBrowser.prototype = {
         }
       }
     }
-  
+
     this.runningTestsInProgress = true;
   
     console.log('Browser tests', this.testsQueuedToRun);
