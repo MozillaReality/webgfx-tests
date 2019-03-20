@@ -1787,17 +1787,11 @@
 	  }
 
 	  simulateWheelEvent(element, parameters) {
-	    var e = new Event('mousewheel', {bubbles: true});
-
-	    const eventType = 'mousewheel';
+	    var e = new Event('wheel');
+	    const eventType = 'wheel';
 	    e.deltaX = parameters.deltaX;
 	    e.deltaY = parameters.deltaY;
 	    e.deltaZ = parameters.deltaZ;
-
-	    e.wheelDeltaX = parameters.deltaX;
-	    e.wheelDeltaY = parameters.deltaY;
-	    e.wheelDelta = parameters.deltaY;
-
 	    e.deltaMode = parameters.deltaMode;
 	    if (Array.isArray(this.registeredEventListeners) && this.options.dispatchMouseEventsViaDOM) {
 	      for(var i = 0; i < this.registeredEventListeners.length; i++) {
@@ -1812,7 +1806,7 @@
 	    else {
 	      element.dispatchEvent(e);
 	    }
-	  }
+	  }  
 
 	  simulateKeyEvent(element, eventType, parameters) {
 	    // Don't use the KeyboardEvent object because of http://stackoverflow.com/questions/8942678/keyboardevent-in-chrome-keycode-is-0/12522752#12522752
@@ -1821,17 +1815,18 @@
 	    //    if (e.initKeyEvent) {
 	    //      e.initKeyEvent(eventType, true, true, window, false, false, false, false, keyCode, charCode);
 	    //  } else {
+	  
 	    var e = document.createEventObject ? document.createEventObject() : document.createEvent("Events");
-	    if (e.initEvent) {
-	      e.initEvent(eventType, true, true);
-	    }
-
+	      if (e.initEvent) {
+	        e.initEvent(eventType, true, true);
+	      }
+	  
 	    e.keyCode = parameters.keyCode;
 	    e.which = parameters.keyCode;
 	    e.charCode = parameters.charCode;
 	    e.programmatic = true;
 	    e.key = parameters.key;
-
+	  
 	    // Dispatch directly to Emscripten's html5.h API:
 	    if (Array.isArray(this.registeredEventListeners) && this.options.dispatchKeyEventsViaDOM) {
 	      for(var i = 0; i < this.registeredEventListeners.length; ++i) {
@@ -1845,7 +1840,7 @@
 	      element.dispatchEvent ? element.dispatchEvent(e) : element.fireEvent("on" + eventType, e);
 	    }
 	  }
-
+	  
 	  // eventType: "mousemove", "mousedown" or "mouseup".
 	  // x and y: Normalized coordinate in the range [0,1] where to inject the event.
 	  simulateMouseEvent(element, eventType, parameters) {
@@ -1856,7 +1851,7 @@
 	    x *= element.clientWidth;
 	    y *= element.clientHeight;
 	    var rect = element.getBoundingClientRect();
-
+	    
 	    // Offset the injected coordinate from top-left of the client area to the top-left of the canvas.
 	    x = Math.round(rect.left + x);
 	    y = Math.round(rect.top + y);

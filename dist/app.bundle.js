@@ -1169,7 +1169,12 @@
 	  var url = '';
 
 	  function getOption(name) {
-	    return options[name] || test[name];
+	    if (typeof options[name] !== 'undefined') {
+	      var value = options[name];
+	      delete options[name];
+	      return value;
+	    }
+	    return test[name];
 	  }
 
 	  if (mode !== 'interactive') {
@@ -1200,6 +1205,11 @@
 	    if (getOption('infoOverlay')) {
 	      url = addGET$1(url, 'info-overlay=' + encodeURI(getOption('infoOverlay')));
 	    }
+
+	    Object.keys(options).forEach(key => {
+	      url = addGET$1(url, key + '=' + options[key]);
+	    });
+	    console.log(url);
 	  }
 
 	  url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url + (test.url.indexOf('?') !== -1 ? '' : '?') + url;
@@ -1365,7 +1375,8 @@
 	  }
 
 	  initWSServer() {
-	    var serverUrl = 'http://localhost:8888';
+	    //var serverUrl = 'http://localhost:8888';
+	    var serverUrl = location.protocol + '//' + location.hostname + ':8888';
 
 	    this.socket = io.connect(serverUrl);
 	  

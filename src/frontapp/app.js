@@ -69,7 +69,8 @@ export default class TestApp {
   }
 
   initWSServer() {
-    var serverUrl = 'http://localhost:8888';
+    //var serverUrl = 'http://localhost:8888';
+    var serverUrl = location.protocol + '//' + location.hostname + ':8888';
 
     this.socket = io.connect(serverUrl);
   
