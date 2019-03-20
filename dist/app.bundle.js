@@ -1183,7 +1183,7 @@
 	    if (getOption('canvasWidth')) url = addGET$1(url, 'width=' + getOption('canvasWidth'));
 	    if (getOption('canvasHeight')) url = addGET$1(url, 'height=' + getOption('canvasHeight'));
 
-	    if (getOption('fakeWebGL')) url = addGET$1(url, 'fake-webgl');
+	    if (getOption('fakeWebgl')) url = addGET$1(url, 'fake-webgl');
 
 	    if (mode === 'record') {
 	      url = addGET$1(url, 'recording');
@@ -1207,7 +1207,7 @@
 	    }
 
 	    Object.keys(options).forEach(key => {
-	      url = addGET$1(url, key + '=' + options[key]);
+	      url = addGET$1(url, key + (typeof options[key] === 'undefined' ? '' : '=' + options[key]));
 	    });
 	    console.log(url);
 	  }

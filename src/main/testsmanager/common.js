@@ -1,9 +1,14 @@
 const addGET = require('../../frontapp/utils').addGET;
 
+function camelCaseToDash (str) {
+  return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase()
+}
+
 function buildTestURL(baseURL, test, mode, options, progress) {
   //var url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url;
   var url = '';
 
+  console.log(options);
   function getOption(name) {
     if (typeof options[name] !== 'undefined') {
       var value = options[name];
@@ -19,7 +24,7 @@ function buildTestURL(baseURL, test, mode, options, progress) {
     if (getOption('canvasWidth')) url = addGET(url, 'width=' + getOption('canvasWidth'));
     if (getOption('canvasHeight')) url = addGET(url, 'height=' + getOption('canvasHeight'));
 
-    if (getOption('fakeWebGL')) url = addGET(url, 'fake-webgl');
+    if (getOption('fakeWebgl')) url = addGET(url, 'fake-webgl');
 
     if (mode === 'record') {
       url = addGET(url, 'recording');
@@ -43,7 +48,8 @@ function buildTestURL(baseURL, test, mode, options, progress) {
     }
 
     Object.keys(options).forEach(key => {
-      url = addGET(url, key + '=' + options[key]);
+      var keyConverted = camelCaseToDash(key);
+      url = addGET(url, keyConverted + (typeof options[key] === 'undefined' ? '' : '=' + options[key]));
     });
     console.log(url);
   }
