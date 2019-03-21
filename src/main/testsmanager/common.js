@@ -51,7 +51,7 @@ function buildTestURL(baseURL, test, mode, options, progress) {
       var keyConverted = camelCaseToDash(key);
       url = addGET(url, keyConverted + (typeof options[key] === 'undefined' ? '' : '=' + options[key]));
     });
-    console.log(url);
+    //@todo Log if verbose console.log(url);
   }
 
   url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url + (test.url.indexOf('?') !== -1 ? '' : '?') + url;

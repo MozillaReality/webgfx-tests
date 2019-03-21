@@ -11,6 +11,7 @@ const PrettyPrint = require('./prettyprint');
 const packageInfo = require('../../package.json');
 const path = require('path');
 const Summary = require('./summary');
+const internalIp = require('internal-ip');
 
 program
   .version(packageInfo.version);
@@ -181,17 +182,44 @@ program
   .description('Start tests server')
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
+  .option("-a, --adb [devices]", "Use android devices through ADB")
+  .option("-b, --launchbrowser <browser name>", "Which browser to use to launch the front page")
   .option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
   .option("-v, --verbose", "Show all the information available")
-  .action(options => {
+  .action(async options => {
     const configfile = options.configfile || 'webgfx-tests.config.json';
 
     const config = TestUtils.getConfig(configfile);
     if (config === false) {
       console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
     } else {
+
       initHTTPServer(options.port, config, options.verbose);
       initWebSocketServer(options.wsport, null, options.verbose);
+
+      if (options.launchbrowser) {
+        var devices = getDevices(options.adb);
+        if (devices.length === 0) {
+          console.log('ERROR: No device found!');
+          return;
+        }
+        var device = devices[0];
+
+        var browsers = await device.getInstalledBrowsers();
+        var browserToRun;
+        if (typeof options.launchbrowser !== 'undefined') {
+          browserToRun = browsers.find(b => b.code === options.launchbrowser);
+        } else {
+          browserToRun = browsers[0];
+        }
+
+        if (typeof browserToRun === 'undefined') {
+          console.log(`ERROR: Browser not found for code: ${options.launchbrowser}`);
+        } else {
+          var url = `http://${internalIp.v4.sync() || 'localhost'}:${options.port || 3000}`;
+          device.launchBrowser(browserToRun, url);
+        }
+      }
     }
   });
 
