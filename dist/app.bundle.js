@@ -1164,6 +1164,10 @@
 
 	const addGET$1 = utils.addGET;
 
+	function camelCaseToDash (str) {
+	  return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase()
+	}
+
 	function buildTestURL(baseURL, test, mode, options, progress) {
 	  //var url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url;
 	  var url = '';
@@ -1176,6 +1180,7 @@
 	    }
 	    return test[name];
 	  }
+	  console.log(options);
 
 	  if (mode !== 'interactive') {
 	    if (getOption('autoenterXR')) url = addGET$1(url, 'autoenter-xr=true');
@@ -1183,7 +1188,7 @@
 	    if (getOption('canvasWidth')) url = addGET$1(url, 'width=' + getOption('canvasWidth'));
 	    if (getOption('canvasHeight')) url = addGET$1(url, 'height=' + getOption('canvasHeight'));
 
-	    if (getOption('fakeWebgl')) url = addGET$1(url, 'fake-webgl');
+	    if (getOption('fakeWebGL')) url = addGET$1(url, 'fake-webgl');
 
 	    if (mode === 'record') {
 	      url = addGET$1(url, 'recording');
@@ -1207,9 +1212,11 @@
 	    }
 
 	    Object.keys(options).forEach(key => {
-	      url = addGET$1(url, key + (typeof options[key] === 'undefined' ? '' : '=' + options[key]));
+	      var keyConverted = camelCaseToDash(key);
+	      url = addGET$1(url, keyConverted + (typeof options[key] === 'undefined' ? '' : '=' + options[key]));
 	    });
-	    console.log(url);
+	    //@todo Log if verbose
+	    console.log('Generated URL: ', url);
 	  }
 
 	  url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url + (test.url.indexOf('?') !== -1 ? '' : '?') + url;

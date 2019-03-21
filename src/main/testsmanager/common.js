@@ -8,7 +8,6 @@ function buildTestURL(baseURL, test, mode, options, progress) {
   //var url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url;
   var url = '';
 
-  console.log(options);
   function getOption(name) {
     if (typeof options[name] !== 'undefined') {
       var value = options[name];
@@ -17,6 +16,7 @@ function buildTestURL(baseURL, test, mode, options, progress) {
     }
     return test[name];
   }
+  console.log(options);
 
   if (mode !== 'interactive') {
     if (getOption('autoenterXR')) url = addGET(url, 'autoenter-xr=true');
@@ -24,7 +24,7 @@ function buildTestURL(baseURL, test, mode, options, progress) {
     if (getOption('canvasWidth')) url = addGET(url, 'width=' + getOption('canvasWidth'));
     if (getOption('canvasHeight')) url = addGET(url, 'height=' + getOption('canvasHeight'));
 
-    if (getOption('fakeWebgl')) url = addGET(url, 'fake-webgl');
+    if (getOption('fakeWebGL')) url = addGET(url, 'fake-webgl');
 
     if (mode === 'record') {
       url = addGET(url, 'recording');
@@ -51,7 +51,8 @@ function buildTestURL(baseURL, test, mode, options, progress) {
       var keyConverted = camelCaseToDash(key);
       url = addGET(url, keyConverted + (typeof options[key] === 'undefined' ? '' : '=' + options[key]));
     });
-    //@todo Log if verbose console.log(url);
+    //@todo Log if verbose
+    console.log('Generated URL: ', url);
   }
 
   url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url + (test.url.indexOf('?') !== -1 ? '' : '?') + url;
