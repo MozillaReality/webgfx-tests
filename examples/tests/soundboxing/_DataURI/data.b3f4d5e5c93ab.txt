@@ -1,1 +1,0 @@
-chrome-extension://gmdhhnlkjmknaopofnadmoamhmnlicme/wtf-injector.js

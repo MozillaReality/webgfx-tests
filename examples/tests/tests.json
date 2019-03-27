@@ -1,20 +1,5 @@
 [
   {
-    "name": "soundboxing",
-    "id": "soundboxing",
-    "url": "soundboxing/index.html",
-    "input": "input/soundboxing.json",
-    "engine": "A-Frame",
-    "apis": [
-      "WebGL",
-      "WebAudio"
-    ],
-    "numFrames": 500,
-    "interactive": false,
-    "available": true
-  },
- 
-  {
     "id": "webvr_info_3",
     "engine": "webvr.info",
     "url": "webvr.info/03-vr-presentation.html",
