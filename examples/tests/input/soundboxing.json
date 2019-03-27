@@ -1,0 +1,2732 @@
+[
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.85875,
+      "y": 0.38166666666666665,
+      "button": 0
+    },
+    "frameNumber": 0
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.51375,
+      "y": 0.555,
+      "button": 0
+    },
+    "frameNumber": 3
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.51,
+      "y": 0.5583333333333333,
+      "button": 0
+    },
+    "frameNumber": 4
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4975,
+      "y": 0.5883333333333334,
+      "button": 0
+    },
+    "frameNumber": 33
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.49,
+      "y": 0.615,
+      "button": 0
+    },
+    "frameNumber": 34
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4825,
+      "y": 0.6366666666666667,
+      "button": 0
+    },
+    "frameNumber": 35
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.6566666666666666,
+      "button": 0
+    },
+    "frameNumber": 36
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.475,
+      "y": 0.6683333333333333,
+      "button": 0
+    },
+    "frameNumber": 37
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.475,
+      "y": 0.685,
+      "button": 0
+    },
+    "frameNumber": 38
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.475,
+      "y": 0.6916666666666667,
+      "button": 0
+    },
+    "frameNumber": 39
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.475,
+      "y": 0.6983333333333334,
+      "button": 0
+    },
+    "frameNumber": 40
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.475,
+      "y": 0.7,
+      "button": 0
+    },
+    "frameNumber": 41
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47625,
+      "y": 0.7033333333333334,
+      "button": 0
+    },
+    "frameNumber": 42
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4775,
+      "y": 0.7033333333333334,
+      "button": 0
+    },
+    "frameNumber": 43
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.705,
+      "button": 0
+    },
+    "frameNumber": 44
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.705,
+      "button": 0
+    },
+    "frameNumber": 45
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.705,
+      "button": 0
+    },
+    "frameNumber": 46
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.705,
+      "button": 0
+    },
+    "frameNumber": 61
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.7083333333333334,
+      "button": 0
+    },
+    "frameNumber": 62
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48375,
+      "y": 0.7166666666666667,
+      "button": 0
+    },
+    "frameNumber": 63
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48625,
+      "y": 0.7216666666666667,
+      "button": 0
+    },
+    "frameNumber": 64
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.495,
+      "y": 0.7383333333333333,
+      "button": 0
+    },
+    "frameNumber": 65
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.49875,
+      "y": 0.745,
+      "button": 0
+    },
+    "frameNumber": 66
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.50375,
+      "y": 0.7533333333333333,
+      "button": 0
+    },
+    "frameNumber": 67
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.50625,
+      "y": 0.7566666666666667,
+      "button": 0
+    },
+    "frameNumber": 68
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.51,
+      "y": 0.7616666666666667,
+      "button": 0
+    },
+    "frameNumber": 69
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.51,
+      "y": 0.7616666666666667,
+      "button": 0
+    },
+    "frameNumber": 70
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.51,
+      "y": 0.7633333333333333,
+      "button": 0
+    },
+    "frameNumber": 71
+  },
+  {
+    "type": "mouse",
+    "event": "down",
+    "parameters": {
+      "x": 0.51,
+      "y": 0.7633333333333333,
+      "button": 0
+    },
+    "frameNumber": 114
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.51,
+      "y": 0.7633333333333333,
+      "button": 0
+    },
+    "frameNumber": 130
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.51625,
+      "y": 0.755,
+      "button": 0
+    },
+    "frameNumber": 131
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5275,
+      "y": 0.7416666666666667,
+      "button": 0
+    },
+    "frameNumber": 132
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.52875,
+      "y": 0.7383333333333333,
+      "button": 0
+    },
+    "frameNumber": 133
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.535,
+      "y": 0.73,
+      "button": 0
+    },
+    "frameNumber": 134
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5375,
+      "y": 0.7233333333333334,
+      "button": 0
+    },
+    "frameNumber": 135
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.53875,
+      "y": 0.7166666666666667,
+      "button": 0
+    },
+    "frameNumber": 136
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.53875,
+      "y": 0.7133333333333334,
+      "button": 0
+    },
+    "frameNumber": 137
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.52875,
+      "y": 0.7016666666666667,
+      "button": 0
+    },
+    "frameNumber": 138
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.52625,
+      "y": 0.7016666666666667,
+      "button": 0
+    },
+    "frameNumber": 139
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5225,
+      "y": 0.7016666666666667,
+      "button": 0
+    },
+    "frameNumber": 140
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.51625,
+      "y": 0.7033333333333334,
+      "button": 0
+    },
+    "frameNumber": 141
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5125,
+      "y": 0.705,
+      "button": 0
+    },
+    "frameNumber": 142
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.51,
+      "y": 0.7083333333333334,
+      "button": 0
+    },
+    "frameNumber": 143
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.50875,
+      "y": 0.71,
+      "button": 0
+    },
+    "frameNumber": 144
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5075,
+      "y": 0.7116666666666667,
+      "button": 0
+    },
+    "frameNumber": 145
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5075,
+      "y": 0.7133333333333334,
+      "button": 0
+    },
+    "frameNumber": 146
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5075,
+      "y": 0.7133333333333334,
+      "button": 0
+    },
+    "frameNumber": 147
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5075,
+      "y": 0.7133333333333334,
+      "button": 0
+    },
+    "frameNumber": 148
+  },
+  {
+    "type": "mouse",
+    "event": "up",
+    "parameters": {
+      "x": 0.5075,
+      "y": 0.7133333333333334,
+      "button": 0
+    },
+    "frameNumber": 149
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5075,
+      "y": 0.7133333333333334,
+      "button": 0
+    },
+    "frameNumber": 149
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.50625,
+      "y": 0.7133333333333334,
+      "button": 0
+    },
+    "frameNumber": 158
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4775,
+      "y": 0.7016666666666667,
+      "button": 0
+    },
+    "frameNumber": 159
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.455,
+      "y": 0.6833333333333333,
+      "button": 0
+    },
+    "frameNumber": 160
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4,
+      "y": 0.63,
+      "button": 0
+    },
+    "frameNumber": 161
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.3375,
+      "y": 0.565,
+      "button": 0
+    },
+    "frameNumber": 162
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.2475,
+      "y": 0.4666666666666667,
+      "button": 0
+    },
+    "frameNumber": 163
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.22375,
+      "y": 0.44,
+      "button": 0
+    },
+    "frameNumber": 164
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.18125,
+      "y": 0.39166666666666666,
+      "button": 0
+    },
+    "frameNumber": 165
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.10625,
+      "y": 0.31166666666666665,
+      "button": 0
+    },
+    "frameNumber": 166
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.1,
+      "y": 0.305,
+      "button": 0
+    },
+    "frameNumber": 167
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.09375,
+      "y": 0.2966666666666667,
+      "button": 0
+    },
+    "frameNumber": 168
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.0925,
+      "y": 0.2966666666666667,
+      "button": 0
+    },
+    "frameNumber": 169
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.09125,
+      "y": 0.29333333333333333,
+      "button": 0
+    },
+    "frameNumber": 170
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.09125,
+      "y": 0.2916666666666667,
+      "button": 0
+    },
+    "frameNumber": 171
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.09125,
+      "y": 0.29,
+      "button": 0
+    },
+    "frameNumber": 172
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.09125,
+      "y": 0.28833333333333333,
+      "button": 0
+    },
+    "frameNumber": 173
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.095,
+      "y": 0.29333333333333333,
+      "button": 0
+    },
+    "frameNumber": 174
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.09875,
+      "y": 0.3,
+      "button": 0
+    },
+    "frameNumber": 175
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.1175,
+      "y": 0.32166666666666666,
+      "button": 0
+    },
+    "frameNumber": 176
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.1325,
+      "y": 0.33666666666666667,
+      "button": 0
+    },
+    "frameNumber": 177
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.1425,
+      "y": 0.345,
+      "button": 0
+    },
+    "frameNumber": 178
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.14625,
+      "y": 0.3466666666666667,
+      "button": 0
+    },
+    "frameNumber": 179
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.1475,
+      "y": 0.3466666666666667,
+      "button": 0
+    },
+    "frameNumber": 180
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.1475,
+      "y": 0.3466666666666667,
+      "button": 0
+    },
+    "frameNumber": 181
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.14875,
+      "y": 0.3466666666666667,
+      "button": 0
+    },
+    "frameNumber": 182
+  },
+  {
+    "type": "mouse",
+    "event": "down",
+    "parameters": {
+      "x": 0.14875,
+      "y": 0.3466666666666667,
+      "button": 0
+    },
+    "frameNumber": 188
+  },
+  {
+    "type": "mouse",
+    "event": "up",
+    "parameters": {
+      "x": 0.14875,
+      "y": 0.3466666666666667,
+      "button": 0
+    },
+    "frameNumber": 196
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.14875,
+      "y": 0.355,
+      "button": 0
+    },
+    "frameNumber": 222
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.1525,
+      "y": 0.3616666666666667,
+      "button": 0
+    },
+    "frameNumber": 223
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.16,
+      "y": 0.37833333333333335,
+      "button": 0
+    },
+    "frameNumber": 224
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.1725,
+      "y": 0.39666666666666667,
+      "button": 0
+    },
+    "frameNumber": 225
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.22625,
+      "y": 0.45666666666666667,
+      "button": 0
+    },
+    "frameNumber": 226
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.25625,
+      "y": 0.48333333333333334,
+      "button": 0
+    },
+    "frameNumber": 227
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.33625,
+      "y": 0.54,
+      "button": 0
+    },
+    "frameNumber": 228
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.355,
+      "y": 0.5516666666666666,
+      "button": 0
+    },
+    "frameNumber": 229
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.3975,
+      "y": 0.5716666666666667,
+      "button": 0
+    },
+    "frameNumber": 230
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.405,
+      "y": 0.575,
+      "button": 0
+    },
+    "frameNumber": 231
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4325,
+      "y": 0.5883333333333334,
+      "button": 0
+    },
+    "frameNumber": 233
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.43625,
+      "y": 0.59,
+      "button": 0
+    },
+    "frameNumber": 234
+  },
+  {
+    "type": "mouse",
+    "event": "down",
+    "parameters": {
+      "x": 0.43625,
+      "y": 0.59,
+      "button": 0
+    },
+    "frameNumber": 235
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4425,
+      "y": 0.59,
+      "button": 0
+    },
+    "frameNumber": 244
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.45375,
+      "y": 0.59,
+      "button": 0
+    },
+    "frameNumber": 245
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4675,
+      "y": 0.59,
+      "button": 0
+    },
+    "frameNumber": 246
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.59,
+      "button": 0
+    },
+    "frameNumber": 247
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5025,
+      "y": 0.59,
+      "button": 0
+    },
+    "frameNumber": 248
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.515,
+      "y": 0.5866666666666667,
+      "button": 0
+    },
+    "frameNumber": 249
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.53125,
+      "y": 0.58,
+      "button": 0
+    },
+    "frameNumber": 250
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.53375,
+      "y": 0.5766666666666667,
+      "button": 0
+    },
+    "frameNumber": 251
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.545,
+      "y": 0.5666666666666667,
+      "button": 0
+    },
+    "frameNumber": 252
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.54625,
+      "y": 0.565,
+      "button": 0
+    },
+    "frameNumber": 253
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.55,
+      "y": 0.555,
+      "button": 0
+    },
+    "frameNumber": 254
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.55125,
+      "y": 0.5466666666666666,
+      "button": 0
+    },
+    "frameNumber": 255
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.55125,
+      "y": 0.545,
+      "button": 0
+    },
+    "frameNumber": 256
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5525,
+      "y": 0.5333333333333333,
+      "button": 0
+    },
+    "frameNumber": 257
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5525,
+      "y": 0.53,
+      "button": 0
+    },
+    "frameNumber": 258
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.54875,
+      "y": 0.5166666666666667,
+      "button": 0
+    },
+    "frameNumber": 259
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5475,
+      "y": 0.515,
+      "button": 0
+    },
+    "frameNumber": 260
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.51625,
+      "y": 0.49333333333333335,
+      "button": 0
+    },
+    "frameNumber": 261
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5,
+      "y": 0.49,
+      "button": 0
+    },
+    "frameNumber": 262
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48375,
+      "y": 0.49,
+      "button": 0
+    },
+    "frameNumber": 263
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47125,
+      "y": 0.49666666666666665,
+      "button": 0
+    },
+    "frameNumber": 264
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.45375,
+      "y": 0.505,
+      "button": 0
+    },
+    "frameNumber": 265
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.445,
+      "y": 0.5116666666666667,
+      "button": 0
+    },
+    "frameNumber": 266
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4325,
+      "y": 0.5233333333333333,
+      "button": 0
+    },
+    "frameNumber": 267
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.43125,
+      "y": 0.5266666666666666,
+      "button": 0
+    },
+    "frameNumber": 268
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4225,
+      "y": 0.5433333333333333,
+      "button": 0
+    },
+    "frameNumber": 269
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.42,
+      "y": 0.55,
+      "button": 0
+    },
+    "frameNumber": 270
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41625,
+      "y": 0.575,
+      "button": 0
+    },
+    "frameNumber": 271
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.415,
+      "y": 0.5883333333333334,
+      "button": 0
+    },
+    "frameNumber": 272
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41375,
+      "y": 0.6216666666666667,
+      "button": 0
+    },
+    "frameNumber": 273
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41625,
+      "y": 0.6366666666666667,
+      "button": 0
+    },
+    "frameNumber": 274
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41875,
+      "y": 0.6433333333333333,
+      "button": 0
+    },
+    "frameNumber": 275
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.42625,
+      "y": 0.6583333333333333,
+      "button": 0
+    },
+    "frameNumber": 276
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.42875,
+      "y": 0.665,
+      "button": 0
+    },
+    "frameNumber": 277
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.44125,
+      "y": 0.6783333333333333,
+      "button": 0
+    },
+    "frameNumber": 278
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.6983333333333334,
+      "button": 0
+    },
+    "frameNumber": 282
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.50125,
+      "y": 0.7,
+      "button": 0
+    },
+    "frameNumber": 284
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.52125,
+      "y": 0.6783333333333333,
+      "button": 0
+    },
+    "frameNumber": 285
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.52875,
+      "y": 0.64,
+      "button": 0
+    },
+    "frameNumber": 286
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.52875,
+      "y": 0.63,
+      "button": 0
+    },
+    "frameNumber": 287
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.52375,
+      "y": 0.6066666666666667,
+      "button": 0
+    },
+    "frameNumber": 288
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.52,
+      "y": 0.5966666666666667,
+      "button": 0
+    },
+    "frameNumber": 289
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.51125,
+      "y": 0.5783333333333334,
+      "button": 0
+    },
+    "frameNumber": 290
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5075,
+      "y": 0.5716666666666667,
+      "button": 0
+    },
+    "frameNumber": 291
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5025,
+      "y": 0.565,
+      "button": 0
+    },
+    "frameNumber": 292
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5,
+      "y": 0.5633333333333334,
+      "button": 0
+    },
+    "frameNumber": 293
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4975,
+      "y": 0.56,
+      "button": 0
+    },
+    "frameNumber": 294
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.495,
+      "y": 0.56,
+      "button": 0
+    },
+    "frameNumber": 295
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.49,
+      "y": 0.56,
+      "button": 0
+    },
+    "frameNumber": 296
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4875,
+      "y": 0.5616666666666666,
+      "button": 0
+    },
+    "frameNumber": 297
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48375,
+      "y": 0.5666666666666667,
+      "button": 0
+    },
+    "frameNumber": 298
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48125,
+      "y": 0.57,
+      "button": 0
+    },
+    "frameNumber": 299
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.575,
+      "button": 0
+    },
+    "frameNumber": 300
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.58,
+      "button": 0
+    },
+    "frameNumber": 301
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.585,
+      "button": 0
+    },
+    "frameNumber": 302
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.59,
+      "button": 0
+    },
+    "frameNumber": 303
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.5916666666666667,
+      "button": 0
+    },
+    "frameNumber": 304
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.47875,
+      "y": 0.5966666666666667,
+      "button": 0
+    },
+    "frameNumber": 305
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48125,
+      "y": 0.5983333333333334,
+      "button": 0
+    },
+    "frameNumber": 306
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48375,
+      "y": 0.6,
+      "button": 0
+    },
+    "frameNumber": 307
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.485,
+      "y": 0.6016666666666667,
+      "button": 0
+    },
+    "frameNumber": 308
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48625,
+      "y": 0.6033333333333334,
+      "button": 0
+    },
+    "frameNumber": 309
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48625,
+      "y": 0.6033333333333334,
+      "button": 0
+    },
+    "frameNumber": 310
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4875,
+      "y": 0.6016666666666667,
+      "button": 0
+    },
+    "frameNumber": 311
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4875,
+      "y": 0.6016666666666667,
+      "button": 0
+    },
+    "frameNumber": 312
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4875,
+      "y": 0.6,
+      "button": 0
+    },
+    "frameNumber": 313
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4875,
+      "y": 0.6,
+      "button": 0
+    },
+    "frameNumber": 314
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4875,
+      "y": 0.6,
+      "button": 0
+    },
+    "frameNumber": 315
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48625,
+      "y": 0.6,
+      "button": 0
+    },
+    "frameNumber": 317
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48625,
+      "y": 0.6,
+      "button": 0
+    },
+    "frameNumber": 322
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 333
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48625,
+      "y": 0.6,
+      "button": 0
+    },
+    "frameNumber": 339
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48625,
+      "y": 0.6,
+      "button": 0
+    },
+    "frameNumber": 341
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 344
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 345
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 347
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 347
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.48875,
+      "y": 0.6016666666666667,
+      "button": 0
+    },
+    "frameNumber": 347
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.49125,
+      "y": 0.6016666666666667,
+      "button": 0
+    },
+    "frameNumber": 348
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 349
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5125,
+      "y": 0.6016666666666667,
+      "button": 0
+    },
+    "frameNumber": 349
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 350
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5225,
+      "y": 0.6016666666666667,
+      "button": 0
+    },
+    "frameNumber": 350
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 351
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5375,
+      "y": 0.6016666666666667,
+      "button": 0
+    },
+    "frameNumber": 351
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.54625,
+      "y": 0.6,
+      "button": 0
+    },
+    "frameNumber": 352
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.54875,
+      "y": 0.5983333333333334,
+      "button": 0
+    },
+    "frameNumber": 353
+  },
+  {
+    "type": "key",
+    "event": "up",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 354
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5525,
+      "y": 0.5966666666666667,
+      "button": 0
+    },
+    "frameNumber": 354
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.55375,
+      "y": 0.5966666666666667,
+      "button": 0
+    },
+    "frameNumber": 355
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.55375,
+      "y": 0.5966666666666667,
+      "button": 0
+    },
+    "frameNumber": 356
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.55375,
+      "y": 0.595,
+      "button": 0
+    },
+    "frameNumber": 357
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.55375,
+      "y": 0.5883333333333334,
+      "button": 0
+    },
+    "frameNumber": 360
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.55375,
+      "y": 0.5866666666666667,
+      "button": 0
+    },
+    "frameNumber": 361
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 363
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.54375,
+      "y": 0.5533333333333333,
+      "button": 0
+    },
+    "frameNumber": 363
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.535,
+      "y": 0.5483333333333333,
+      "button": 0
+    },
+    "frameNumber": 364
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 365
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.5175,
+      "y": 0.5433333333333333,
+      "button": 0
+    },
+    "frameNumber": 365
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 366
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.51125,
+      "y": 0.5433333333333333,
+      "button": 0
+    },
+    "frameNumber": 366
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 367
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4875,
+      "y": 0.5433333333333333,
+      "button": 0
+    },
+    "frameNumber": 367
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4725,
+      "y": 0.5433333333333333,
+      "button": 0
+    },
+    "frameNumber": 368
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 369
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 87,
+      "charCode": 0,
+      "key": "w"
+    },
+    "frameNumber": 369
+  },
+  {
+    "type": "key",
+    "event": "up",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 369
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.45625,
+      "y": 0.5466666666666666,
+      "button": 0
+    },
+    "frameNumber": 369
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.45375,
+      "y": 0.55,
+      "button": 0
+    },
+    "frameNumber": 370
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.43625,
+      "y": 0.5583333333333333,
+      "button": 0
+    },
+    "frameNumber": 371
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4275,
+      "y": 0.565,
+      "button": 0
+    },
+    "frameNumber": 372
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.42125,
+      "y": 0.5716666666666667,
+      "button": 0
+    },
+    "frameNumber": 373
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41625,
+      "y": 0.5766666666666667,
+      "button": 0
+    },
+    "frameNumber": 374
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41125,
+      "y": 0.58,
+      "button": 0
+    },
+    "frameNumber": 375
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41125,
+      "y": 0.58,
+      "button": 0
+    },
+    "frameNumber": 376
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41125,
+      "y": 0.5816666666666667,
+      "button": 0
+    },
+    "frameNumber": 377
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41125,
+      "y": 0.5833333333333334,
+      "button": 0
+    },
+    "frameNumber": 379
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 380
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41125,
+      "y": 0.585,
+      "button": 0
+    },
+    "frameNumber": 380
+  },
+  {
+    "type": "key",
+    "event": "up",
+    "parameters": {
+      "keyCode": 87,
+      "charCode": 0,
+      "key": "w"
+    },
+    "frameNumber": 385
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 387
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 388
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 390
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 392
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 394
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 396
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 398
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 400
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 403
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 404
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 405
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 406
+  },
+  {
+    "type": "key",
+    "event": "up",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 409
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 416
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 417
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 419
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 420
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 421
+  },
+  {
+    "type": "key",
+    "event": "up",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 423
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4125,
+      "y": 0.585,
+      "button": 0
+    },
+    "frameNumber": 429
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 430
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41375,
+      "y": 0.585,
+      "button": 0
+    },
+    "frameNumber": 430
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 431
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41375,
+      "y": 0.585,
+      "button": 0
+    },
+    "frameNumber": 431
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.415,
+      "y": 0.585,
+      "button": 0
+    },
+    "frameNumber": 432
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 433
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.41625,
+      "y": 0.585,
+      "button": 0
+    },
+    "frameNumber": 433
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 434
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4175,
+      "y": 0.585,
+      "button": 0
+    },
+    "frameNumber": 434
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 435
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4225,
+      "y": 0.5833333333333334,
+      "button": 0
+    },
+    "frameNumber": 435
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.4225,
+      "y": 0.5833333333333334,
+      "button": 0
+    },
+    "frameNumber": 436
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 87,
+      "charCode": 0,
+      "key": "w"
+    },
+    "frameNumber": 437
+  },
+  {
+    "type": "key",
+    "event": "up",
+    "parameters": {
+      "keyCode": 68,
+      "charCode": 0,
+      "key": "d"
+    },
+    "frameNumber": 437
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.42375,
+      "y": 0.5816666666666667,
+      "button": 0
+    },
+    "frameNumber": 437
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.42375,
+      "y": 0.5816666666666667,
+      "button": 0
+    },
+    "frameNumber": 438
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.425,
+      "y": 0.5816666666666667,
+      "button": 0
+    },
+    "frameNumber": 439
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.425,
+      "y": 0.5816666666666667,
+      "button": 0
+    },
+    "frameNumber": 441
+  },
+  {
+    "type": "mouse",
+    "event": "move",
+    "parameters": {
+      "x": 0.425,
+      "y": 0.58,
+      "button": 0
+    },
+    "frameNumber": 442
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 87,
+      "charCode": 0,
+      "key": "w"
+    },
+    "frameNumber": 447
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 87,
+      "charCode": 0,
+      "key": "w"
+    },
+    "frameNumber": 448
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 87,
+      "charCode": 0,
+      "key": "w"
+    },
+    "frameNumber": 449
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 87,
+      "charCode": 0,
+      "key": "w"
+    },
+    "frameNumber": 451
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 87,
+      "charCode": 0,
+      "key": "w"
+    },
+    "frameNumber": 452
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 87,
+      "charCode": 0,
+      "key": "w"
+    },
+    "frameNumber": 453
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 87,
+      "charCode": 0,
+      "key": "w"
+    },
+    "frameNumber": 455
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 87,
+      "charCode": 0,
+      "key": "w"
+    },
+    "frameNumber": 457
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 457
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 468
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 470
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 472
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 474
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 476
+  },
+  {
+    "type": "key",
+    "event": "up",
+    "parameters": {
+      "keyCode": 87,
+      "charCode": 0,
+      "key": "w"
+    },
+    "frameNumber": 478
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 478
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 480
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 482
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 484
+  },
+  {
+    "type": "key",
+    "event": "up",
+    "parameters": {
+      "keyCode": 65,
+      "charCode": 0,
+      "key": "a"
+    },
+    "frameNumber": 484
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 486
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 494
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 496
+  },
+  {
+    "type": "key",
+    "event": "down",
+    "parameters": {
+      "keyCode": 83,
+      "charCode": 0,
+      "key": "s"
+    },
+    "frameNumber": 498
+  }
+]

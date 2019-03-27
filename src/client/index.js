@@ -12,28 +12,6 @@ import WebGLStats from 'webgl-stats';
 
 const parameters = queryString.parse(location.search);
 
-var old
-
-function FakeGL( gl ) {
-
-  this.gl = gl;
-
-  for ( var key in gl ) {
-
-    if ( typeof gl[ key ] !== 'function' ) {
-
-      if (key === 'getShaderPrecisionFormat') {
-        return this.gl.getParameter.apply( this.gl, arguments );
-      }
-      this[ key ] = gl[ key ];
-
-    }
-
-  }
-
-}
-
-
 function onReady(callback) {
   if (
     document.readyState === "complete" ||
@@ -51,6 +29,7 @@ console.logError = (msg) => console.error(msg);
 
 window.TESTER = {
   ready: false,
+  inputLoading: false,
 
   // Currently executing frame.
   referenceTestFrameNumber: 0,
@@ -129,19 +108,29 @@ window.TESTER = {
           this.canvas.classList.add('gfxtests-canvas');
 
           this.onResize();
-/*
-          var e = document.createEventObject ? document.createEventObject() : document.createEvent("Events");
-          if (e.initEvent) {
-            e.initEvent('resize', true, true);
-          }
-          window.dispatchEvent ? window.dispatchEvent(e) : window.fireEvent("on" + eventType, e);
-          */
 
           WebGLStats.setupExtensions(context);
 
           if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
             this.inputRecorder = new InputRecorder(this.canvas);
             this.inputRecorder.enable();
+          }
+
+          if (typeof parameters['replay'] !== 'undefined' && GFXTESTS_CONFIG.input && !this.inputLoading) {
+            console.log('replaying');
+            this.inputLoading = true;
+
+            // @fixme Prevent multiple fetch while waiting
+            fetch('/tests/' + GFXTESTS_CONFIG.input).then(response => {
+              return response.json();
+            })
+            .then(json => {
+              this.inputReplayer = new InputReplayer(this.canvas, json, this.eventListener.registeredEventListeners);
+              this.inputHelpers = new InputHelpers(this.canvas);
+              this.ready = true;
+            });
+          } else {
+            this.ready = true;
           }
         }
         //@fixme else for canvas 2d without webgl
@@ -153,24 +142,6 @@ window.TESTER = {
         }
       }
 
-      if (typeof parameters['replay'] !== 'undefined' && !this.inputReplayer) {
-        if (GFXTESTS_CONFIG.input) {
-          // @fixme Prevent multiple fetch while waiting
-          fetch('/tests/' + GFXTESTS_CONFIG.input).then(response => {
-            return response.json();
-          })
-          .then(json => {
-            this.inputReplayer = new InputReplayer(this.canvas, json, this.eventListener.registeredEventListeners);
-            //this.inputReplayer = new InputReplayer(this.canvas, json);
-            //if (parameters.showMouse || parameters.showKeys)
-            this.inputHelpers = new InputHelpers(this.canvas);
-            this.ready = true;
-          });
-        }
-      } else {
-        this.ready = true;
-      }
-    
       // referenceTestT0 = performance.realNow();
       if (this.pageLoadTime === null) this.pageLoadTime = performance.realNow() - pageInitTime;
 
@@ -812,6 +783,7 @@ window.TESTER = {
     }
 
     this.referenceTestFrameNumber = 0;
+
     this.timeStart = performance.realNow();
   },
 

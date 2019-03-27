@@ -67,6 +67,7 @@
 							var index = watchedKeyCodes.indexOf( e.keyCode );
 							if( index >= 0 ) {
 								keysPressed[watchedKeyCodes[index]] = down; e.preventDefault();
+								console.log(e.keyCode);
 							}
 						};
 					};
@@ -100,6 +101,7 @@
 						if( Math.abs( combined.x ) >= Math.abs( motion.velocity.x ) ) motion.velocity.x = combined.x;
 						if( Math.abs( combined.y ) >= Math.abs( motion.velocity.y ) ) motion.velocity.y = combined.y;
 						if( Math.abs( combined.z ) >= Math.abs( motion.velocity.z ) ) motion.velocity.z = combined.z;
+						console.log(forward, combined, motion.velocity);
 
 						//jump
  						var vy = keysPressed[keys.SP] ? 0.7 : 0;
@@ -206,7 +208,7 @@
 					euler.x = motion.rotation.x;
 					euler.y = motion.rotation.y;
 					camera.quaternion.setFromEuler( euler );
-
+					//console.log(motion.position);
 					camera.position.copy( motion.position );
 
 					camera.position.y += 3.0;
