@@ -84,6 +84,7 @@ export default class TestApp {
 
       // To remove options 
       delete options.fakeWebGL;
+      delete options.fakeWebAudio;
       delete options.showKeys;
       delete options.showMouse;
       delete options.noCloseOnFail;
@@ -96,6 +97,7 @@ export default class TestApp {
       testResults.browserUUID = this.browserUUID;
       testResults.startTime = this.testsManager.currentlyRunningTest.startTime;
       testResults.fakeWebGL = this.testsManager.currentlyRunningTest.options.fakeWebGL;
+      testResults.fakeWebAudio = this.testsManager.currentlyRunningTest.options.fakeWebAudio;
       //testResults.id = this.testsManager.currentlyRunningTest.id;
       testResults.finishTime = yyyymmddhhmmss();
       testResults.name = this.testsManager.currentlyRunningTest.name;

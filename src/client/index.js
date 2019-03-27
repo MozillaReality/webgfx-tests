@@ -6,11 +6,14 @@ import queryString from 'query-string';
 import {InputRecorder, InputReplayer} from 'input-events-recorder';
 import EventListenerManager from './event-listeners';
 import InputHelpers from './input-helpers';
+import WebAudioHook from './webaudio-hook';
 import {resizeImageData} from './image-utils';
 import pixelmatch from 'pixelmatch';
 import WebGLStats from 'webgl-stats';
 
 const parameters = queryString.parse(location.search);
+
+console.log(WebAudioHook);
 
 function onReady(callback) {
   if (
@@ -440,6 +443,7 @@ window.TESTER = {
           perf: this.stats.getStatsSummary(),
           webgl: WebGLStats.getSummary()
         },
+        webaudio: WebAudioHook.stats,
         numFrames: this.numFramesToRender,
         totalTime: totalTime,
         timeToFirstFrame: this.firstFrameTime - pageInitTime,
@@ -461,7 +465,7 @@ window.TESTER = {
       } else {
         this.doImageReferenceCheck().then(refResult => {
           Object.assign(result, refResult);
-          resolve(result);  
+          resolve(result);
         }).catch(refResult => {
           Object.assign(result, refResult);
           resolve(result);
@@ -754,6 +758,10 @@ window.TESTER = {
 
     if (!GFXTESTS_CONFIG.dontOverrideTime) {
       FakeTimers.enable();
+    }
+
+    if (!GFXTESTS_CONFIG.dontOverrideWebAudio) {
+      WebAudioHook.enable(typeof parameters['fake-webaudio'] !== 'undefined');
     }
 
     Math.random = seedrandom(this.randomSeed);

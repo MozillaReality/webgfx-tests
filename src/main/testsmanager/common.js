@@ -26,6 +26,8 @@ function buildTestURL(baseURL, test, mode, options, progress) {
 
     if (getOption('fakeWebGL')) url = addGET(url, 'fake-webgl');
 
+    if (getOption('fakeWebAudio')) url = addGET(url, 'fake-webaudio');
+
     if (mode === 'record') {
       url = addGET(url, 'recording');
     } else if (test.input && mode === 'replay') {

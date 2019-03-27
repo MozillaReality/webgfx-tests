@@ -113,7 +113,8 @@ TestsManager.prototype = {
       showMouse: false,
       noCloseOnFail: false,
       infoOverlay: browser.info,
-      fakeWebGL: this.generalOptions.fakeWebGL || false
+      fakeWebGL: this.generalOptions.fakeWebGL || false,
+      fakeWebAudio: this.generalOptions.fakeWebAudio || false
     };
 
     if (this.generalOptions.overrideParams) {

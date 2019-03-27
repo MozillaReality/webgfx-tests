@@ -13,6 +13,7 @@ var data = {
     },
     tests: {
       fakeWebGL: false,
+      fakeWebAudio: true,
       showKeys: false,
       showMouse: false,
       noCloseOnFail: false

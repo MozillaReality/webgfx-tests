@@ -1239,6 +1239,8 @@
 
 	    if (getOption('fakeWebGL')) url = addGET$1(url, 'fake-webgl');
 
+	    if (getOption('fakeWebAudio')) url = addGET$1(url, 'fake-webaudio');
+
 	    if (mode === 'record') {
 	      url = addGET$1(url, 'recording');
 	    } else if (test.input && mode === 'replay') {
@@ -1349,24 +1351,7 @@
 	    }
 
 	    window.open(url);
-	  /*
-	    var testData = {
-	      'browserUUID': this.browserUUID,
-	      'id': test.id,
-	      'name': test.name,
-	      'startTime': yyyymmddhhmmss(),
-	      'result': 'unfinished',
-	      //'FakeWebGL': data.options.fakeWebGL,
-	      'runUUID': this.currentlyRunningTest.runUUID,
-	      //!!!!!!!!!! 'runOrdinal': this.vueApp.resultsById[test.id] ? (this.vueApp.resultsById[test.id].length + 1) : 1
-	    };
-
-	    //if (data.nativeSystemInfo && data.nativeSystemInfo.UUID) testData.hardwareUUID = data.nativeSystemInfo.UUID;
-	    //this.resultsServer.storeStart(testData);
-	  */
-	  }
-
-
+	   }
 	};
 
 	const parameters = queryString.parse(location.search);
@@ -1446,6 +1431,7 @@
 
 	      // To remove options 
 	      delete options.fakeWebGL;
+	      delete options.fakeWebAudio;
 	      delete options.showKeys;
 	      delete options.showMouse;
 	      delete options.noCloseOnFail;
@@ -1458,6 +1444,7 @@
 	      testResults.browserUUID = this.browserUUID;
 	      testResults.startTime = this.testsManager.currentlyRunningTest.startTime;
 	      testResults.fakeWebGL = this.testsManager.currentlyRunningTest.options.fakeWebGL;
+	      testResults.fakeWebAudio = this.testsManager.currentlyRunningTest.options.fakeWebAudio;
 	      //testResults.id = this.testsManager.currentlyRunningTest.id;
 	      testResults.finishTime = utils_2();
 	      testResults.name = this.testsManager.currentlyRunningTest.name;
@@ -1587,6 +1574,7 @@
 	    },
 	    tests: {
 	      fakeWebGL: false,
+	      fakeWebAudio: true,
 	      showKeys: false,
 	      showMouse: false,
 	      noCloseOnFail: false

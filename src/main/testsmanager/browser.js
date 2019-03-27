@@ -74,22 +74,5 @@ TestsManagerBrowser.prototype = {
     }
 
     window.open(url);
-  /*
-    var testData = {
-      'browserUUID': this.browserUUID,
-      'id': test.id,
-      'name': test.name,
-      'startTime': yyyymmddhhmmss(),
-      'result': 'unfinished',
-      //'FakeWebGL': data.options.fakeWebGL,
-      'runUUID': this.currentlyRunningTest.runUUID,
-      //!!!!!!!!!! 'runOrdinal': this.vueApp.resultsById[test.id] ? (this.vueApp.resultsById[test.id].length + 1) : 1
-    };
-
-    //if (data.nativeSystemInfo && data.nativeSystemInfo.UUID) testData.hardwareUUID = data.nativeSystemInfo.UUID;
-    //this.resultsServer.storeStart(testData);
-  */
-  }
-
-
+   }
 }
