@@ -65,6 +65,7 @@ function initServer(port, config, verbose) {
 
       var ext = path.extname(url);
       if (ext === '.html') {
+        // @todo Check that the filename is the entry main
         //var test = config.tests.find(test => test.url === url.replace(/\/tests\//, ''));
         // We need to filter initially because two tests could share the same base url
         var candidateTests = config.tests.filter(test => test.url.split('?')[0] === url);
@@ -95,7 +96,12 @@ function initServer(port, config, verbose) {
           res.send('No test found: ' + url);
         }
       } else {
-        res.sendFile(decodeURI(pathf));
+        var file = decodeURI(pathf);
+        if (fs.existsSync(file)) {
+          res.sendFile(file);
+        } else if (verbose) {
+          console.log(`ERROR: File not found ${file}`);
+        }
       }
     });
 
