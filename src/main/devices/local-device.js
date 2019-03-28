@@ -83,7 +83,7 @@ module.exports = {
       this.lastOpenProcess = spawn(browser.launchCmd, options);
       resolve(this.lastOpenProcess);
       this.lastOpenProcess.on('close', () => {
-        //console.log('Unexpected closed!');
+        console.log('Unexpected closed!');
         // @todo
       });
       
