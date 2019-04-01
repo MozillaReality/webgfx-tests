@@ -13,8 +13,6 @@ import WebGLStats from 'webgl-stats';
 
 const parameters = queryString.parse(location.search);
 
-console.log(WebAudioHook);
-
 function onReady(callback) {
   if (
     document.readyState === "complete" ||
