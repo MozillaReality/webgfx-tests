@@ -16,7 +16,7 @@ function buildTestURL(baseURL, test, mode, options, progress) {
     }
     return test[name];
   }
-  console.log(options);
+  // if verbose console.log(options);
 
   if (mode !== 'interactive') {
     if (getOption('autoenterXR')) url = addGET(url, 'autoenter-xr=true');

@@ -1229,7 +1229,7 @@
 	    }
 	    return test[name];
 	  }
-	  console.log(options);
+	  // if verbose console.log(options);
 
 	  if (mode !== 'interactive') {
 	    if (getOption('autoenterXR')) url = addGET$1(url, 'autoenter-xr=true');

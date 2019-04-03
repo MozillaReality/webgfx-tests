@@ -2339,7 +2339,8 @@
 	  }
 	}
 
-	var oriDecodeData = AudioContext.prototype.decodeAudioData;
+	var Context = window.webkitAudioContext ? window.webkitAudioContext : window.AudioContext;
+	var oriDecodeData = Context.prototype.decodeAudioData;
 
 	var WebAudioHook = {
 	  stats: {
@@ -2350,7 +2351,7 @@
 	  },
 	  enable: function (fake) {
 	    var self = this;
-	    AudioContext.prototype.decodeAudioData = function() {
+	    Context.prototype.decodeAudioData = function() {
 	      var prev = performance.realNow();
 	      if (fake) {
 	        var ret = new Promise((resolve, reject) => {
@@ -2376,7 +2377,7 @@
 	    };
 	  },
 	  disable: function () {
-	    AudioContext.prototype.decodeAudioData = oriDecodeData;
+	    Context.prototype.decodeAudioData = oriDecodeData;
 	  }
 	};
 
@@ -2769,7 +2770,7 @@
 
 	  randomSeed: 1,
 
-	  numFramesToRender: typeof parameters['num-frames'] === 'undefined' ? 1200 : parseInt(parameters['num-frames']),
+	  numFramesToRender: typeof parameters['num-frames'] === 'undefined' ? 1000 : parseInt(parameters['num-frames']),
 
 	  // Guard against recursive calls to referenceTestPreTick+referenceTestTick from multiple rAFs.
 	  referenceTestPreTickCalledCount: 0,
@@ -3424,18 +3425,19 @@
 	      window.realRequestAnimationFrame = window.requestAnimationFrame;
 	      window.requestAnimationFrame = callback => {
 	        const hookedCallback = p => {
-	          if (GFXTESTS_CONFIG.preMainLoop) { 
-	            GFXTESTS_CONFIG.preMainLoop(); 
+	          if (GFXTESTS_CONFIG.preMainLoop) {
+	            GFXTESTS_CONFIG.preMainLoop();
 	          }
 	          this.preTick();
-	    
+
 	          callback(performance.now());
 	          this.tick();
 	          this.stats.frameEnd();
 
 	          this.postTick();
-	          
+
 	          if (this.referenceTestFrameNumber === this.numFramesToRender) {
+	            window.requestAnimationFrame = () => {};
 	            this.benchmarkFinished();
 	            return;
 	          }

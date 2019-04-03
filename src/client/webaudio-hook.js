@@ -1,4 +1,5 @@
-var oriDecodeData = AudioContext.prototype.decodeAudioData;
+var Context = window.webkitAudioContext ? window.webkitAudioContext : window.AudioContext;
+var oriDecodeData = Context.prototype.decodeAudioData;
 
 var WebAudioHook = {
   stats: {
@@ -9,7 +10,7 @@ var WebAudioHook = {
   },
   enable: function (fake) {
     var self = this;
-    AudioContext.prototype.decodeAudioData = function() {
+    Context.prototype.decodeAudioData = function() {
       var prev = performance.realNow();
       if (fake) {
         var ret = new Promise((resolve, reject) => {
@@ -35,7 +36,7 @@ var WebAudioHook = {
     }
   },
   disable: function () {
-    AudioContext.prototype.decodeAudioData = oriDecodeData;
+    Context.prototype.decodeAudioData = oriDecodeData;
   }
 };
 

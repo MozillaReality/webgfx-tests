@@ -60,7 +60,7 @@ window.TESTER = {
 
   randomSeed: 1,
 
-  numFramesToRender: typeof parameters['num-frames'] === 'undefined' ? 1200 : parseInt(parameters['num-frames']),
+  numFramesToRender: typeof parameters['num-frames'] === 'undefined' ? 1000 : parseInt(parameters['num-frames']),
 
   // Guard against recursive calls to referenceTestPreTick+referenceTestTick from multiple rAFs.
   referenceTestPreTickCalledCount: 0,
@@ -718,18 +718,19 @@ window.TESTER = {
       window.realRequestAnimationFrame = window.requestAnimationFrame;
       window.requestAnimationFrame = callback => {
         const hookedCallback = p => {
-          if (GFXTESTS_CONFIG.preMainLoop) { 
-            GFXTESTS_CONFIG.preMainLoop(); 
+          if (GFXTESTS_CONFIG.preMainLoop) {
+            GFXTESTS_CONFIG.preMainLoop();
           }
           this.preTick();
-    
+
           callback(performance.now());
           this.tick();
           this.stats.frameEnd();
 
           this.postTick();
-          
+
           if (this.referenceTestFrameNumber === this.numFramesToRender) {
+            window.requestAnimationFrame = () => {};
             this.benchmarkFinished();
             return;
           }
