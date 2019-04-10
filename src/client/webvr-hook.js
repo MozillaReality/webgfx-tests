@@ -14,10 +14,12 @@ var WebVRHook = {
         var result = origetVRDisplays.apply(this, arguments);
         return new Promise ((resolve, reject) => {
           result.then(displays => {
+            console.log('>>>>>', displays);
             var newDisplays = [];
             displays.forEach(display => {
               newDisplays.push(self.hookVRDisplay(display));
             });
+            console.log(newDisplays);
             resolve(newDisplays);
           })
         });
@@ -41,6 +43,7 @@ var WebVRHook = {
     }
   },
   hookVRDisplay: function (display) {
+    return display;
   /*
     var oldGetFrameData = display.getFrameData.bind(display);
     display.getFrameData = function(frameData) {

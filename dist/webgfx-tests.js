@@ -2397,10 +2397,12 @@
 	        var result = origetVRDisplays.apply(this, arguments);
 	        return new Promise ((resolve, reject) => {
 	          result.then(displays => {
+	            console.log('>>>>>', displays);
 	            var newDisplays = [];
 	            displays.forEach(display => {
 	              newDisplays.push(self.hookVRDisplay(display));
 	            });
+	            console.log(newDisplays);
 	            resolve(newDisplays);
 	          });
 	        });
@@ -2424,6 +2426,7 @@
 	    };
 	  },
 	  hookVRDisplay: function (display) {
+	    return display;
 	  /*
 	    var oldGetFrameData = display.getFrameData.bind(display);
 	    display.getFrameData = function(frameData) {
@@ -3613,8 +3616,10 @@
 	  injectAutoEnterXR: function(canvas) {
 	    if (navigator.getVRDisplays) {
 	      setTimeout(() => {
+	        console.log('>>>>');
 	        navigator.getVRDisplays().then(displays => {
 	          var device = displays[0];
+	          console.log('>>>>2222', displays);
 	          //if (device.isPresenting) device.exitPresent();
 	          if (device) {
 	            device.requestPresent( [ { source: canvas } ] );
