@@ -7,6 +7,7 @@ import {InputRecorder, InputReplayer} from 'input-events-recorder';
 import EventListenerManager from './event-listeners';
 import InputHelpers from './input-helpers';
 import WebAudioHook from './webaudio-hook';
+import WebVRHook from './webvr-hook';
 import {resizeImageData} from './image-utils';
 import pixelmatch from 'pixelmatch';
 import WebGLStats from 'webgl-stats';
@@ -712,42 +713,55 @@ window.TESTER = {
     window.alert = function(msg) { console.error('window.alert(' + msg + ')'); }
     window.confirm = function(msg) { console.error('window.confirm(' + msg + ')'); return true; }
   },
+  requestAnimationFrame: function (callback) {
+    const hookedCallback = p => {
+      if (GFXTESTS_CONFIG.preMainLoop) {
+        GFXTESTS_CONFIG.preMainLoop();
+      }
+      this.preTick();
 
-  hookRAF: function () {
-    if (!window.realRequestAnimationFrame) {
-      window.realRequestAnimationFrame = window.requestAnimationFrame;
-      window.requestAnimationFrame = callback => {
-        const hookedCallback = p => {
-          if (GFXTESTS_CONFIG.preMainLoop) {
-            GFXTESTS_CONFIG.preMainLoop();
-          }
-          this.preTick();
+      callback(performance.now());
+      this.tick();
+      this.stats.frameEnd();
 
-          callback(performance.now());
-          this.tick();
-          this.stats.frameEnd();
+      this.postTick();
 
-          this.postTick();
+      if (this.referenceTestFrameNumber === this.numFramesToRender) {
+        this.releaseRAF();
+        this.benchmarkFinished();
+        return;
+      }
 
-          if (this.referenceTestFrameNumber === this.numFramesToRender) {
-            window.requestAnimationFrame = () => {};
-            this.benchmarkFinished();
-            return;
-          }
-
-          if (GFXTESTS_CONFIG.postMainLoop) {
-            GFXTESTS_CONFIG.postMainLoop();
-          }
-        }
-        return window.realRequestAnimationFrame(hookedCallback);
+      if (GFXTESTS_CONFIG.postMainLoop) {
+        GFXTESTS_CONFIG.postMainLoop();
       }
     }
+    return this.currentRAFContext.realRequestAnimationFrame(hookedCallback);
   },
-
+  currentRAFContext: window,
+  releaseRAF: function () {
+    this.currentRAFContext.requestAnimationFrame = () => {};
+    if ('VRDisplay' in window &&
+      this.currentRAFContext instanceof VRDisplay &&
+      this.currentRAFContext.isPresenting) {
+      this.currentRAFContext.exitPresent();
+    }
+  },
+  hookRAF: function (context) {
+    if (!context.realRequestAnimationFrame) {
+      context.realRequestAnimationFrame = context.requestAnimationFrame;
+      context.requestAnimationFrame = this.requestAnimationFrame.bind(this);
+      this.currentRAFContext = context;
+    }
+  },
+  unhookRAF: function (context) {
+    if (context.realRequestAnimationFrame) {
+      context.requestAnimationFrame = context.realRequestAnimationFrame;
+    }
+  },
   init: function () {
-
     if (!GFXTESTS_CONFIG.providesRafIntegration) {
-      this.hookRAF();
+      this.hookRAF(window);
     }
 
     this.addProgressBar();
@@ -762,6 +776,19 @@ window.TESTER = {
     if (!GFXTESTS_CONFIG.dontOverrideWebAudio) {
       WebAudioHook.enable(typeof parameters['fake-webaudio'] !== 'undefined');
     }
+
+    // @todo Use config
+    WebVRHook.enable();
+    window.addEventListener('vrdisplaypresentchange', evt => {
+      var display = evt.display;
+      if (display.isPresenting) {
+        this.unhookRAF(window);
+        this.hookRAF(display);
+      } else {
+        this.unhookRAF(display);
+        this.hookRAF(window);
+      }
+    });
 
     Math.random = seedrandom(this.randomSeed);
 

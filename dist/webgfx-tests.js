@@ -2381,6 +2381,89 @@
 	  }
 	};
 
+	var WebVRHook = {
+	  original: {
+	    getVRDisplays: null,
+	    addEventListener: null
+	  },
+	  currentVRDisplay: null,
+	  auxFrameData: ( typeof window !== 'undefined' && 'VRFrameData' in window ) ? new window.VRFrameData() : null,
+	  enable: function () {
+	    if (navigator.getVRDisplays) {
+	      this.initEventListeners();
+	      var origetVRDisplays = this.original.getVRDisplays = navigator.getVRDisplays;
+	      var self = this;
+	      navigator.getVRDisplays = function() {
+	        var result = origetVRDisplays.apply(this, arguments);
+	        return new Promise ((resolve, reject) => {
+	          result.then(displays => {
+	            var newDisplays = [];
+	            displays.forEach(display => {
+	              newDisplays.push(self.hookVRDisplay(display));
+	            });
+	            resolve(newDisplays);
+	          });
+	        });
+	      };
+	    }
+	  },
+	  disable: function () {},
+	  initEventListeners: function () {
+	    this.original.addEventListener = window.addEventListener;
+	    var self = this;
+	    window.addEventListener = function () {
+	      var eventsFilter = ['vrdisplaypresentchange', 'vrdisplayconnect'];
+	      if (eventsFilter.indexOf(arguments[0]) !== -1) {
+	        var oldCallback = arguments[1];
+	        arguments[1] = event => {
+	          self.hookVRDisplay(event.display);
+	          oldCallback(event);
+	        };
+	      }
+	      var result = self.original.addEventListener.apply(this, arguments);
+	    };
+	  },
+	  hookVRDisplay: function (display) {
+	  /*
+	    var oldGetFrameData = display.getFrameData.bind(display);
+	    display.getFrameData = function(frameData) {
+
+	      oldGetFrameData(frameData);
+	  /*
+	      var m = new THREE.Matrix4();
+
+	      var x = Math.sin(performance.now()/1000);
+	      var y = Math.sin(performance.now()/500)-1.2;
+
+	      m.makeTranslation(x,y,-0.5);
+	      var position = new THREE.Vector3();
+	      var scale = new THREE.Vector3();
+	      var quat = new THREE.Quaternion();
+	      m.decompose(position,quat,scale);
+	  
+	      frameData.pose.position[0] = -position.x;
+	      frameData.pose.position[1] = -position.y;
+	      frameData.pose.position[2] = -position.z;
+	  
+	      for (var i=0;i<3;i++) {
+	        frameData.pose.orientation[i] = 0;
+	      }
+
+	      for (var i=0;i<16;i++) {
+	        frameData.leftViewMatrix[i] = m.elements[i];
+	        frameData.rightViewMatrix[i] = m.elements[i];
+	      }
+	    /*
+	      for (var i=0;i<16;i++) {
+	        leftViewMatrix[i] = m.elements[i];
+	        frameData.rightViewMatrix[i] = m.elements[i];
+	      }
+	      // camera.matrixWorld.decompose( cameraL.position, cameraL.quaternion, cameraL.scale );
+	    }
+	    */
+	  }
+	};
+
 	function nearestNeighbor (src, dst) {
 	  let pos = 0;
 
@@ -3419,42 +3502,55 @@
 	    window.alert = function(msg) { console.error('window.alert(' + msg + ')'); };
 	    window.confirm = function(msg) { console.error('window.confirm(' + msg + ')'); return true; };
 	  },
+	  requestAnimationFrame: function (callback) {
+	    const hookedCallback = p => {
+	      if (GFXTESTS_CONFIG.preMainLoop) {
+	        GFXTESTS_CONFIG.preMainLoop();
+	      }
+	      this.preTick();
 
-	  hookRAF: function () {
-	    if (!window.realRequestAnimationFrame) {
-	      window.realRequestAnimationFrame = window.requestAnimationFrame;
-	      window.requestAnimationFrame = callback => {
-	        const hookedCallback = p => {
-	          if (GFXTESTS_CONFIG.preMainLoop) {
-	            GFXTESTS_CONFIG.preMainLoop();
-	          }
-	          this.preTick();
+	      callback(performance.now());
+	      this.tick();
+	      this.stats.frameEnd();
 
-	          callback(performance.now());
-	          this.tick();
-	          this.stats.frameEnd();
+	      this.postTick();
 
-	          this.postTick();
+	      if (this.referenceTestFrameNumber === this.numFramesToRender) {
+	        this.releaseRAF();
+	        this.benchmarkFinished();
+	        return;
+	      }
 
-	          if (this.referenceTestFrameNumber === this.numFramesToRender) {
-	            window.requestAnimationFrame = () => {};
-	            this.benchmarkFinished();
-	            return;
-	          }
-
-	          if (GFXTESTS_CONFIG.postMainLoop) {
-	            GFXTESTS_CONFIG.postMainLoop();
-	          }
-	        };
-	        return window.realRequestAnimationFrame(hookedCallback);
-	      };
+	      if (GFXTESTS_CONFIG.postMainLoop) {
+	        GFXTESTS_CONFIG.postMainLoop();
+	      }
+	    };
+	    return this.currentRAFContext.realRequestAnimationFrame(hookedCallback);
+	  },
+	  currentRAFContext: window,
+	  releaseRAF: function () {
+	    this.currentRAFContext.requestAnimationFrame = () => {};
+	    if ('VRDisplay' in window &&
+	      this.currentRAFContext instanceof VRDisplay &&
+	      this.currentRAFContext.isPresenting) {
+	      this.currentRAFContext.exitPresent();
 	    }
 	  },
-
+	  hookRAF: function (context) {
+	    if (!context.realRequestAnimationFrame) {
+	      context.realRequestAnimationFrame = context.requestAnimationFrame;
+	      context.requestAnimationFrame = this.requestAnimationFrame.bind(this);
+	      this.currentRAFContext = context;
+	    }
+	  },
+	  unhookRAF: function (context) {
+	    if (context.realRequestAnimationFrame) {
+	      context.requestAnimationFrame = context.realRequestAnimationFrame;
+	    }
+	  },
 	  init: function () {
-
 	    if (!GFXTESTS_CONFIG.providesRafIntegration) {
-	      this.hookRAF();
+	      this.hookRAF(window);
 	    }
 
 	    this.addProgressBar();
@@ -3469,6 +3565,19 @@
 	    if (!GFXTESTS_CONFIG.dontOverrideWebAudio) {
 	      WebAudioHook.enable(typeof parameters['fake-webaudio'] !== 'undefined');
 	    }
+
+	    // @todo Use config
+	    WebVRHook.enable();
+	    window.addEventListener('vrdisplaypresentchange', evt => {
+	      var display = evt.display;
+	      if (display.isPresenting) {
+	        this.unhookRAF(window);
+	        this.hookRAF(display);
+	      } else {
+	        this.unhookRAF(display);
+	        this.hookRAF(window);
+	      }
+	    });
 
 	    Math.random = seedrandom$1(this.randomSeed);
 
