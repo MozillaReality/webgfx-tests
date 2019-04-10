@@ -2426,44 +2426,8 @@
 	    };
 	  },
 	  hookVRDisplay: function (display) {
+	    // Todo modify the VRDisplay if needed for framedata and so on
 	    return display;
-	  /*
-	    var oldGetFrameData = display.getFrameData.bind(display);
-	    display.getFrameData = function(frameData) {
-
-	      oldGetFrameData(frameData);
-	  /*
-	      var m = new THREE.Matrix4();
-
-	      var x = Math.sin(performance.now()/1000);
-	      var y = Math.sin(performance.now()/500)-1.2;
-
-	      m.makeTranslation(x,y,-0.5);
-	      var position = new THREE.Vector3();
-	      var scale = new THREE.Vector3();
-	      var quat = new THREE.Quaternion();
-	      m.decompose(position,quat,scale);
-	  
-	      frameData.pose.position[0] = -position.x;
-	      frameData.pose.position[1] = -position.y;
-	      frameData.pose.position[2] = -position.z;
-	  
-	      for (var i=0;i<3;i++) {
-	        frameData.pose.orientation[i] = 0;
-	      }
-
-	      for (var i=0;i<16;i++) {
-	        frameData.leftViewMatrix[i] = m.elements[i];
-	        frameData.rightViewMatrix[i] = m.elements[i];
-	      }
-	    /*
-	      for (var i=0;i<16;i++) {
-	        leftViewMatrix[i] = m.elements[i];
-	        frameData.rightViewMatrix[i] = m.elements[i];
-	      }
-	      // camera.matrixWorld.decompose( cameraL.position, cameraL.quaternion, cameraL.scale );
-	    }
-	    */
 	  }
 	};
 
@@ -3616,10 +3580,8 @@
 	  injectAutoEnterXR: function(canvas) {
 	    if (navigator.getVRDisplays) {
 	      setTimeout(() => {
-	        console.log('>>>>');
 	        navigator.getVRDisplays().then(displays => {
 	          var device = displays[0];
-	          console.log('>>>>2222', displays);
 	          //if (device.isPresenting) device.exitPresent();
 	          if (device) {
 	            device.requestPresent( [ { source: canvas } ] );
