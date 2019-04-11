@@ -830,7 +830,8 @@ window.TESTER = {
           if (device) {
             device.requestPresent( [ { source: canvas } ] );
           }
-        }), 2000}); // @fix to make it work on FxR
+        })
+      }, 2000); // @fix to make it work on FxR
     }
   },
 
