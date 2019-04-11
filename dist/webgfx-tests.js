@@ -2397,12 +2397,10 @@
 	        var result = origetVRDisplays.apply(this, arguments);
 	        return new Promise ((resolve, reject) => {
 	          result.then(displays => {
-	            console.log('>>>>>', displays);
 	            var newDisplays = [];
 	            displays.forEach(display => {
 	              newDisplays.push(self.hookVRDisplay(display));
 	            });
-	            console.log(newDisplays);
 	            resolve(newDisplays);
 	          });
 	        });
@@ -3621,7 +3619,9 @@
 	          var device = displays[0];
 	          //if (device.isPresenting) device.exitPresent();
 	          if (device) {
-	            device.requestPresent( [ { source: canvas } ] );
+	            device.requestPresent( [ { source: canvas } ] )
+	              .then(x => { console.log('autoenter XR successful'); })
+	              .catch(x => { console.log('autoenter XR failed'); });
 	          }
 	        });
 	      }, 2000); // @fix to make it work on FxR
