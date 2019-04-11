@@ -3616,9 +3616,7 @@
 
 	  injectAutoEnterXR: function(canvas) {
 	    if (navigator.getVRDisplays) {
-	      console.log('inject', performance.realNow());
 	      setTimeout(() => {
-	        console.log('Vamos!', performance.realNow());
 	        navigator.getVRDisplays().then(displays => {
 	          var device = displays[0];
 	          //if (device.isPresenting) device.exitPresent();
@@ -3626,7 +3624,7 @@
 	            device.requestPresent( [ { source: canvas } ] );
 	          }
 	        });
-	      }, 4000); // @fix to make it work on FxR
+	      }, 2000); // @fix to make it work on FxR
 	    }
 	  },
 
