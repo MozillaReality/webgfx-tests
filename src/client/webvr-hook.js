@@ -5,7 +5,7 @@ var WebVRHook = {
   },
   currentVRDisplay: null,
   auxFrameData: ( typeof window !== 'undefined' && 'VRFrameData' in window ) ? new window.VRFrameData() : null,
-  enable: function () {
+  enable: function (callback) {
     if (navigator.getVRDisplays) {
       this.initEventListeners();
       var origetVRDisplays = this.original.getVRDisplays = navigator.getVRDisplays;
@@ -16,7 +16,9 @@ var WebVRHook = {
           result.then(displays => {
             var newDisplays = [];
             displays.forEach(display => {
-              newDisplays.push(self.hookVRDisplay(display));
+              var newDisplay = self.hookVRDisplay(display);
+              newDisplays.push(newDisplay);
+              callback(newDisplay);
             });
             resolve(newDisplays);
           })
@@ -41,7 +43,9 @@ var WebVRHook = {
     }
   },
   hookVRDisplay: function (display) {
-  /*
+    // Todo modify the VRDisplay if needed for framedata and so on
+    return display;
+      /*
     var oldGetFrameData = display.getFrameData.bind(display);
     display.getFrameData = function(frameData) {
 
@@ -57,11 +61,11 @@ var WebVRHook = {
       var scale = new THREE.Vector3();
       var quat = new THREE.Quaternion();
       m.decompose(position,quat,scale);
-  
+
       frameData.pose.position[0] = -position.x;
       frameData.pose.position[1] = -position.y;
       frameData.pose.position[2] = -position.z;
-  
+
       for (var i=0;i<3;i++) {
         frameData.pose.orientation[i] = 0;
       }

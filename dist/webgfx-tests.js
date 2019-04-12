@@ -2381,6 +2381,93 @@
 	  }
 	};
 
+	var WebVRHook = {
+	  original: {
+	    getVRDisplays: null,
+	    addEventListener: null
+	  },
+	  currentVRDisplay: null,
+	  auxFrameData: ( typeof window !== 'undefined' && 'VRFrameData' in window ) ? new window.VRFrameData() : null,
+	  enable: function (callback) {
+	    if (navigator.getVRDisplays) {
+	      this.initEventListeners();
+	      var origetVRDisplays = this.original.getVRDisplays = navigator.getVRDisplays;
+	      var self = this;
+	      navigator.getVRDisplays = function() {
+	        var result = origetVRDisplays.apply(this, arguments);
+	        return new Promise ((resolve, reject) => {
+	          result.then(displays => {
+	            var newDisplays = [];
+	            displays.forEach(display => {
+	              var newDisplay = self.hookVRDisplay(display);
+	              newDisplays.push(newDisplay);
+	              callback(newDisplay);
+	            });
+	            resolve(newDisplays);
+	          });
+	        });
+	      };
+	    }
+	  },
+	  disable: function () {},
+	  initEventListeners: function () {
+	    this.original.addEventListener = window.addEventListener;
+	    var self = this;
+	    window.addEventListener = function () {
+	      var eventsFilter = ['vrdisplaypresentchange', 'vrdisplayconnect'];
+	      if (eventsFilter.indexOf(arguments[0]) !== -1) {
+	        var oldCallback = arguments[1];
+	        arguments[1] = event => {
+	          self.hookVRDisplay(event.display);
+	          oldCallback(event);
+	        };
+	      }
+	      var result = self.original.addEventListener.apply(this, arguments);
+	    };
+	  },
+	  hookVRDisplay: function (display) {
+	    // Todo modify the VRDisplay if needed for framedata and so on
+	    return display;
+	      /*
+	    var oldGetFrameData = display.getFrameData.bind(display);
+	    display.getFrameData = function(frameData) {
+
+	      oldGetFrameData(frameData);
+	  /*
+	      var m = new THREE.Matrix4();
+
+	      var x = Math.sin(performance.now()/1000);
+	      var y = Math.sin(performance.now()/500)-1.2;
+
+	      m.makeTranslation(x,y,-0.5);
+	      var position = new THREE.Vector3();
+	      var scale = new THREE.Vector3();
+	      var quat = new THREE.Quaternion();
+	      m.decompose(position,quat,scale);
+
+	      frameData.pose.position[0] = -position.x;
+	      frameData.pose.position[1] = -position.y;
+	      frameData.pose.position[2] = -position.z;
+
+	      for (var i=0;i<3;i++) {
+	        frameData.pose.orientation[i] = 0;
+	      }
+
+	      for (var i=0;i<16;i++) {
+	        frameData.leftViewMatrix[i] = m.elements[i];
+	        frameData.rightViewMatrix[i] = m.elements[i];
+	      }
+	    /*
+	      for (var i=0;i<16;i++) {
+	        leftViewMatrix[i] = m.elements[i];
+	        frameData.rightViewMatrix[i] = m.elements[i];
+	      }
+	      // camera.matrixWorld.decompose( cameraL.position, cameraL.quaternion, cameraL.scale );
+	    }
+	    */
+	  }
+	};
+
 	function nearestNeighbor (src, dst) {
 	  let pos = 0;
 
@@ -2721,6 +2808,8 @@
 
 	var WebGLStats$1 = WebGLStats();
 
+	WebGLStats$1.log = true;
+
 	const parameters = queryString.parse(location.search);
 
 	function onReady(callback) {
@@ -2772,9 +2861,6 @@
 
 	  numFramesToRender: typeof parameters['num-frames'] === 'undefined' ? 1000 : parseInt(parameters['num-frames']),
 
-	  // Guard against recursive calls to referenceTestPreTick+referenceTestTick from multiple rAFs.
-	  referenceTestPreTickCalledCount: 0,
-
 	  // Canvas used by the test to render
 	  canvas: null,
 
@@ -2790,84 +2876,78 @@
 
 	  preTick: function() {
 	    WebGLStats$1.frameStart();
+	    this.stats.frameStart();
 
-	    if (++this.referenceTestPreTickCalledCount == 1) {
-	      this.stats.frameStart();
+	    if (!this.canvas) {
+	      // We assume the last webgl context being initialized is the one used to rendering
+	      // If that's different, the test should have a custom code to return that canvas
+	      if (CanvasHook.webglContexts.length > 0) {
+	        var context = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1];
+	        this.canvas = context.canvas;
 
-	      if (!this.canvas) {
-	        // We assume the last webgl context being initialized is the one used to rendering
-	        // If that's different, the test should have a custom code to return that canvas
-	        if (CanvasHook.webglContexts.length > 0) {
-	          var context = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1];
-	          this.canvas = context.canvas;
+	        // Prevent events not defined as event-listeners
+	        this.canvas.onmousedown = this.canvas.onmouseup = this.canvas.onmousemove = () => {};
 
-	          // Prevent events not defined as event-listeners
-	          this.canvas.onmousedown = this.canvas.onmouseup = this.canvas.onmousemove = () => {};
+	        // To prevent width & height 100%
+	        function addStyleString(str) {
+	          var node = document.createElement('style');
+	          node.innerHTML = str;
+	          document.body.appendChild(node);
+	        }
 
-	          // To prevent width & height 100%
-	          function addStyleString(str) {
-	            var node = document.createElement('style');
-	            node.innerHTML = str;
-	            document.body.appendChild(node);
-	          }
+	        addStyleString(`.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
 
-	          addStyleString(`.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
+	        // To fix A-Frame
+	        addStyleString(`a-scene .a-canvas.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
 
-	          // To fix A-Frame
-	          addStyleString(`a-scene .a-canvas.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
+	        this.canvas.classList.add('gfxtests-canvas');
 
-	          this.canvas.classList.add('gfxtests-canvas');
+	        this.onResize();
 
-	          this.onResize();
+	        WebGLStats$1.setupExtensions(context);
 
-	          WebGLStats$1.setupExtensions(context);
+	        if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
+	          this.inputRecorder = new InputRecorder(this.canvas);
+	          this.inputRecorder.enable();
+	        }
 
-	          if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
-	            this.inputRecorder = new InputRecorder(this.canvas);
-	            this.inputRecorder.enable();
-	          }
+	        if (typeof parameters['replay'] !== 'undefined' && GFXTESTS_CONFIG.input && !this.inputLoading) {
+	          console.log('replaying');
+	          this.inputLoading = true;
 
-	          if (typeof parameters['replay'] !== 'undefined' && GFXTESTS_CONFIG.input && !this.inputLoading) {
-	            console.log('replaying');
-	            this.inputLoading = true;
-
-	            // @fixme Prevent multiple fetch while waiting
-	            fetch('/tests/' + GFXTESTS_CONFIG.input).then(response => {
-	              return response.json();
-	            })
-	            .then(json => {
-	              this.inputReplayer = new InputReplayer(this.canvas, json, this.eventListener.registeredEventListeners);
-	              this.inputHelpers = new InputHelpers(this.canvas);
-	              this.ready = true;
-	            });
-	          } else {
+	          // @fixme Prevent multiple fetch while waiting
+	          fetch('/tests/' + GFXTESTS_CONFIG.input).then(response => {
+	            return response.json();
+	          })
+	          .then(json => {
+	            this.inputReplayer = new InputReplayer(this.canvas, json, this.eventListener.registeredEventListeners);
+	            this.inputHelpers = new InputHelpers(this.canvas);
 	            this.ready = true;
-	          }
-	        }
-	        //@fixme else for canvas 2d without webgl
-	      }
-
-	      if (this.referenceTestFrameNumber === 0) {
-	        if ('autoenter-xr' in parameters) {
-	          this.injectAutoEnterXR(this.canvas);
+	          });
+	        } else {
+	          this.ready = true;
 	        }
 	      }
+	      //@fixme else for canvas 2d without webgl
+	    }
 
-	      // referenceTestT0 = performance.realNow();
-	      if (this.pageLoadTime === null) this.pageLoadTime = performance.realNow() - pageInitTime;
-
-	      // We will assume that after the reftest tick, the application is running idle to wait for next event.
-	      if (this.previousEventHandlerExitedTime != -1) {
-	        this.accumulatedCpuIdleTime += performance.realNow() - this.previousEventHandlerExitedTime;
-	        this.previousEventHandlerExitedTime = -1;
+	    if (this.referenceTestFrameNumber === 0) {
+	      if ('autoenter-xr' in parameters) {
+	        this.injectAutoEnterXR(this.canvas);
 	      }
+	    }
+
+	    // referenceTestT0 = performance.realNow();
+	    if (this.pageLoadTime === null) this.pageLoadTime = performance.realNow() - pageInitTime;
+
+	    // We will assume that after the reftest tick, the application is running idle to wait for next event.
+	    if (this.previousEventHandlerExitedTime != -1) {
+	      this.accumulatedCpuIdleTime += performance.realNow() - this.previousEventHandlerExitedTime;
+	      this.previousEventHandlerExitedTime = -1;
 	    }
 	  },
 
 	  tick: function () {
-	    if (--this.referenceTestPreTickCalledCount > 0)
-	      return; // We are being called recursively, so ignore this call.
-
 	    if (!this.ready) {return;}
 
 	    if (this.inputRecorder) {
@@ -2918,9 +2998,11 @@
 	      this.firstFrameTime = performance.realNow();
 	      console.log('First frame submitted at (ms):', this.firstFrameTime - pageInitTime);
 	    }
-
-	    if (this.referenceTestFrameNumber === this.numFramesToRender) ;
-
+	/*
+	    if (this.referenceTestFrameNumber === this.numFramesToRender) {
+	      // TESTER.doImageReferenceCheck();
+	    }
+	*/
 	    // We will assume that after the reftest tick, the application is running idle to wait for next event.
 	    this.previousEventHandlerExitedTime = performance.realNow();
 
@@ -3142,7 +3224,7 @@
 	      var totalRenderTime = timeEnd - this.firstFrameTime;
 	      var cpuIdle = this.accumulatedCpuIdleTime * 100.0 / totalRenderTime;
 	      var fps = this.numFramesToRender * 1000.0 / totalRenderTime;
-	  
+
 	      var result = {
 	        test_id: GFXTESTS_CONFIG.id,
 	        stats: {
@@ -3419,42 +3501,83 @@
 	    window.alert = function(msg) { console.error('window.alert(' + msg + ')'); };
 	    window.confirm = function(msg) { console.error('window.confirm(' + msg + ')'); return true; };
 	  },
+	  RAFs: [], // Used to store instances of requestAnimationFrame's callbacks
+	  prevRAFReference: null, // Previous called requestAnimationFrame callback
+	  requestAnimationFrame: function (callback) {
+	    const hookedCallback = p => {
+	      //console.log(this.referenceTestFrameNumber);
+	      // Push the callback to the list of currently running RAFs
+	      if (this.RAFs.indexOf(callback) === -1) {
+	        this.RAFs.push(callback);
+	      }
 
-	  hookRAF: function () {
-	    if (!window.realRequestAnimationFrame) {
-	      window.realRequestAnimationFrame = window.requestAnimationFrame;
-	      window.requestAnimationFrame = callback => {
-	        const hookedCallback = p => {
-	          if (GFXTESTS_CONFIG.preMainLoop) {
-	            GFXTESTS_CONFIG.preMainLoop();
-	          }
-	          this.preTick();
+	      // If the current callback is the first on the list, we assume the frame just started
+	      if (this.RAFs[0] === callback) {
+	        //console.log('pre');
+	        if (GFXTESTS_CONFIG.preMainLoop) {
+	          GFXTESTS_CONFIG.preMainLoop();
+	        }
+	        this.preTick();
+	      }
 
-	          callback(performance.now());
-	          this.tick();
-	          this.stats.frameEnd();
+	      //console.log(callback.name);
+	      callback(performance.now());
 
-	          this.postTick();
+	      // If reaching the last RAF, execute all the post code
+	      if (this.RAFs[ this.RAFs.length - 1 ] === callback) {
+	        //@todo merge tick & postTick
+	        this.tick();
 
-	          if (this.referenceTestFrameNumber === this.numFramesToRender) {
-	            window.requestAnimationFrame = () => {};
-	            this.benchmarkFinished();
-	            return;
-	          }
+	        //console.log('post');
+	        // @todo Move all this logic to a function to clean up this one
+	        this.stats.frameEnd();
+	        //console.log(this.stats.stats.fps);
+	        this.postTick();
 
-	          if (GFXTESTS_CONFIG.postMainLoop) {
-	            GFXTESTS_CONFIG.postMainLoop();
-	          }
-	        };
-	        return window.realRequestAnimationFrame(hookedCallback);
-	      };
+	        if (this.referenceTestFrameNumber === this.numFramesToRender) {
+	          this.releaseRAF();
+	          this.benchmarkFinished();
+	          return;
+	        }
+
+	        if (GFXTESTS_CONFIG.postMainLoop) {
+	          GFXTESTS_CONFIG.postMainLoop();
+	        }
+	      }
+
+	      // If the previous RAF is the same as now, just reset the list
+	      // in case we have stopped calling some of the previous RAFs
+	      if (this.prevRAFReference === callback && (this.RAFs[0] !== callback || this.RAFs.length > 1)) {
+	        this.RAFs = [callback];
+	      }
+	      this.prevRAFReference = callback;
+	    };
+	    return this.currentRAFContext.realRequestAnimationFrame(hookedCallback);
+	  },
+	  currentRAFContext: window,
+	  releaseRAF: function () {
+	    this.currentRAFContext.requestAnimationFrame = () => {};
+	    if ('VRDisplay' in window &&
+	      this.currentRAFContext instanceof VRDisplay &&
+	      this.currentRAFContext.isPresenting) {
+	      this.currentRAFContext.exitPresent();
 	    }
 	  },
-
+	  hookRAF: function (context) {
+	    if (!context.realRequestAnimationFrame) {
+	      context.realRequestAnimationFrame = context.requestAnimationFrame;
+	    }
+	    context.requestAnimationFrame = this.requestAnimationFrame.bind(this);
+	    this.currentRAFContext = context;
+	  },
+	  unhookRAF: function (context) {
+	    if (context.realRequestAnimationFrame) {
+	      context.requestAnimationFrame = context.realRequestAnimationFrame;
+	    }
+	  },
 	  init: function () {
-
 	    if (!GFXTESTS_CONFIG.providesRafIntegration) {
-	      this.hookRAF();
+	      this.hookRAF(window);
 	    }
 
 	    this.addProgressBar();
@@ -3469,6 +3592,24 @@
 	    if (!GFXTESTS_CONFIG.dontOverrideWebAudio) {
 	      WebAudioHook.enable(typeof parameters['fake-webaudio'] !== 'undefined');
 	    }
+
+	    // @todo Use config
+	    WebVRHook.enable(vrdisplay => {
+	      this.unhookRAF(window);
+	      this.hookRAF(vrdisplay);
+	    });
+	    /*
+	    window.addEventListener('vrdisplaypresentchange', evt => {
+	      var display = evt.display;
+	      if (display.isPresenting) {
+	        this.unhookRAF(window);
+	        this.hookRAF(display);
+	      } else {
+	        this.unhookRAF(display);
+	        this.hookRAF(window);
+	      }
+	    });
+	*/
 
 	    Math.random = seedrandom$1(this.randomSeed);
 
@@ -3508,9 +3649,12 @@
 	          var device = displays[0];
 	          //if (device.isPresenting) device.exitPresent();
 	          if (device) {
-	            device.requestPresent( [ { source: canvas } ] );
+	            device.requestPresent( [ { source: canvas } ] )
+	              .then(x => { console.log('autoenter XR successful'); })
+	              .catch(x => { console.log('autoenter XR failed'); });
 	          }
-	        }), 2000;}); // @fix to make it work on FxR
+	        });
+	      }, 2000); // @fix to make it work on FxR
 	    }
 	  },
 
