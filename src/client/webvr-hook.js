@@ -5,7 +5,7 @@ var WebVRHook = {
   },
   currentVRDisplay: null,
   auxFrameData: ( typeof window !== 'undefined' && 'VRFrameData' in window ) ? new window.VRFrameData() : null,
-  enable: function () {
+  enable: function (callback) {
     if (navigator.getVRDisplays) {
       this.initEventListeners();
       var origetVRDisplays = this.original.getVRDisplays = navigator.getVRDisplays;
@@ -16,7 +16,9 @@ var WebVRHook = {
           result.then(displays => {
             var newDisplays = [];
             displays.forEach(display => {
-              newDisplays.push(self.hookVRDisplay(display));
+              var newDisplay = self.hookVRDisplay(display);
+              newDisplays.push(newDisplay);
+              callback(newDisplay);
             });
             resolve(newDisplays);
           })

@@ -11,6 +11,7 @@ import WebVRHook from './webvr-hook';
 import {resizeImageData} from './image-utils';
 import pixelmatch from 'pixelmatch';
 import WebGLStats from 'webgl-stats';
+WebGLStats.log = true;
 
 const parameters = queryString.parse(location.search);
 
@@ -63,9 +64,6 @@ window.TESTER = {
 
   numFramesToRender: typeof parameters['num-frames'] === 'undefined' ? 1000 : parseInt(parameters['num-frames']),
 
-  // Guard against recursive calls to referenceTestPreTick+referenceTestTick from multiple rAFs.
-  referenceTestPreTickCalledCount: 0,
-
   // Canvas used by the test to render
   canvas: null,
 
@@ -81,84 +79,78 @@ window.TESTER = {
 
   preTick: function() {
     WebGLStats.frameStart();
+    this.stats.frameStart();
 
-    if (++this.referenceTestPreTickCalledCount == 1) {
-      this.stats.frameStart();
+    if (!this.canvas) {
+      // We assume the last webgl context being initialized is the one used to rendering
+      // If that's different, the test should have a custom code to return that canvas
+      if (CanvasHook.webglContexts.length > 0) {
+        var context = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1];
+        this.canvas = context.canvas;
 
-      if (!this.canvas) {
-        // We assume the last webgl context being initialized is the one used to rendering
-        // If that's different, the test should have a custom code to return that canvas
-        if (CanvasHook.webglContexts.length > 0) {
-          var context = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1];
-          this.canvas = context.canvas;
+        // Prevent events not defined as event-listeners
+        this.canvas.onmousedown = this.canvas.onmouseup = this.canvas.onmousemove = () => {};
 
-          // Prevent events not defined as event-listeners
-          this.canvas.onmousedown = this.canvas.onmouseup = this.canvas.onmousemove = () => {};
+        // To prevent width & height 100%
+        function addStyleString(str) {
+          var node = document.createElement('style');
+          node.innerHTML = str;
+          document.body.appendChild(node);
+        }
 
-          // To prevent width & height 100%
-          function addStyleString(str) {
-            var node = document.createElement('style');
-            node.innerHTML = str;
-            document.body.appendChild(node);
-          }
+        addStyleString(`.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
 
-          addStyleString(`.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
+        // To fix A-Frame
+        addStyleString(`a-scene .a-canvas.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
 
-          // To fix A-Frame
-          addStyleString(`a-scene .a-canvas.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
+        this.canvas.classList.add('gfxtests-canvas');
 
-          this.canvas.classList.add('gfxtests-canvas');
+        this.onResize();
 
-          this.onResize();
+        WebGLStats.setupExtensions(context);
 
-          WebGLStats.setupExtensions(context);
+        if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
+          this.inputRecorder = new InputRecorder(this.canvas);
+          this.inputRecorder.enable();
+        }
 
-          if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
-            this.inputRecorder = new InputRecorder(this.canvas);
-            this.inputRecorder.enable();
-          }
+        if (typeof parameters['replay'] !== 'undefined' && GFXTESTS_CONFIG.input && !this.inputLoading) {
+          console.log('replaying');
+          this.inputLoading = true;
 
-          if (typeof parameters['replay'] !== 'undefined' && GFXTESTS_CONFIG.input && !this.inputLoading) {
-            console.log('replaying');
-            this.inputLoading = true;
-
-            // @fixme Prevent multiple fetch while waiting
-            fetch('/tests/' + GFXTESTS_CONFIG.input).then(response => {
-              return response.json();
-            })
-            .then(json => {
-              this.inputReplayer = new InputReplayer(this.canvas, json, this.eventListener.registeredEventListeners);
-              this.inputHelpers = new InputHelpers(this.canvas);
-              this.ready = true;
-            });
-          } else {
+          // @fixme Prevent multiple fetch while waiting
+          fetch('/tests/' + GFXTESTS_CONFIG.input).then(response => {
+            return response.json();
+          })
+          .then(json => {
+            this.inputReplayer = new InputReplayer(this.canvas, json, this.eventListener.registeredEventListeners);
+            this.inputHelpers = new InputHelpers(this.canvas);
             this.ready = true;
-          }
-        }
-        //@fixme else for canvas 2d without webgl
-      }
-
-      if (this.referenceTestFrameNumber === 0) {
-        if ('autoenter-xr' in parameters) {
-          this.injectAutoEnterXR(this.canvas);
+          });
+        } else {
+          this.ready = true;
         }
       }
+      //@fixme else for canvas 2d without webgl
+    }
 
-      // referenceTestT0 = performance.realNow();
-      if (this.pageLoadTime === null) this.pageLoadTime = performance.realNow() - pageInitTime;
-
-      // We will assume that after the reftest tick, the application is running idle to wait for next event.
-      if (this.previousEventHandlerExitedTime != -1) {
-        this.accumulatedCpuIdleTime += performance.realNow() - this.previousEventHandlerExitedTime;
-        this.previousEventHandlerExitedTime = -1;
+    if (this.referenceTestFrameNumber === 0) {
+      if ('autoenter-xr' in parameters) {
+        this.injectAutoEnterXR(this.canvas);
       }
+    }
+
+    // referenceTestT0 = performance.realNow();
+    if (this.pageLoadTime === null) this.pageLoadTime = performance.realNow() - pageInitTime;
+
+    // We will assume that after the reftest tick, the application is running idle to wait for next event.
+    if (this.previousEventHandlerExitedTime != -1) {
+      this.accumulatedCpuIdleTime += performance.realNow() - this.previousEventHandlerExitedTime;
+      this.previousEventHandlerExitedTime = -1;
     }
   },
 
   tick: function () {
-    if (--this.referenceTestPreTickCalledCount > 0)
-      return; // We are being called recursively, so ignore this call.
-
     if (!this.ready) {return;}
 
     if (this.inputRecorder) {
@@ -209,11 +201,11 @@ window.TESTER = {
       this.firstFrameTime = performance.realNow();
       console.log('First frame submitted at (ms):', this.firstFrameTime - pageInitTime);
     }
-
+/*
     if (this.referenceTestFrameNumber === this.numFramesToRender) {
       // TESTER.doImageReferenceCheck();
     }
-
+*/
     // We will assume that after the reftest tick, the application is running idle to wait for next event.
     this.previousEventHandlerExitedTime = performance.realNow();
 
@@ -435,7 +427,7 @@ window.TESTER = {
       var totalRenderTime = timeEnd - this.firstFrameTime;
       var cpuIdle = this.accumulatedCpuIdleTime * 100.0 / totalRenderTime;
       var fps = this.numFramesToRender * 1000.0 / totalRenderTime;
-  
+
       var result = {
         test_id: GFXTESTS_CONFIG.id,
         stats: {
@@ -713,28 +705,56 @@ window.TESTER = {
     window.alert = function(msg) { console.error('window.alert(' + msg + ')'); }
     window.confirm = function(msg) { console.error('window.confirm(' + msg + ')'); return true; }
   },
+  RAFs: [], // Used to store instances of requestAnimationFrame's callbacks
+  prevRAFReference: null, // Previous called requestAnimationFrame callback
   requestAnimationFrame: function (callback) {
     const hookedCallback = p => {
-      if (GFXTESTS_CONFIG.preMainLoop) {
-        GFXTESTS_CONFIG.preMainLoop();
+      //console.log(this.referenceTestFrameNumber);
+      // Push the callback to the list of currently running RAFs
+      if (this.RAFs.indexOf(callback) === -1) {
+        this.RAFs.push(callback);
       }
-      this.preTick();
 
+      // If the current callback is the first on the list, we assume the frame just started
+      if (this.RAFs[0] === callback) {
+        //console.log('pre');
+        if (GFXTESTS_CONFIG.preMainLoop) {
+          GFXTESTS_CONFIG.preMainLoop();
+        }
+        this.preTick();
+      }
+
+      //console.log(callback.name);
       callback(performance.now());
-      this.tick();
-      this.stats.frameEnd();
 
-      this.postTick();
+      // If reaching the last RAF, execute all the post code
+      if (this.RAFs[ this.RAFs.length - 1 ] === callback) {
+        //@todo merge tick & postTick
+        this.tick();
 
-      if (this.referenceTestFrameNumber === this.numFramesToRender) {
-        this.releaseRAF();
-        this.benchmarkFinished();
-        return;
+        //console.log('post');
+        // @todo Move all this logic to a function to clean up this one
+        this.stats.frameEnd();
+        //console.log(this.stats.stats.fps);
+        this.postTick();
+
+        if (this.referenceTestFrameNumber === this.numFramesToRender) {
+          this.releaseRAF();
+          this.benchmarkFinished();
+          return;
+        }
+
+        if (GFXTESTS_CONFIG.postMainLoop) {
+          GFXTESTS_CONFIG.postMainLoop();
+        }
       }
 
-      if (GFXTESTS_CONFIG.postMainLoop) {
-        GFXTESTS_CONFIG.postMainLoop();
+      // If the previous RAF is the same as now, just reset the list
+      // in case we have stopped calling some of the previous RAFs
+      if (this.prevRAFReference === callback && (this.RAFs[0] !== callback || this.RAFs.length > 1)) {
+        this.RAFs = [callback];
       }
+      this.prevRAFReference = callback;
     }
     return this.currentRAFContext.realRequestAnimationFrame(hookedCallback);
   },
@@ -750,9 +770,9 @@ window.TESTER = {
   hookRAF: function (context) {
     if (!context.realRequestAnimationFrame) {
       context.realRequestAnimationFrame = context.requestAnimationFrame;
-      context.requestAnimationFrame = this.requestAnimationFrame.bind(this);
-      this.currentRAFContext = context;
     }
+    context.requestAnimationFrame = this.requestAnimationFrame.bind(this);
+    this.currentRAFContext = context;
   },
   unhookRAF: function (context) {
     if (context.realRequestAnimationFrame) {
@@ -778,7 +798,11 @@ window.TESTER = {
     }
 
     // @todo Use config
-    WebVRHook.enable();
+    WebVRHook.enable(vrdisplay => {
+      this.unhookRAF(window);
+      this.hookRAF(vrdisplay);
+    });
+    /*
     window.addEventListener('vrdisplaypresentchange', evt => {
       var display = evt.display;
       if (display.isPresenting) {
@@ -789,6 +813,7 @@ window.TESTER = {
         this.hookRAF(window);
       }
     });
+*/
 
     Math.random = seedrandom(this.randomSeed);
 
