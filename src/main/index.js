@@ -293,7 +293,8 @@ program
       }
 
       if (outputFile) {
-        if (options.outputfile) {
+        // If file doesn't exist create it even if --appendfile option is used
+        if (options.outputfile || !fs.existsSync(outputFile)) {
           try {
             fs.unlinkSync(outputFile);
           } catch(err) {
