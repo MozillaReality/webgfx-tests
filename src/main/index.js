@@ -166,7 +166,7 @@ program
             console.log('-----------------------------------------------------\n');
           }
         })
-        .catch(error => console.error(error));  
+        .catch(error => console.error(error));
     }
 
     devices.forEach(device => {
@@ -450,7 +450,8 @@ program
             extraParams: options.launchparams
           };
 
-          console.log(generalOptions);
+          //@todo Print just if verbose
+          //console.log(generalOptions);
 
           var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions, {});
           await testsManager.runTests();

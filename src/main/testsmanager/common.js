@@ -54,7 +54,7 @@ function buildTestURL(baseURL, test, mode, options, progress) {
       url = addGET(url, keyConverted + (typeof options[key] === 'undefined' ? '' : '=' + options[key]));
     });
     //@todo Log if verbose
-    console.log('Generated URL: ', url);
+    //console.log('Generated URL: ', url);
   }
 
   url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url + (test.url.indexOf('?') !== -1 ? '' : '?') + url;
