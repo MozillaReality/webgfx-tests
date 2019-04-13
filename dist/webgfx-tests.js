@@ -3639,7 +3639,7 @@
 
 	    this.timeStart = performance.realNow();
 	  },
-	  autoenterXR: {
+	  autoEnterXR: {
 	    requested: false,
 	    successful: false
 	  },
