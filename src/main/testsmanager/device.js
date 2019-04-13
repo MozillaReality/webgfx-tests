@@ -138,7 +138,8 @@ TestsManager.prototype = {
     url = addGET(url, 'test-uuid=' + testUUID);
     const killOnStart = false; //true;
 
-    if (killOnStart) {
+    if (killOnStart || !browser.firstRun) {
+      browser.firstRun = true;
       this.device.killBrowser(browser).then(() => {
         this.device.launchBrowser(browser, url, this.generalOptions.extraParams); //.then(runNextQueuedTest);
       });
