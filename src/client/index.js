@@ -11,7 +11,6 @@ import WebVRHook from './webvr-hook';
 import {resizeImageData} from './image-utils';
 import pixelmatch from 'pixelmatch';
 import WebGLStats from 'webgl-stats';
-WebGLStats.log = true;
 
 const parameters = queryString.parse(location.search);
 
@@ -234,10 +233,10 @@ window.TESTER = {
     return new Promise ((resolve, reject) => {
       var img = new Image();
       var referenceImageName = parameters['reference-image'] || GFXTESTS_CONFIG.id;
-        
+
       img.src = '/' + GFXTESTS_REFERENCEIMAGE_BASEURL + '/' + referenceImageName + '.png';
       img.onabort = img.onerror = reject;
-      
+
       // reference.png might come from a different domain than the canvas, so don't let it taint ctx.getImageData().
       // See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
       img.crossOrigin = 'Anonymous'; 
@@ -433,6 +432,7 @@ window.TESTER = {
           webgl: WebGLStats.getSummary()
         },
         autoEnterXR: this.autoEnterXR,
+        revision: GFXTESTS_CONFIG.revision || 0,
         webaudio: WebAudioHook.stats,
         numFrames: this.numFramesToRender,
         totalTime: totalTime,

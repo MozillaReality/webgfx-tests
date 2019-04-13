@@ -2808,8 +2808,6 @@
 
 	var WebGLStats$1 = WebGLStats();
 
-	WebGLStats$1.log = true;
-
 	const parameters = queryString.parse(location.search);
 
 	function onReady(callback) {
@@ -3031,10 +3029,10 @@
 	    return new Promise ((resolve, reject) => {
 	      var img = new Image();
 	      var referenceImageName = parameters['reference-image'] || GFXTESTS_CONFIG.id;
-	        
+
 	      img.src = '/' + GFXTESTS_REFERENCEIMAGE_BASEURL + '/' + referenceImageName + '.png';
 	      img.onabort = img.onerror = reject;
-	      
+
 	      // reference.png might come from a different domain than the canvas, so don't let it taint ctx.getImageData().
 	      // See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
 	      img.crossOrigin = 'Anonymous'; 
@@ -3230,6 +3228,7 @@
 	          webgl: WebGLStats$1.getSummary()
 	        },
 	        autoEnterXR: this.autoEnterXR,
+	        revision: GFXTESTS_CONFIG.revision || 0,
 	        webaudio: WebAudioHook.stats,
 	        numFrames: this.numFramesToRender,
 	        totalTime: totalTime,
