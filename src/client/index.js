@@ -71,12 +71,12 @@ window.TESTER = {
   // Wallclock time for when we started CPU execution of the current frame.
   // var referenceTestT0 = -1;
 
-  postTick: function () {
-    WebGLStats.frameEnd();
-    //console.log('>>', JSON.stringify(WebGLStats.getCurrentData()));
-  },
-
   preTick: function() {
+
+    if (GFXTESTS_CONFIG.preMainLoop) {
+      GFXTESTS_CONFIG.preMainLoop();
+    }
+
     WebGLStats.frameStart();
     this.stats.frameStart();
 
@@ -147,8 +147,9 @@ window.TESTER = {
     }
   },
 
-  tick: function () {
+  postTick: function () {
     if (!this.ready) {return;}
+    this.stats.frameEnd();
 
     if (this.inputRecorder) {
       this.inputRecorder.frameNumber = this.referenceTestFrameNumber;
@@ -205,7 +206,7 @@ window.TESTER = {
 */
     // We will assume that after the reftest tick, the application is running idle to wait for next event.
     this.previousEventHandlerExitedTime = performance.realNow();
-
+    WebGLStats.frameEnd();
   },
 
   createDownloadImageLink: function(data, filename, description) {
@@ -715,9 +716,6 @@ window.TESTER = {
 
       // If the current callback is the first on the list, we assume the frame just started
       if (this.RAFs[0] === callback) {
-        if (GFXTESTS_CONFIG.preMainLoop) {
-          GFXTESTS_CONFIG.preMainLoop();
-        }
         this.preTick();
       }
 
@@ -725,11 +723,8 @@ window.TESTER = {
 
       // If reaching the last RAF, execute all the post code
       if (this.RAFs[ this.RAFs.length - 1 ] === callback) {
-        //@todo merge tick & postTick
-        this.tick();
 
         // @todo Move all this logic to a function to clean up this one
-        this.stats.frameEnd();
         this.postTick();
 
         if (this.referenceTestFrameNumber === this.numFramesToRender) {

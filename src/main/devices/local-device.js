@@ -27,6 +27,11 @@ module.exports = {
   },
   killBrowser: function(browser) {
     return new Promise(resolve => {
+      if (typeof this.lastOpenProcess === 'undefined') {
+        resolve();
+        return;
+      }
+
       const pid = this.lastOpenProcess.pid;
       ps.lookup({ pid: pid }, function(err, resultList ) {
         if (err) {
@@ -83,7 +88,7 @@ module.exports = {
       this.lastOpenProcess = spawn(browser.launchCmd, options);
       resolve(this.lastOpenProcess);
       this.lastOpenProcess.on('close', () => {
-        console.log('Unexpected closed!');
+        //console.log('Unexpected closed!');
         // @todo
       });
       
