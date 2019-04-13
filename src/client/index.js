@@ -708,7 +708,6 @@ window.TESTER = {
   prevRAFReference: null, // Previous called requestAnimationFrame callback
   requestAnimationFrame: function (callback) {
     const hookedCallback = p => {
-      //console.log(this.referenceTestFrameNumber);
       // Push the callback to the list of currently running RAFs
       if (this.RAFs.indexOf(callback) === -1) {
         this.RAFs.push(callback);
@@ -716,14 +715,12 @@ window.TESTER = {
 
       // If the current callback is the first on the list, we assume the frame just started
       if (this.RAFs[0] === callback) {
-        //console.log('pre');
         if (GFXTESTS_CONFIG.preMainLoop) {
           GFXTESTS_CONFIG.preMainLoop();
         }
         this.preTick();
       }
 
-      //console.log(callback.name);
       callback(performance.now());
 
       // If reaching the last RAF, execute all the post code
@@ -731,10 +728,8 @@ window.TESTER = {
         //@todo merge tick & postTick
         this.tick();
 
-        //console.log('post');
         // @todo Move all this logic to a function to clean up this one
         this.stats.frameEnd();
-        //console.log(this.stats.stats.fps);
         this.postTick();
 
         if (this.referenceTestFrameNumber === this.numFramesToRender) {
