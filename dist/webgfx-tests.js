@@ -2912,10 +2912,8 @@
 	        }
 
 	        if (typeof parameters['replay'] !== 'undefined' && GFXTESTS_CONFIG.input && !this.inputLoading) {
-	          console.log('replaying');
 	          this.inputLoading = true;
 
-	          // @fixme Prevent multiple fetch while waiting
 	          fetch('/tests/' + GFXTESTS_CONFIG.input).then(response => {
 	            return response.json();
 	          })
