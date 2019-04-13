@@ -14,8 +14,13 @@ module.exports = function flatten(results) {
       values[id] = test.stats.perf[id].avg;
     }
     for (let id in test.stats.webgl) {
-      values[id] = test.stats.webgl[id].avg;
+      values['webgl_' + id] = test.stats.webgl[id].avg;
     }
+
+    for (let id in test.webaudio) {
+      values['webaudio_' + id] = test.webaudio[id];
+    }
+
     return {
       values: values,
       info: {
