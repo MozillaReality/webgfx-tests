@@ -160,7 +160,8 @@ function getComparisonTable(testSummary, comparison) {
      var row = [chalk.cyan(name)];
     
      var res = comparison[testId][name];
-     
+
+     var inverseOrder = ['avgFps', 'fps'];
      for (hash in testSummary.tests[testId]) {
        var value = testSummary.tests[testId][hash][name];
        value = typeof value !== 'undefined' ? value.toFixed(2) : '';
@@ -168,22 +169,22 @@ function getComparisonTable(testSummary, comparison) {
         value = chalk.grey(value);
        } else {
         if (hash === res.minItem) {
-          value = chalk.green(value);
+          value = inverseOrder.indexOf(name) === -1 ? chalk.green(value) : chalk.red(value);
         }
         if (hash === res.maxItem) {
-         value = chalk.red(value);
-        } 
+          value = inverseOrder.indexOf(name) === -1 ? chalk.red(value) : chalk.green(value);
+        }
        }
       row.push(value);
      }
-    
+
       row.push(
         res.dif === 0 ? '=' : res.dif.toFixed(2)
       );
       row.push(
         res.dif === 0 ? '=' : res.difPerc
       );
-    
+
       dataTable.push(row);
     }
   }
