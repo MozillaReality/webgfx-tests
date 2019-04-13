@@ -3641,7 +3641,7 @@
 	  },
 	  autoenterXR: {
 	    requested: false,
-	    succesful: false
+	    successful: false
 	  },
 	  injectAutoEnterXR: function(canvas) {
 	    this.autoEnterXR.requested = true;
@@ -3652,7 +3652,7 @@
 	          //if (device.isPresenting) device.exitPresent();
 	          if (device) {
 	            device.requestPresent( [ { source: canvas } ] )
-	              .then(x => { console.log('autoenter XR successful'); this.autoEnterXR.succesful = true; })
+	              .then(x => { console.log('autoenter XR successful'); this.autoEnterXR.successful = true; })
 	              .catch(x => { console.log('autoenter XR failed'); });
 	          }
 	        });

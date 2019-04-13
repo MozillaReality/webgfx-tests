@@ -227,7 +227,7 @@ program
 // RUN TESTS
 //-----------------------------------------------------------------------------
 program
-  .command('run [testIDs]')
+  .command('run [testIDs...]')
   .description('run tests')
   .option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
   .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
@@ -241,7 +241,7 @@ program
   .option("-r, --overrideparams <additional parameters>", "Override parameters on individual execution (eg: \"fake-webgl&width=800&height=600\"")
   .option("-o, --outputfile <file>", "Store test results on a local file")
   .option("-v, --verbose", "Show all the info available")
-  .action((testIDs, options) => {
+  .action((testsIDs, options) => {
     const configfile = options.configfile || 'webgfx-tests.config.json';
 
     const config = TestUtils.getConfig(configfile);
@@ -249,11 +249,13 @@ program
       console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
       return;
     }
-
     var testsToRun;
-    if (testIDs && testIDs !== 'all') {
-      var testsIDs = testIDs.split(',');
-      testsToRun = config.tests.filter(test => testsIDs.indexOf(test.id) !== -1);
+    if (testsIDs && testsIDs !== 'all') {
+      testsToRun = config.tests.filter(test => {
+        return testsIDs.find(selector => {
+          return new RegExp("^" + selector.split("*").join(".*") + "$").test(test.id);
+        });
+      });
     } else {
       testsToRun = config.tests;
     }
