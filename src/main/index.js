@@ -240,6 +240,7 @@ program
   .option("-n, --numtimes <number>", "Number of times to run each test")
   .option("-r, --overrideparams <additional parameters>", "Override parameters on individual execution (eg: \"fake-webgl&width=800&height=600\"")
   .option("-o, --outputfile <file>", "Store test results on a local file")
+  .option("-e, --appendfile <file>", "Store test results on a local file appending")
   .option("-v, --verbose", "Show all the info available")
   .action((testsIDs, options) => {
     const configfile = options.configfile || 'webgfx-tests.config.json';
@@ -261,13 +262,14 @@ program
     }
 
     var numOutputTests = 0;
+    var outputFile = options.outputfile || options.appendfile;
 
     function onTestsFinish() {
       if (--numRunningDevices === 0) {
         console.log(`\n${chalk.yellow('TESTS FINISHED')}!`);
-        if (options.outputfile) {
-          console.log(`Writing output file: ${chalk.yellow(options.outputfile)}`);
-          fs.appendFile(options.outputfile, ']', (err) => {
+        if (outputFile) {
+          console.log(`Writing output file: ${chalk.yellow(outputFile)}`);
+          fs.appendFile(outputFile, ']', (err) => {
             if (err) throw err;
             process.exit();
           });
@@ -290,20 +292,32 @@ program
         return;
       }
 
-      if (options.outputfile) {
-        try {
-          fs.unlinkSync(options.outputfile);
-        } catch(err) {
-          //console.error(err)
+      if (outputFile) {
+        // If file doesn't exist create it even if --appendfile option is used
+        if (options.outputfile || !fs.existsSync(outputFile)) {
+          try {
+            fs.unlinkSync(outputFile);
+          } catch(err) {
+            //console.error(err)
+          }
+          fs.writeFile(outputFile, '[', err => {
+            if (err) throw err;
+          });
+        } else {
+          // If appending we should remove the lat ']' and replace it with a ','
+          var data = fs.readFileSync(outputFile);
+          var json = JSON.parse(data);
+          var origin = JSON.stringify(json, null, 2);
+          origin = origin.substr(0, origin.length - 1) + ',';
+          fs.writeFile(outputFile, origin, err => {
+            if (err) throw err;
+          });
         }
-        fs.writeFile(options.outputfile, '[', err => {
-          if (err) throw err;
-        });
       }
 
       initHTTPServer(options.port, config, options.verbose);
       initWebSocketServer(options.wsport, function (data) {
-        if (options.outputfile) {
+        if (outputFile) {
           var testRunData = TestUtils.TestsData.getTestData(data.testUUID);
           data.browser = {
             name: testRunData.browser.name,
@@ -316,7 +330,7 @@ program
             deviceProduct: testRunData.device.deviceProduct,
             serial: testRunData.device.serial
           };
-          fs.appendFile(options.outputfile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {
+          fs.appendFile(outputFile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {
             if (err) throw err;
             numOutputTests++;
           });
