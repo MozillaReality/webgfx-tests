@@ -3229,6 +3229,7 @@
 	          perf: this.stats.getStatsSummary(),
 	          webgl: WebGLStats$1.getSummary()
 	        },
+	        autoEnterXR: this.autoEnterXR,
 	        webaudio: WebAudioHook.stats,
 	        numFrames: this.numFramesToRender,
 	        totalTime: totalTime,
@@ -3639,8 +3640,12 @@
 
 	    this.timeStart = performance.realNow();
 	  },
-
+	  autoenterXR: {
+	    requested: false,
+	    succesful: false
+	  },
 	  injectAutoEnterXR: function(canvas) {
+	    this.autoEnterXR.requested = true;
 	    if (navigator.getVRDisplays) {
 	      setTimeout(() => {
 	        navigator.getVRDisplays().then(displays => {
@@ -3648,7 +3653,7 @@
 	          //if (device.isPresenting) device.exitPresent();
 	          if (device) {
 	            device.requestPresent( [ { source: canvas } ] )
-	              .then(x => { console.log('autoenter XR successful'); })
+	              .then(x => { console.log('autoenter XR successful'); this.autoEnterXR.succesful = true; })
 	              .catch(x => { console.log('autoenter XR failed'); });
 	          }
 	        });
