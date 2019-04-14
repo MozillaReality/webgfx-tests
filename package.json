@@ -1,6 +1,6 @@
 {
   "name": "webgfx-tests",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Graphics Tests on the Web",
   "bin": {
     "webgfx-tests": "src/main/index.js"
