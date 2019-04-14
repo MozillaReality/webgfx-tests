@@ -21,7 +21,7 @@ function ADB() {
         });
       },
       killBrowser: function(browser) {
-        return new Promise(resolve => {    
+        return new Promise(resolve => {
           this.forceStop(browser.package, resolve);
         });  
       },

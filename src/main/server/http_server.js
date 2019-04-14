@@ -75,6 +75,7 @@ function initServer(port, config, verbose) {
           var html = fs.readFileSync(pathf, 'utf8');
           var $ = cheerio.load(html);
           var head = $('head');
+          var referenceImageTest = true;
 
           if (test.skipReferenceImageTest !== true) {
             const referenceImageName = test.referenceImage || test.id;
@@ -83,13 +84,19 @@ function initServer(port, config, verbose) {
 
             if (!fs.existsSync(filepath)) {
               console.log(`ERROR: Reference image for test <${test.id}> "${referenceImageName}" not found! Disabling reference test. Please consider adding 'skipReferenceImageTest: true' to this test or generate a reference image.`);
+              referenceImageTest = false;
             }
+          } else {
+            referenceImageTest = false;
           }
 
           test.serverIP = internalIp.v4.sync() || 'localhost';
-          head.append(`<script>var GFXTESTS_CONFIG = ${JSON.stringify(test, null, 2)};</script>`)
-              .append(`<script>var GFXTESTS_REFERENCEIMAGE_BASEURL = 'tests/${config.referenceImagesFolder}';</script>`)
-              .append('<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>')
+          head.append(`<script>var GFXTESTS_CONFIG = ${JSON.stringify(test, null, 2)};</script>`);
+          if (referenceImageTest) {
+            head.append(`<script>var GFXTESTS_REFERENCEIMAGE_BASEURL = 'tests/${config.referenceImagesFolder}';</script>`);
+          }
+          // @todo Move socket.io reference to local
+          head.append('<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>')
               .append('<script src="/webgfx-tests.js"></script>')
           res.send($.html());
         } else {
