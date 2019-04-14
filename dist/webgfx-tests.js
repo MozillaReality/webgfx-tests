@@ -2856,7 +2856,7 @@
 	  numConsecutiveSmoothFrames: 0,
 
 	  randomSeed: 1,
-
+	  mandatoryAutoEnterXR: typeof parameters['mandatory-autoenter-xr'] !== 'undefined',
 	  numFramesToRender: typeof parameters['num-frames'] === 'undefined' ? 1000 : parseInt(parameters['num-frames']),
 
 	  // Canvas used by the test to render
@@ -2995,11 +2995,7 @@
 	      this.firstFrameTime = performance.realNow();
 	      console.log('First frame submitted at (ms):', this.firstFrameTime - pageInitTime);
 	    }
-	/*
-	    if (this.referenceTestFrameNumber === this.numFramesToRender) {
-	      // TESTER.doImageReferenceCheck();
-	    }
-	*/
+
 	    // We will assume that after the reftest tick, the application is running idle to wait for next event.
 	    this.previousEventHandlerExitedTime = performance.realNow();
 	    WebGLStats$1.frameEnd();
@@ -3036,22 +3032,22 @@
 
 	      // reference.png might come from a different domain than the canvas, so don't let it taint ctx.getImageData().
 	      // See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
-	      img.crossOrigin = 'Anonymous'; 
+	      img.crossOrigin = 'Anonymous';
 	      img.onload = () => {
 	        var canvas = document.createElement('canvas');
 	        canvas.width = img.width;
 	        canvas.height = img.height;
 	        var ctx = canvas.getContext('2d');
-	  
+
 	        ctx.drawImage(img, 0, 0);
 	        this.referenceImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	  
 	        var data = canvas.toDataURL('image/png');
 	        this.createDownloadImageLink(data, 'reference-image', 'Reference image');
-	  
+
 	        resolve(this.referenceImageData);
 	      };
-	      this.referenceImage = img;  
+	      this.referenceImage = img;
 	    });
 	  },
 
@@ -3213,6 +3209,18 @@
 	      document.getElementById('test_finished').appendChild(link);
 	  },
 
+	  generateFailedBenchmarkResult: function (failReason) {
+	    return {
+	      test_id: GFXTESTS_CONFIG.id,
+	      autoEnterXR: this.autoEnterXR,
+	      revision: GFXTESTS_CONFIG.revision || 0,
+	      numFrames: this.numFramesToRender,
+	      pageLoadTime: this.pageLoadTime,
+	      result: 'fail',
+	      failReason: failReason
+	    };
+	  },
+
 	  generateBenchmarkResult: function () {
 	    var timeEnd = performance.realNow();
 	    var totalTime = timeEnd - pageInitTime; // Total time, including everything.
@@ -3236,7 +3244,6 @@
 	        timeToFirstFrame: this.firstFrameTime - pageInitTime,
 	        avgFps: fps,
 	        numStutterEvents: this.numStutterEvents,
-	        totalTime: totalTime,
 	        totalRenderTime: totalRenderTime,
 	        cpuTime: this.stats.totalTimeInMainLoop,
 	        cpuIdleTime: this.stats.totalTimeOutsideMainLoop,
@@ -3262,7 +3269,29 @@
 	  },
 
 	  benchmarkFinished: function () {
+	    if (this.inputRecorder) {
+	      this.addInputDownloadButton();
+	    }
 
+	    try {
+	      var data = this.canvas.toDataURL("image/png");
+	      var description = this.inputRecorder ? 'Download reference image' : 'Actual render';
+	      this.createDownloadImageLink(data, GFXTESTS_CONFIG.id, description);
+	    } catch(e) {
+	      console.error("Can't generate image");
+	    }
+
+	    if (this.inputRecorder) {
+	      document.getElementById('test_finished').style.visibility = 'visible';
+	      document.getElementById('reference-images-error').style.display = 'block';
+	    } else {
+	      this.generateBenchmarkResult().then(result => {
+	        this.processBenchmarkResult(result);
+	      });
+	    }
+	  },
+
+	  processBenchmarkResult: function(result) {
 	    var style = document.createElement('style');
 	    style.innerHTML = `
       #test_finished {
@@ -3282,7 +3311,7 @@
         z-index: 99999;
         flex-direction: column;
       }
-      
+
       #test_finished.pass {
         background-color: #9f9;
       }
@@ -3299,16 +3328,6 @@
         width: 300px;
         border: 1px solid #007095;
       }
-
-      /*
-      #test_images img:hover {
-        top: 0px; 
-        left: 0px;
-        height: 80%;
-        width: 80%;
-        position: fixed;
-      }
-      */
 
       #test_finished .button {
         background-color: #007095;
@@ -3338,7 +3357,7 @@
 	    div.innerHTML = `<h1>Test finished!</h1>`;
 	    div.id = 'test_finished';
 	    div.style.visibility = 'hidden';
-	    
+
 	    var divReferenceError = document.createElement('div');
 	    divReferenceError.id = 'reference-images-error';
 	    divReferenceError.style.cssText = 'text-align:center; color: #f00;';
@@ -3352,44 +3371,25 @@
 
 	    document.body.appendChild(div);
 
-	    if (this.inputRecorder) {
-	      this.addInputDownloadButton();
+	    if (this.socket) {
+	      if (parameters['test-uuid']) {
+	        result.testUUID = parameters['test-uuid'];
+	      }
+	      this.socket.emit('test_finish', result);
+	      this.socket.disconnect();
 	    }
 
-	    try {
-	      var data = this.canvas.toDataURL("image/png");
-	      var description = this.inputRecorder ? 'Download reference image' : 'Actual render';
-	      this.createDownloadImageLink(data, GFXTESTS_CONFIG.id, description);
-	    } catch(e) {
-	      console.error("Can't generate image");
+	    var benchmarkDiv = document.getElementById('test_finished');
+	    benchmarkDiv.className = result.result;
+	    if (result.result === 'pass') {
+	      benchmarkDiv.querySelector('h1').innerText = 'Test passed!';
 	    }
 
-	    if (this.inputRecorder) {
-	      document.getElementById('test_finished').style.visibility = 'visible';
-	      document.getElementById('reference-images-error').style.display = 'block';
-	    } else {
-	      this.generateBenchmarkResult().then(result => {
-	        if (this.socket) {
-	          if (parameters['test-uuid']) {
-	            result.testUUID = parameters['test-uuid'];
-	          }
-	          this.socket.emit('test_finish', result);
-	          this.socket.disconnect();
-	        }
-	    
-	        var benchmarkDiv = document.getElementById('test_finished');
-	        benchmarkDiv.className = result.result;
-	        if (result.result === 'pass') {
-	          benchmarkDiv.querySelector('h1').innerText = 'Test passed!';
-	        }
+	    benchmarkDiv.style.visibility = 'visible';
 
-	        benchmarkDiv.style.visibility = 'visible';
-	      
-	        console.log('Finished!', result);
-	        if (typeof window !== 'undefined' && window.close && typeof parameters['no-close-on-fail'] === 'undefined') {
-	          window.close();
-	        }
-	      });  
+	    console.log('Finished!', result);
+	    if (typeof window !== 'undefined' && window.close && typeof parameters['no-close-on-fail'] === 'undefined') {
+	      window.close();
 	    }
 	  },
 
@@ -3561,6 +3561,8 @@
 	    }
 	  },
 	  init: function () {
+	    this.initServer();
+
 	    if (!GFXTESTS_CONFIG.providesRafIntegration) {
 	      this.hookRAF(window);
 	    }
@@ -3604,8 +3606,6 @@
 	    this.onResize();
 	    window.addEventListener('resize', this.onResize.bind(this));
 
-	    this.initServer();
-
 	    this.stats = new PerfStats$1();
 
 	    this.logs = {
@@ -3631,6 +3631,9 @@
 	    successful: false
 	  },
 	  injectAutoEnterXR: function(canvas) {
+	    console.log(this.mandatoryAutoEnterXR);
+	    this.mandatoryAutoEnterXR=true;
+
 	    this.autoEnterXR.requested = true;
 	    if (navigator.getVRDisplays) {
 	      setTimeout(() => {
@@ -3640,10 +3643,21 @@
 	          if (device) {
 	            device.requestPresent( [ { source: canvas } ] )
 	              .then(x => { console.log('autoenter XR successful'); this.autoEnterXR.successful = true; })
-	              .catch(x => { console.log('autoenter XR failed'); });
+	              .catch(x => {
+	                console.log('autoenter XR failed');
+	                if (this.mandatoryAutoEnterXR) {
+	                  setTimeout(x => {
+	                    this.processBenchmarkResult(this.generateFailedBenchmarkResult('autoenter-xr failed'));
+	                  },1000);
+	                }
+	              });
 	          }
 	        });
 	      }, 2000); // @fix to make it work on FxR
+	    } else if (this.mandatoryAutoEnterXR) {
+	      setTimeout(x => {
+	        this.processBenchmarkResult(this.generateFailedBenchmarkResult('autoenter-xr failed'));
+	      },1000);
 	    }
 	  },
 

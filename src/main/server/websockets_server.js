@@ -9,7 +9,7 @@ function initWebSocketServer(port, testFinishedCallback, verbose) {
   function log(msg) {
     //if (verbose) 
     { 
-      console.log(msg); 
+      console.log(msg);
     }
   }
 
@@ -47,7 +47,10 @@ function initWebSocketServer(port, testFinishedCallback, verbose) {
 
     socket.on('test_finish', function (data) {
       var res = data.result === 'pass' ? chalk.green('pass') : chalk.red(`failed (${data.failReason})`);
-      log(`  - Completed in ${ data.totalTime.toFixed(2) }ms. Result: ${res}`);
+      if (data.totalTime) {
+        log(`  - Completed in ${ data.totalTime.toFixed(2) }ms. Result: ${res}`);
+      }
+
       if (verbose) {
         PrettyPrint.json(data);
       }
