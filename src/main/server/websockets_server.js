@@ -63,7 +63,7 @@ function initWebSocketServer(port, testFinishedCallback, verbose) {
   });
 
   server.listen(port, function () {
-    log('- WebSocket results server listening on *:' + port);
+    log('* WebSocket results server listening on *:' + port);
   });
 }
 

@@ -3024,6 +3024,11 @@
 	  // XHRs in the expected render output image, always 'reference.png' in the root directory of the test.
 	  loadReferenceImage: function() {
 	    return new Promise ((resolve, reject) => {
+	      if (typeof GFXTESTS_REFERENCEIMAGE_BASEURL === 'undefined') {
+	        reject();
+	        return;
+	      }
+
 	      var img = new Image();
 	      var referenceImageName = parameters['reference-image'] || GFXTESTS_CONFIG.id;
 
@@ -3177,15 +3182,15 @@
 	    this.socket.on('next_benchmark', (data) => {
 	      console.log('next_benchmark', data);
 	      window.location.replace(data.url);
-	    });    
+	    });
 	  },
-	  
+
 	  addInputDownloadButton: function () {
 	      // Dump input
 	      function saveString (text, filename, mimeType) {
 	        saveBlob(new Blob([ text ], { type: mimeType }), filename);
 	      }
-	      
+
 	      function saveBlob (blob, filename) {
 	        var link = document.createElement('a');
 	        link.style.display = 'none';
@@ -3273,12 +3278,14 @@
 	      this.addInputDownloadButton();
 	    }
 
+	    this.injectBenchmarkFinishedHTML();
+
 	    try {
 	      var data = this.canvas.toDataURL("image/png");
 	      var description = this.inputRecorder ? 'Download reference image' : 'Actual render';
 	      this.createDownloadImageLink(data, GFXTESTS_CONFIG.id, description);
 	    } catch(e) {
-	      console.error("Can't generate image");
+	      console.error("Can't generate image", e);
 	    }
 
 	    if (this.inputRecorder) {
@@ -3290,8 +3297,7 @@
 	      });
 	    }
 	  },
-
-	  processBenchmarkResult: function(result) {
+	  injectBenchmarkFinishedHTML: function() {
 	    var style = document.createElement('style');
 	    style.innerHTML = `
       #test_finished {
@@ -3370,7 +3376,8 @@
 	    divReferenceError.appendChild(divImg);
 
 	    document.body.appendChild(div);
-
+	  },
+	  processBenchmarkResult: function(result) {
 	    if (this.socket) {
 	      if (parameters['test-uuid']) {
 	        result.testUUID = parameters['test-uuid'];
@@ -3631,9 +3638,6 @@
 	    successful: false
 	  },
 	  injectAutoEnterXR: function(canvas) {
-	    console.log(this.mandatoryAutoEnterXR);
-	    this.mandatoryAutoEnterXR=true;
-
 	    this.autoEnterXR.requested = true;
 	    if (navigator.getVRDisplays) {
 	      setTimeout(() => {
