@@ -35,7 +35,7 @@ PerfStats.prototype = {
       //n: this.n,
       min: this.min,
       max: this.max,
-      sum: this.sum,
+      // sum: this.sum,
       mean: this.mean,
       variance: this.variance,
       standard_deviation: this.standard_deviation
