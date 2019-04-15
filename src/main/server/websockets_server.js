@@ -2,13 +2,14 @@ var http = require('http');
 const PrettyPrint = require('../prettyprint');
 const chalk = require('chalk');
 
-function initWebSocketServer(port, testFinishedCallback, verbose) {
+//function initWebSocketServer(port, testFinishedCallback, verbose) {
+function initWebSocketServer(port, callbacks, verbose) {
   verbose = verbose || false;
   port = port || 8888;
 
   function log(msg) {
-    //if (verbose) 
-    { 
+    //if (verbose)
+    {
       console.log(msg);
     }
   }
@@ -36,12 +37,15 @@ function initWebSocketServer(port, testFinishedCallback, verbose) {
     socket.on('disconnect', () => {
 
     });
-    
+
     socket.on('log', (data) => {
       log(`[LOGGER]`, data);
     });
 
     socket.on('test_started', (data) => {
+      if (callbacks && callbacks.testFinished) {
+        callbacks.testStarted(data);
+      }
       log(`  - Test started: ${chalk.yellow(data.id)}`);
     });
 
@@ -51,12 +55,8 @@ function initWebSocketServer(port, testFinishedCallback, verbose) {
         log(`  - Completed in ${ data.totalTime.toFixed(2) }ms. Result: ${res}`);
       }
 
-      if (verbose) {
-        PrettyPrint.json(data);
-      }
-      io.emit('test_finished', data);
-      if (testFinishedCallback) {
-        testFinishedCallback(data);
+      if (callbacks && callbacks.testFinished) {
+        callbacks.testFinished(data, io);
       }
     });
 
@@ -65,6 +65,11 @@ function initWebSocketServer(port, testFinishedCallback, verbose) {
   server.listen(port, function () {
     log('* WebSocket results server listening on *:' + port);
   });
+
+  return {
+    server: server,
+    io: io
+  }
 }
 
 module.exports = initWebSocketServer;
