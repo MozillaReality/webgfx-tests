@@ -761,6 +761,7 @@ window.TESTER = {
     }
   },
   hookRAF: function (context) {
+    console.log('Hooking', context);
     if (!context.realRequestAnimationFrame) {
       context.realRequestAnimationFrame = context.requestAnimationFrame;
     }
@@ -768,6 +769,7 @@ window.TESTER = {
     this.currentRAFContext = context;
   },
   unhookRAF: function (context) {
+    console.log('unhooking', context, context.realRequestAnimationFrame);
     if (context.realRequestAnimationFrame) {
       context.requestAnimationFrame = context.realRequestAnimationFrame;
     }
@@ -794,10 +796,9 @@ window.TESTER = {
 
     // @todo Use config
     WebVRHook.enable(vrdisplay => {
-      this.unhookRAF(window);
       this.hookRAF(vrdisplay);
     });
-    /*
+/*
     window.addEventListener('vrdisplaypresentchange', evt => {
       var display = evt.display;
       if (display.isPresenting) {
@@ -809,7 +810,6 @@ window.TESTER = {
       }
     });
 */
-
     Math.random = seedrandom(this.randomSeed);
 
     CanvasHook.enable(Object.assign({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'}, {width: this.canvasWidth, height: this.canvasHeight}));
