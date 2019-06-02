@@ -478,11 +478,11 @@ window.TESTER = {
   },
 
   benchmarkFinished: function () {
+    this.injectBenchmarkFinishedHTML();
+
     if (this.inputRecorder) {
       this.addInputDownloadButton();
     }
-
-    this.injectBenchmarkFinishedHTML();
 
     try {
       var data = this.canvas.toDataURL("image/png");
