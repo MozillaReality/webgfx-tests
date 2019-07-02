@@ -39,6 +39,7 @@ function buildTestURL(baseURL, test, mode, options, progress) {
     if (getOption('noCloseOnFail')) url = addGET(url, 'no-close-on-fail');
     if (test.skipReferenceImageTest) url = addGET(url, 'skip-reference-image-test');
     if (test.referenceImage) url = addGET(url, 'reference-image');
+    if (test.noRendering) url = addGET(url, 'no-rendering');
 
     if (progress) {
       url = addGET(url, 'order-test=' + progress.tests[test.id].current + '&total-test=' + progress.tests[test.id].total);

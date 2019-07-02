@@ -81,54 +81,58 @@ window.TESTER = {
     this.stats.frameStart();
 
     if (!this.canvas) {
-      // We assume the last webgl context being initialized is the one used to rendering
-      // If that's different, the test should have a custom code to return that canvas
-      if (CanvasHook.webglContexts.length > 0) {
-        var context = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1];
-        this.canvas = context.canvas;
+      if (typeof parameters['no-rendering'] !== 'undefined') {
+        this.ready = true;
+      } else {
+        // We assume the last webgl context being initialized is the one used to rendering
+        // If that's different, the test should have a custom code to return that canvas
+        if (CanvasHook.webglContexts.length > 0) {
+          var context = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1];
+          this.canvas = context.canvas;
 
-        // Prevent events not defined as event-listeners
-        this.canvas.onmousedown = this.canvas.onmouseup = this.canvas.onmousemove = () => {};
+          // Prevent events not defined as event-listeners
+          this.canvas.onmousedown = this.canvas.onmouseup = this.canvas.onmousemove = () => {};
 
-        // To prevent width & height 100%
-        function addStyleString(str) {
-          var node = document.createElement('style');
-          node.innerHTML = str;
-          document.body.appendChild(node);
-        }
+          // To prevent width & height 100%
+          function addStyleString(str) {
+            var node = document.createElement('style');
+            node.innerHTML = str;
+            document.body.appendChild(node);
+          }
 
-        addStyleString(`.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
+          addStyleString(`.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
 
-        // To fix A-Frame
-        addStyleString(`a-scene .a-canvas.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
+          // To fix A-Frame
+          addStyleString(`a-scene .a-canvas.gfxtests-canvas {width: ${this.canvasWidth}px !important; height: ${this.canvasHeight}px !important;}`);
 
-        this.canvas.classList.add('gfxtests-canvas');
+          this.canvas.classList.add('gfxtests-canvas');
 
-        this.onResize();
+          this.onResize();
 
-        WebGLStats.setupExtensions(context);
+          WebGLStats.setupExtensions(context);
 
-        if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
-          this.inputRecorder = new InputRecorder(this.canvas);
-          this.inputRecorder.enable();
-        }
+          if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
+            this.inputRecorder = new InputRecorder(this.canvas);
+            this.inputRecorder.enable();
+          }
 
-        if (typeof parameters['replay'] !== 'undefined' && GFXTESTS_CONFIG.input && !this.inputLoading) {
-          this.inputLoading = true;
+          if (typeof parameters['replay'] !== 'undefined' && GFXTESTS_CONFIG.input && !this.inputLoading) {
+            this.inputLoading = true;
 
-          fetch('/tests/' + GFXTESTS_CONFIG.input).then(response => {
-            return response.json();
-          })
-          .then(json => {
-            this.inputReplayer = new InputReplayer(this.canvas, json, this.eventListener.registeredEventListeners);
-            this.inputHelpers = new InputHelpers(this.canvas);
+            fetch('/tests/' + GFXTESTS_CONFIG.input).then(response => {
+              return response.json();
+            })
+            .then(json => {
+              this.inputReplayer = new InputReplayer(this.canvas, json, this.eventListener.registeredEventListeners);
+              this.inputHelpers = new InputHelpers(this.canvas);
+              this.ready = true;
+            });
+          } else {
             this.ready = true;
-          });
-        } else {
-          this.ready = true;
+          }
         }
+        //@fixme else for canvas 2d without webgl
       }
-      //@fixme else for canvas 2d without webgl
     }
 
     if (this.referenceTestFrameNumber === 0) {
@@ -148,6 +152,7 @@ window.TESTER = {
   },
 
   postTick: function () {
+
     if (!this.ready) {return;}
     this.stats.frameEnd();
 
@@ -811,7 +816,6 @@ window.TESTER = {
     });
 */
     Math.random = seedrandom(this.randomSeed);
-
     CanvasHook.enable(Object.assign({fakeWebGL: typeof parameters['fake-webgl'] !== 'undefined'}, {width: this.canvasWidth, height: this.canvasHeight}));
     this.hookModals();
 
