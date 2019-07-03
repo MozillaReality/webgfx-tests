@@ -161,7 +161,7 @@ function getComparisonTable(testSummary, comparison) {
     
      var res = comparison[testId][name];
 
-     var inverseOrder = ['avgFps', 'fps'];
+     var inverseOrder = ['avgFps', 'fps', 'cpuIdleTime', 'cpuIdlePerc'];
      for (hash in testSummary.tests[testId]) {
        var value = testSummary.tests[testId][hash][name];
        value = typeof value !== 'undefined' ? value.toFixed(2) : '';

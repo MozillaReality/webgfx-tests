@@ -2,7 +2,7 @@ module.exports = function flatten(results) {
   return results.map(test => {
     var values = {};
     var statsAttrs = [
-      'avgFps', 'numStutterEvents', 'totalRenderTime', 'cpuTime', 'cpuIdleTime', 'cpuIdlePerc', 'pageLoadTime', 'diffPerc', 'numDiffPixels', 'totalTime', 'timeToFirstFrame'
+      'avgFps', 'numStutterEvents', 'totalRenderTime', 'cpuTime', 'avgCpuTime', 'cpuIdleTime', 'cpuIdlePerc', 'pageLoadTime', 'diffPerc', 'numDiffPixels', 'totalTime', 'timeToFirstFrame'
     ];
     statsAttrs.forEach(attr => {
       if (attr in test) {

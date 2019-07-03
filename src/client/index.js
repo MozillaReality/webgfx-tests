@@ -460,6 +460,7 @@ window.TESTER = {
         numStutterEvents: this.numStutterEvents,
         totalRenderTime: totalRenderTime,
         cpuTime: this.stats.totalTimeInMainLoop,
+        avgCpuTime: this.stats.totalTimeInMainLoop / this.numFramesToRender,
         cpuIdleTime: this.stats.totalTimeOutsideMainLoop,
         cpuIdlePerc: this.stats.totalTimeOutsideMainLoop * 100 / totalRenderTime,
         pageLoadTime: this.pageLoadTime,
