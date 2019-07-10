@@ -303,19 +303,19 @@ window.TESTER = {
           var canvasDiff = document.createElement('canvas');
           var diffCtx = canvasDiff.getContext('2d');
           canvasDiff.width = width;
-          canvasDiff.height = height;  
+          canvasDiff.height = height;
           var diff = diffCtx.createImageData(width, height);
-          
+
           var newImageData = diffCtx.createImageData(width, height);
           resizeImageData(currentImageData, newImageData);
 
           var expected = refImageData.data;
           var actual = newImageData.data;
-          
+
           var threshold = typeof GFXTESTS_CONFIG.referenceCompareThreshold === 'undefined' ? 0.2 : GFXTESTS_CONFIG.referenceCompareThreshold;
           var numDiffPixels = pixelmatch(expected, actual, diff.data, width, height, {threshold: threshold});
           var diffPerc = numDiffPixels / (width * height) * 100;
-          
+
           var fail = diffPerc > 0.2; // diff perc 0 - 100%
           var result = {result: 'pass'};
 
@@ -329,7 +329,7 @@ window.TESTER = {
               numDiffPixels: numDiffPixels,
               failReason: 'Reference image mismatch'
             };
-              
+
             var benchmarkDiv = document.getElementById('test_finished');
             benchmarkDiv.className = 'fail';
             benchmarkDiv.querySelector('h1').innerText = 'Test failed!';
@@ -377,16 +377,16 @@ window.TESTER = {
     this.socket.on('connect', function(data) {
       console.log('Connected to testing server');
     });
-    
+
     this.socket.on('error', (error) => {
       console.log(error);
     });
-    
+
     this.socket.on('connect_error', (error) => {
       console.log(error);
     });
 
-    this.socket.emit('test_started', {id: GFXTESTS_CONFIG.id});
+    this.socket.emit('test_started', {id: GFXTESTS_CONFIG.id, testUUID: parameters['test-uuid']});
 
     this.socket.on('next_benchmark', (data) => {
       console.log('next_benchmark', data);

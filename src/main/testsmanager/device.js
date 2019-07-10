@@ -3,6 +3,11 @@ const path = require('path');
 const internalIp = require('internal-ip');
 const chalk = require('chalk');
 const buildTestURL = require('./common').buildTestURL;
+const OculusVRAPI = require('../devices/oculus_vrapi');
+
+const hardwareStats = {
+  fxr: OculusVRAPI
+};
 
 function addGET(url, parameter) {
   if (url.indexOf('?') != -1) return url + '&' + parameter;
@@ -126,7 +131,6 @@ TestsManager.prototype = {
       });
     }
 
-
     console.log('* Running test:', chalk.yellow(test.id), 'on browser', chalk.yellow(browser.name),'on device', chalk.green(this.device.deviceProduct));
 
     // @fixme
@@ -137,6 +141,12 @@ TestsManager.prototype = {
 
     url = addGET(url, 'test-uuid=' + testUUID);
     const killOnStart = false; //true;
+
+    if (hardwareStats[browser.code]) {
+      console.log('Found hardware stats module:', chalk.yellow(hardwareStats[browser.code].name));
+      browser.hardwareStats = hardwareStats[browser.code];
+      browser.hardwareStats.init();
+    }
 
     if (killOnStart || !browser.firstRun) {
       browser.firstRun = true;

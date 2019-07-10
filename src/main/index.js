@@ -195,7 +195,9 @@ program
     } else {
 
       initHTTPServer(options.port, config, options.verbose);
-      initWebSocketServer(options.wsport, null, options.verbose);
+      initWebSocketServer(options.wsport, (data, io) => {
+        io.emit('test_finished', data);
+      }, options.verbose);
 
       if (options.launchbrowser) {
         var devices = getDevices(options.adb);
@@ -316,37 +318,72 @@ program
       }
 
       initHTTPServer(options.port, config, options.verbose);
-      initWebSocketServer(options.wsport, function (data) {
-        if (outputFile) {
+      var websockets = initWebSocketServer(options.wsport, {
+        testFinished: (data, io) => {
+          io.emit('test_finished', data);
+
+          if (outputFile) {
+            var testRunData = TestUtils.TestsData.getTestData(data.testUUID);
+            data.browser = {
+              name: testRunData.browser.name,
+              code: testRunData.browser.code,
+              versionCode: testRunData.browser.versionCode,
+              versionName: testRunData.browser.versionName
+            };
+            data.device = {
+              name: testRunData.device.name,
+              deviceProduct: testRunData.device.deviceProduct,
+              serial: testRunData.device.serial
+            };
+            fs.appendFile(outputFile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {
+              if (err) throw err;
+              numOutputTests++;
+            });
+          }
+
           var testRunData = TestUtils.TestsData.getTestData(data.testUUID);
-          data.browser = {
-            name: testRunData.browser.name,
-            code: testRunData.browser.code,
-            versionCode: testRunData.browser.versionCode,
-            versionName: testRunData.browser.versionName
-          };
-          data.device = {
-            name: testRunData.device.name,
-            deviceProduct: testRunData.device.deviceProduct,
-            serial: testRunData.device.serial
-          };
-          fs.appendFile(outputFile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {
-            if (err) throw err;
-            numOutputTests++;
+          if (!testRunData) {
+            console.log('ERROR: No test data found');
+            process.exit();
+          }
+
+          var testsManager = testsManagers[testRunData.device.serial];
+          var runningBrowser = testsManager.getRunningTest().browser;
+
+          // If hardware stats
+          if (runningBrowser.hardwareStats) {
+            var results = runningBrowser.hardwareStats.stop();
+            const hardwareStatsName = runningBrowser.hardwareStats.name;
+            data.stats[hardwareStatsName] = {};
+            for (var name in results) {
+              data.stats[hardwareStatsName][name] = {
+                min: results[name].min,
+                max: results[name].max,
+                avg: results[name].mean,
+                standard_deviation: results[name].standard_deviation()
+              }
+            }
+          }
+
+          if (options.verbose) {
+            PrettyPrint.json(data);
+          }
+
+          testRunData.device.killBrowser(runningBrowser).then(() => {
+            testsManager.runNextQueuedTest();
           });
+        },
+        testStarted: (data) => {
+          var testRunData = TestUtils.TestsData.getTestData(data.testUUID);
+          var testsManager = testsManagers[testRunData.device.serial];
+          var runningBrowser = testsManager.getRunningTest().browser;
+          if (runningBrowser.hardwareStats) {
+            runningBrowser.hardwareStats.enabled = true;
+          }
         }
-
-        var testRunData = TestUtils.TestsData.getTestData(data.testUUID);
-        if (!testRunData) {
-          console.log('ERROR: No test data found');
-          process.exit();
-        }
-
-        var testsManager = testsManagers[testRunData.device.serial];
-        testRunData.device.killBrowser(testsManager.getRunningTest().browser).then(() => {
-          testsManager.runNextQueuedTest();
-        });
       }, options.verbose);
+
+
 
       var testsManagers = {};
       var numRunningDevices = devices.length;
@@ -386,7 +423,7 @@ program
           await asyncForEach(apks, async apk => {
             var reader = await require('node-apk-parser-promise').load(apk)
             var manifest = await reader.readManifest();
-            
+
             // Get the APK's AndroidManifest.xml object
             var browserData = browsersData.find(browserData => browserData.package === manifest.package);
 
