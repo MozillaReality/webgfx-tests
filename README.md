@@ -36,7 +36,7 @@ Usage: list-tests [options]
 Lists tests
 
 Options:
-  -c, --configfile <configFile>  Config file (default test.config.json)
+  -c, --configfile <configFile>  Config file (default webgfx-tests.config.json)
   -v, --verbose                  Show all the information available
   -h, --help                     output usage information
 ```
