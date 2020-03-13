@@ -5,13 +5,16 @@ const chalk = require('chalk');
 const buildTestURL = require('./common').buildTestURL;
 const OculusVRAPI = require('../devices/oculus_vrapi');
 
-const hardwareStats = {
-  fxr: OculusVRAPI
-};
-
 function addGET(url, parameter) {
   if (url.indexOf('?') != -1) return url + '&' + parameter;
   else return url + '?' + parameter;
+}
+
+function getHardwareStats(productName) {
+  if (productName === "Quest" || productName === "Go") {
+    return OculusVRAPI;
+  }
+  return null;
 }
 
 function loadJSON(path) {
@@ -142,9 +145,10 @@ TestsManager.prototype = {
     url = addGET(url, 'test-uuid=' + testUUID);
     const killOnStart = false; //true;
 
-    if (hardwareStats[browser.code]) {
-      console.log('Found hardware stats module:', chalk.yellow(hardwareStats[browser.code].name));
-      browser.hardwareStats = hardwareStats[browser.code];
+    let hardwareStats = getHardwareStats(this.device.deviceProduct)
+    if (hardwareStats) {
+      console.log('Found hardware stats module:', chalk.yellow(hardwareStats.name));
+      browser.hardwareStats = hardwareStats;
       browser.hardwareStats.init();
     }
 
