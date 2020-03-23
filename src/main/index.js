@@ -231,19 +231,20 @@ program
 program
   .command('run [testIDs...]')
   .description('run tests')
-  .option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
-  .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
-  .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
-  .option("-b, --browser <browser names>", "Which browsers to use (Comma separated)")
   .option("-a, --adb [devices]", "Use android devices through ADB")
-  .option("-l, --launchparams <additional parameters>", "Additional parameters to launch the browser")
-  .option("-k, --package <package names>", "Browser packages (apk) to install and execute the tests (Comma separated)")
-  .option("-i, --info <extra info>", "Add extra info to be displayed on the browser when running the test (eg: browser codename)")
-  .option("-n, --numtimes <number>", "Number of times to run each test")
-  .option("-r, --overrideparams <additional parameters>", "Override parameters on individual execution (eg: \"fake-webgl&width=800&height=600\"")
-  .option("-o, --outputfile <file>", "Store test results on a local file")
+  .option("-b, --browser <browser names>", "Which browsers to use (Comma separated)")
+  .option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
   .option("-e, --appendfile <file>", "Store test results on a local file appending")
+  .option("-h, --localhost", "Use localhost instead of the server ip (if you have enabled adb reverse ports)")
+  .option("-i, --info <extra info>", "Add extra info to be displayed on the browser when running the test (eg: browser codename)")
+  .option("-k, --package <package names>", "Browser packages (apk) to install and execute the tests (Comma separated)")
+  .option("-l, --launchparams <additional parameters>", "Additional parameters to launch the browser")
+  .option("-n, --numtimes <number>", "Number of times to run each test")
+  .option("-o, --outputfile <file>", "Store test results on a local file")
+  .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
+  .option("-r, --overrideparams <additional parameters>", "Override parameters on individual execution (eg: \"fake-webgl&width=800&height=600\"")
   .option("-v, --verbose", "Show all the info available")
+  .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
   .action((testsIDs, options) => {
     const configfile = options.configfile || 'webgfx-tests.config.json';
 
@@ -452,6 +453,7 @@ program
               var generalOptions = {
                 numTimes: options.numtimes || 1,
                 overrideParams: options.overrideparams,
+                localhost: options.localhost,
                 extraParams: options.launchparams // @todo Rename to browserLaunchExtraParams
               };
 
@@ -484,7 +486,8 @@ program
           var generalOptions = {
             numTimes: options.numtimes || 1,
             overrideParams: options.overrideparams,
-            extraParams: options.launchparams
+            extraParams: options.launchparams,
+            localhost: options.localhost
           };
 
           //@todo Print just if verbose
