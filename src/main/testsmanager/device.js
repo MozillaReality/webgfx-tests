@@ -112,7 +112,7 @@ TestsManager.prototype = {
       device: this.device
     });
 
-    const serverIP = internalIp.v4.sync() || 'localhost';
+    const serverIP = this.generalOptions ? 'localhost' : internalIp.v4.sync() || 'localhost';
     //@fixme port from params
     const baseURL = `http://${serverIP}:3000/`;
 
