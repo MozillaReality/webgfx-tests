@@ -22,7 +22,7 @@ program
 program
 .command('summary [fileList...]')
 .description('Generate a summary from JSON results')
-.option("-g, --groupby [attribute]", "Group by: test (default), device, browser, file", 'test')
+.option("-g, --groupby [attribute]", "Group by: test (default), device, browser, file, apk", 'test')
 .option("-f, --filter [attributes]", 'List of attributes to show (Comma separated)')
 //.option("-v, --verbose", "Show all the information available")
 .action((fileList, options) => {
@@ -323,25 +323,6 @@ program
         testFinished: (data, io) => {
           io.emit('test_finished', data);
 
-          if (outputFile) {
-            var testRunData = TestUtils.TestsData.getTestData(data.testUUID);
-            data.browser = {
-              name: testRunData.browser.name,
-              code: testRunData.browser.code,
-              versionCode: testRunData.browser.versionCode,
-              versionName: testRunData.browser.versionName
-            };
-            data.device = {
-              name: testRunData.device.name,
-              deviceProduct: testRunData.device.deviceProduct,
-              serial: testRunData.device.serial
-            };
-            fs.appendFile(outputFile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {
-              if (err) throw err;
-              numOutputTests++;
-            });
-          }
-
           var testRunData = TestUtils.TestsData.getTestData(data.testUUID);
           if (!testRunData) {
             console.log('ERROR: No test data found');
@@ -364,6 +345,29 @@ program
                 standard_deviation: results[name].standard_deviation()
               }
             }
+          }
+
+          if (outputFile) {
+            data.browser = {
+              name: testRunData.browser.name,
+              code: testRunData.browser.code,
+              versionCode: testRunData.browser.versionCode,
+              versionName: testRunData.browser.versionName
+            };
+            data.device = {
+              name: testRunData.device.name,
+              deviceProduct: testRunData.device.deviceProduct,
+              serial: testRunData.device.serial
+            };
+
+            if (testRunData.extraOptions.apkFilename) {
+              data.browser.apk = testRunData.extraOptions.apkFilename
+            }
+
+            fs.appendFile(outputFile, (numOutputTests === 0 ? '' : ',') + JSON.stringify(data, null, 2), (err) => {
+              if (err) throw err;
+              numOutputTests++;
+            });
           }
 
           if (options.verbose) {
@@ -394,16 +398,24 @@ program
           var browsersData = [
             {
               name: 'Firefox Reality',
+              shortName: 'FxR',
               code: 'fxr',
               package: 'org.mozilla.vrbrowser'
             },
             {
-              name: 'Chrome', 
+              name: 'Firefox Reality Dev',
+              shortName: 'FxR Dev',
+              code: 'fxrd',
+              package: 'org.mozilla.vrbrowser.dev'
+            },
+            {
+              name: 'Chrome',
               code: 'chrome',
               package: 'com.android.chrome'
             },
             {
-              name: 'Chrome Canary', 
+              name: 'Chrome Canary',
+              shortName: 'Canary',
               code: 'canary',
               package: 'com.chrome.canary'
             },
@@ -458,7 +470,9 @@ program
               };
 
               var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions);
-              await testsManager.runTests();
+              await testsManager.runTests({
+                apkFilename: apkFilename
+              });
             }
             reader.close();
           });
@@ -494,7 +508,7 @@ program
           //console.log(generalOptions);
 
           var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions, {});
-          await testsManager.runTests();
+          await testsManager.runTests({});
           onTestsFinish();
         }
       });
