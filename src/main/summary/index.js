@@ -49,7 +49,7 @@ function getSummaryGroupByAttribute(results, groupBy) {
         result[name] = result[name].mean;
       }
     }
-  }  
+  }
   return testSummary;
 }
 
@@ -62,7 +62,7 @@ function mergeResultsFromFiles(fileList) {
     });
     results = results.concat(file);
   });
-  return results;  
+  return results;
 }
 
 module.exports = {
@@ -88,7 +88,7 @@ function getComparison(testSummary, filter) {
   for (testId in testSummary.tests) {
     var test = testSummary.tests[testId];
     comparison[testId] = {};
-  
+
     if (!attributes) {
       attributes = [];
       var hash = Object.keys(test)[0];
@@ -98,12 +98,12 @@ function getComparison(testSummary, filter) {
         }
       }
     }
-  
+
     attributes.forEach(name => {
       var min = Infinity;
       var max = -Infinity;
       var minItem, maxItem, dif = 0, difPerc = '-';
-  
+
       for (hash in test) {
         var result = test[hash];
         if (result[name] < min) {
@@ -115,12 +115,12 @@ function getComparison(testSummary, filter) {
           maxItem = hash;
         }
       }
-  
+
       if (min !== Infinity && max !== -Infinity) {
         dif = max-min;
         difPerc = min === 0 ? '0.00%' : (dif / min * 100).toFixed(2) + '%';
       }
-  
+
       comparison[testId][name] = {
         minItem: minItem,
         maxItem: maxItem,
@@ -143,8 +143,12 @@ function getComparisonTable(testSummary, comparison) {
     var titleRow = ['COUNTER'];
   
     for (hash in testSummary.tests[testId]) {
+
       // @todo Remove the specifics from package
-      var desc = testSummary.hashList[hash].name + ' ' + (testSummary.hashList[hash].package ? testSummary.hashList[hash].package : '');
+      var desc = testSummary.hashList[hash].name
+        + (testSummary.hashList[hash].package ? ' ' + testSummary.hashList[hash].package : '')
+        + (testSummary.hashList[hash].apk ? ' ' + testSummary.hashList[hash].apk : '');
+
       titleRow.push(desc);
     }
   
@@ -156,12 +160,12 @@ function getComparisonTable(testSummary, comparison) {
     for (name in comparison[testId]) {
   
       var data = [];
-      
+
      var row = [chalk.cyan(name)];
-    
+
      var res = comparison[testId][name];
 
-     var inverseOrder = ['avgFps', 'fps', 'cpuIdleTime', 'cpuIdlePerc'];
+     var inverseOrder = ['avgFps', 'fps', 'cpuIdleTime', 'cpuIdlePerc', 'oculus_vrapi_fps', 'oculus_vrapi_early'];
      for (hash in testSummary.tests[testId]) {
        var value = testSummary.tests[testId][hash][name];
        value = typeof value !== 'undefined' ? value.toFixed(2) : '';

@@ -21,6 +21,10 @@ module.exports = function flatten(results) {
       values['webaudio_' + id] = test.webaudio[id];
     }
 
+    for (let id in test.stats.oculus_vrapi) {
+      values['oculus_vrapi_' + id] = test.stats.oculus_vrapi[id].avg;
+    }
+
     return {
       values: values,
       info: {
