@@ -75,7 +75,7 @@ function TestsManager(device, tests, browsers, generalOptions) {
 }
 
 TestsManager.prototype = {
-  runTests: function() {
+  runTests: function(extraOptions) {
     return new Promise(resolve => {
       this.testsToRun = [];
       this.browsers.forEach(browser => {
@@ -83,7 +83,8 @@ TestsManager.prototype = {
           for (let i = 0; i < this.generalOptions.numTimes; i++) {
             this.testsToRun.push({
               test: test,
-              browser: browser
+              browser: browser,
+              extraOptions: extraOptions
             });
           }
         });
@@ -95,7 +96,7 @@ TestsManager.prototype = {
   runNextQueuedTest: function(resolve) {
     if (this.testsToRun.length > 0) {
       this.runningTest = this.testsToRun.shift();
-      this.runTest(this.runningTest.browser, this.runningTest.test);
+      this.runTest(this.runningTest.browser, this.runningTest.test, this.runningTest.extraOptions);
     } else if (this.resolve()) {
       this.resolve();
       //this.onFinish();
@@ -104,12 +105,13 @@ TestsManager.prototype = {
   getRunningTest: function() {
     return this.runningTest;
   },
-  runTest: function(browser, test) {
+  runTest: function(browser, test, extraOptions) {
 
     var testUUID = testData.storeTestData({
       test: test,
       browser: browser,
-      device: this.device
+      device: this.device,
+      extraOptions: extraOptions
     });
 
     const serverIP = this.generalOptions ? 'localhost' : internalIp.v4.sync() || 'localhost';
