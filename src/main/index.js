@@ -445,7 +445,7 @@ program
             } else {
               console.log(`Installing package ${chalk.yellow(apk)} (${chalk.yellow(browserData.name + ' v.' + manifest.versionName + ' - c.' + manifest.versionCode)}) on device: ${chalk.yellow(device.name)} (serial: ${chalk.yellow(device.serial)})`);
 
-              if (device.existAPK) {
+              if (device.existAPK(browserData.package)) {
                 await device.removeAPK(browserData.package);
               }
               await device.installAPK(apk);

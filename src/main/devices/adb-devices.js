@@ -11,7 +11,7 @@ function findFriendlyName(deviceProduct) {
 
 function ADB() {
   this.devices = [];
-  adbtk.getDevices().forEach(device => {
+  adbtk.getDevices(/*{debug: true}*/).forEach(device => {
     device.name = findFriendlyName(device.deviceProduct);
     this.devices.push(device);
     Object.assign(device, {

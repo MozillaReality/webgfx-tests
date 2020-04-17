@@ -449,6 +449,7 @@ window.TESTER = {
         stats: {
           perf: this.stats.getStatsSummary(),
           webgl: WebGLStats.getSummary()
+          // !!!! oculus_vrapi: this.
         },
         autoEnterXR: this.autoEnterXR,
         revision: GFXTESTS_CONFIG.revision || 0,
@@ -867,7 +868,7 @@ window.TESTER = {
               });
           }
         })
-      }, 2000); // @fix to make it work on FxR
+      }, 500); // @fix to make it work on FxR
     } else if (this.mandatoryAutoEnterXR) {
       setTimeout(x => {
         this.processBenchmarkResult(this.generateFailedBenchmarkResult('autoenter-xr failed'));
