@@ -1,5 +1,6 @@
 import FakeTimers from 'fake-timers';
 import CanvasHook from 'canvas-hook';
+import WebXRHook from 'webxr-hook';
 import PerfStats from 'performance-stats';
 import seedrandom from 'seedrandom';
 import queryString from 'query-string';
@@ -30,6 +31,7 @@ function onReady(callback) {
 console.logError = (msg) => console.error(msg);
 
 window.TESTER = {
+  XRready: false,
   ready: false,
   inputLoading: false,
 
@@ -72,13 +74,19 @@ window.TESTER = {
   // var referenceTestT0 = -1;
 
   preTick: function() {
-
     if (GFXTESTS_CONFIG.preMainLoop) {
       GFXTESTS_CONFIG.preMainLoop();
     }
 
-    WebGLStats.frameStart();
-    this.stats.frameStart();
+    // console.log('ready', this.ready, 'xrready', this.XRready);
+    if (this.ready && this.XRready) {
+      if (!this.started) {
+        this.started = true;
+      }
+      WebGLStats.frameStart();
+      console.log('>> frame-start');
+      this.stats.frameStart();
+    }
 
     if (!this.canvas) {
       if (typeof parameters['no-rendering'] !== 'undefined') {
@@ -136,9 +144,11 @@ window.TESTER = {
     }
 
     if (this.referenceTestFrameNumber === 0) {
+      /*
       if ('autoenter-xr' in parameters) {
         this.injectAutoEnterXR(this.canvas);
       }
+      */
     }
 
     // referenceTestT0 = performance.realNow();
@@ -152,9 +162,12 @@ window.TESTER = {
   },
 
   postTick: function () {
+    if (!this.ready || !this.XRready) {return;}
 
-    if (!this.ready) {return;}
-    this.stats.frameEnd();
+    if (this.started){
+      console.log('<< frameend');
+      this.stats.frameEnd();
+    }
 
     if (this.inputRecorder) {
       this.inputRecorder.frameNumber = this.referenceTestFrameNumber;
@@ -193,6 +206,7 @@ window.TESTER = {
     }
 */
     this.referenceTestFrameNumber++;
+    console.log(this.referenceTestFrameNumber);
     if (this.frameProgressBar) {
       var perc = parseInt(100 * this.referenceTestFrameNumber / this.numFramesToRender);
       this.frameProgressBar.style.width = perc + "%";
@@ -718,8 +732,14 @@ window.TESTER = {
   },
   RAFs: [], // Used to store instances of requestAnimationFrame's callbacks
   prevRAFReference: null, // Previous called requestAnimationFrame callback
+  started: false,
   requestAnimationFrame: function (callback) {
-    const hookedCallback = p => {
+    const hookedCallback = (p, frame) => {
+      if (this.RAFs.length > 1) {
+        console.log('hookedCallback', this.RAFs);
+        console.log(callback);
+      }
+
       // Push the callback to the list of currently running RAFs
       if (this.RAFs.indexOf(callback) === -1) {
         this.RAFs.push(callback);
@@ -727,18 +747,94 @@ window.TESTER = {
 
       // If the current callback is the first on the list, we assume the frame just started
       if (this.RAFs[0] === callback) {
+        console.log("pretick");
         this.preTick();
       }
 
-      callback(performance.now());
+      if (frame) {
+        /*
+        let inputSources = [];
+        for (let source of frame.session.inputSources) {
+          if (source.gripSpace && source.gamepad) {
+            let sourcePose = frame.getPose(source.gripSpace, refSpace);
+
+            var transform = new XRRigidTransform(new DOMPoint(0, 1.6, 1, 1),new DOMPoint(0,0,0,1))
+
+            var newView = {
+              eye: view.eye,
+              projectionMatrix: view.projectionMatrix,
+              transform: transform,
+              originalView: view
+            };
+            newPose.views.push(newView);
+          }
+        }
+*/
+        let oriGetPose = frame.getPose;
+        frame.getPose = function() {
+          var pose = oriGetPose.apply(this, arguments);
+          if (pose) {
+            let amp = 0.5;
+            let freq = 0.0005;
+            let x = Math.sin(performance.now() * freq) * amp;
+            let y = Math.cos(performance.now() * freq) * amp;
+            return {
+              transform: new XRRigidTransform(new DOMPoint(x, 1.6 + y, -1, 1),new DOMPoint(0,0,0,1)),
+              emulatedPosition: false
+            };
+          } else {
+            return pose;
+          }
+        }
+
+        let oriGetViewerPose = frame.getViewerPose;
+        frame.getViewerPose = function() {
+          var pose = oriGetViewerPose.apply(this, arguments);
+          let newPose = {
+            views: []
+          };
+
+          var baseLayer = frame.session.renderState.baseLayer;
+          if (!baseLayer.oriGetViewport) {
+            baseLayer.oriGetViewport = baseLayer.getViewport;
+            baseLayer.getViewport = function() {
+              let view = arguments[0].originalView;
+              if (view) {
+                return baseLayer.oriGetViewport.apply(this, [view]);
+              } else {
+                console.log('>>>>>');
+                return baseLayer.oriGetViewport.apply(this, arguments);
+              }
+            }
+          }
+
+          if ( pose !== null ) {
+            var views = pose.views;
+            for ( var i = 0; i < views.length; i ++ ) {
+              var view = views[ i ];
+              var transform = new XRRigidTransform(new DOMPoint(0, 1.6, 0, 1),new DOMPoint(0,0,0,1))
+              var newView = {
+                eye: view.eye,
+                projectionMatrix: view.projectionMatrix,
+                transform: transform,
+                originalView: view
+              };
+              newPose.views.push(newView);
+            }
+          }
+          return newPose;
+        }
+      }
+      callback(performance.now(), frame);
 
       // If reaching the last RAF, execute all the post code
-      if (this.RAFs[ this.RAFs.length - 1 ] === callback) {
-
+      if (this.RAFs[ this.RAFs.length - 1 ] === callback && this.started) {
+        console.log("posttick", this.referenceTestFrameNumber);
         // @todo Move all this logic to a function to clean up this one
         this.postTick();
 
         if (this.referenceTestFrameNumber === this.numFramesToRender) {
+          console.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FINISHED!')
           this.releaseRAF();
           this.benchmarkFinished();
           return;
@@ -760,17 +856,24 @@ window.TESTER = {
   },
   currentRAFContext: window,
   releaseRAF: function () {
-    this.currentRAFContext.requestAnimationFrame = () => {};
+    console.log(this.RAFcontexts);
+    this.RAFcontexts.forEach(context => {
+      context.requestAnimationFrame = () => {};
+    })
+
+    //this.currentRAFContext.requestAnimationFrame = () => {};
     if ('VRDisplay' in window &&
       this.currentRAFContext instanceof VRDisplay &&
       this.currentRAFContext.isPresenting) {
       this.currentRAFContext.exitPresent();
     }
   },
+  RAFcontexts: [],
   hookRAF: function (context) {
     console.log('Hooking', context);
     if (!context.realRequestAnimationFrame) {
       context.realRequestAnimationFrame = context.requestAnimationFrame;
+      this.RAFcontexts.push(context);
     }
     context.requestAnimationFrame = this.requestAnimationFrame.bind(this);
     this.currentRAFContext = context;
@@ -805,6 +908,20 @@ window.TESTER = {
     WebVRHook.enable(vrdisplay => {
       this.hookRAF(vrdisplay);
     });
+
+    if ('autoenter-xr') {
+      this.injectAutoEnterXR(this.canvas);
+      navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+        if (!supported) {
+          this.XRready = true;
+        }
+      });
+
+    } else {
+      this.XRready = true;
+    }
+
+
 /*
     window.addEventListener('vrdisplaypresentchange', evt => {
       var display = evt.display;
@@ -848,9 +965,42 @@ window.TESTER = {
     requested: false,
     successful: false
   },
+  XRsessions: [],
   injectAutoEnterXR: function(canvas) {
     this.autoEnterXR.requested = true;
-    if (navigator.getVRDisplays) {
+
+    let prevRequestSession = navigator.xr.requestSession;
+    WebXRHook.enable({
+      onSessionStarted: session => {
+        if (this.XRsessions.indexOf(session) === -1) {
+          this.XRsessions.push(session);
+          console.log('XRSession started', session);
+          this.XRready = true;
+          this.hookRAF(session);
+          // window.requestAnimationFrame = () => {};
+        }
+      },
+      onSessionEnded: session => {
+        console.log('XRSession ended');
+      }
+    });
+
+
+
+    /*
+    if ('xr' in navigator) {
+			navigator.xr.isSessionSupported( 'immersive-vr' ).then(supported => {
+        if (supported) {
+					var sessionInit = { optionalFeatures: [ 'local-floor', 'bounded-floor' ] };
+					navigator.xr.requestSession( 'immersive-vr', sessionInit ).then( session => {
+
+          });
+        } else {
+          this.processBenchmarkResult(this.generateFailedBenchmarkResult('autoenter-xr failed'));
+        }
+      });
+      */
+/*
       setTimeout(() => {
         navigator.getVRDisplays().then(displays => {
           var device = displays[0];
@@ -874,6 +1024,7 @@ window.TESTER = {
         this.processBenchmarkResult(this.generateFailedBenchmarkResult('autoenter-xr failed'));
       },1000);
     }
+    */
   },
 
   onResize: function (e) {
