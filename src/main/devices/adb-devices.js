@@ -23,7 +23,7 @@ function ADB() {
       killBrowser: function(browser) {
         return new Promise(resolve => {
           this.forceStop(browser.package, resolve);
-        });  
+        });
       },
       launchBrowser: function(browser, url, extraParams) {
         return new Promise(resolve => {
@@ -33,6 +33,11 @@ function ADB() {
           url = url.replace(/\&/gi, '\\&');
           this.launchUrl(url, browser.code, extraParams || '');
           resolve();
+        });
+      },
+      openPorts: function(inPort, outPort) {
+        return new Promise(resolve => {
+          this.reversePorts(inPort, outPort, resolve);
         });
       },
       removeAPK: function(packageName) {
