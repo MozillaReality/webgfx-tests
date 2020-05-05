@@ -51,7 +51,8 @@
     "socket.io": "^2.3.0",
     "vue-json-pretty": "^1.6.3",
     "webgl-info": "^0.1.5",
-    "webgl-stats": "^0.2.1"
+    "webgl-stats": "^0.2.1",
+    "webxr-hook": "^0.1.0"
   },
   "devDependencies": {
     "concurrently": "^4.1.2",
