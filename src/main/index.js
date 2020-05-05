@@ -481,6 +481,10 @@ program
           var browsersToRun;
           console.log(`Running on device: ${chalk.yellow(device.name)} (serial: ${chalk.yellow(device.serial)})`);
           var browsers = await device.getInstalledBrowsers();
+          if (options.localhost) {
+            console.log('Reverse ports tcp:3000 => tcp:3000');
+            await device.openPorts(3000, 3000);
+          }
           browsersToRun = browsers;
           if (options.browser && options.browser !== 'all') {
             var browserOptions = options.browser.split(',');
