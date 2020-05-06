@@ -33,6 +33,7 @@ console.logError = (msg) => console.error(msg);
 window.TESTER = {
   XRready: false,
   ready: false,
+  finished: false,
   inputLoading: false,
 
   // Currently executing frame.
@@ -73,18 +74,23 @@ window.TESTER = {
   // Wallclock time for when we started CPU execution of the current frame.
   // var referenceTestT0 = -1;
 
+  isReady: function() {
+    // console.log(this.ready, this.XRready);
+    return this.ready && this.XRready;
+  },
+
   preTick: function() {
     if (GFXTESTS_CONFIG.preMainLoop) {
       GFXTESTS_CONFIG.preMainLoop();
     }
 
-    // console.log('ready', this.ready, 'xrready', this.XRready);
-    if (this.ready && this.XRready) {
+    console.log('ready', this.ready, 'xrready', this.XRready);
+    if (this.isReady()) {
       if (!this.started) {
         this.started = true;
       }
       WebGLStats.frameStart();
-      console.log('>> frame-start');
+      // console.log('>> frame-start');
       this.stats.frameStart();
     }
 
@@ -94,8 +100,8 @@ window.TESTER = {
       } else {
         // We assume the last webgl context being initialized is the one used to rendering
         // If that's different, the test should have a custom code to return that canvas
-        if (CanvasHook.webglContexts.length > 0) {
-          var context = CanvasHook.webglContexts[CanvasHook.webglContexts.length - 1];
+        if (CanvasHook.getNumContexts() > 0) {
+          var context = CanvasHook.getContext(CanvasHook.getNumContexts() - 1);
           this.canvas = context.canvas;
 
           // Prevent events not defined as event-listeners
@@ -117,6 +123,7 @@ window.TESTER = {
 
           this.onResize();
 
+          // CanvasHook
           WebGLStats.setupExtensions(context);
 
           if (typeof parameters['recording'] !== 'undefined' && !this.inputRecorder) {
@@ -126,7 +133,6 @@ window.TESTER = {
 
           if (typeof parameters['replay'] !== 'undefined' && GFXTESTS_CONFIG.input && !this.inputLoading) {
             this.inputLoading = true;
-
             fetch('/tests/' + GFXTESTS_CONFIG.input).then(response => {
               return response.json();
             })
@@ -165,7 +171,7 @@ window.TESTER = {
     if (!this.ready || !this.XRready) {return;}
 
     if (this.started){
-      console.log('<< frameend');
+      // console.log('<< frameend');
       this.stats.frameEnd();
     }
 
@@ -206,7 +212,6 @@ window.TESTER = {
     }
 */
     this.referenceTestFrameNumber++;
-    console.log(this.referenceTestFrameNumber);
     if (this.frameProgressBar) {
       var perc = parseInt(100 * this.referenceTestFrameNumber / this.numFramesToRender);
       this.frameProgressBar.style.width = perc + "%";
@@ -499,11 +504,11 @@ window.TESTER = {
   },
 
   benchmarkFinished: function () {
+    this.injectBenchmarkFinishedHTML();
+
     if (this.inputRecorder) {
       this.addInputDownloadButton();
     }
-
-    this.injectBenchmarkFinishedHTML();
 
     try {
       var data = this.canvas.toDataURL("image/png");
@@ -735,18 +740,25 @@ window.TESTER = {
   started: false,
   requestAnimationFrame: function (callback) {
     const hookedCallback = (p, frame) => {
+      if (this.finished) {
+        return;
+      }
+
+      /*
       if (this.RAFs.length > 1) {
         console.log('hookedCallback', this.RAFs);
         console.log(callback);
-      }
+      }*/
 
       // Push the callback to the list of currently running RAFs
-      if (this.RAFs.indexOf(callback) === -1) {
+      if (this.RAFs.indexOf(callback) === -1 &&
+        this.RAFs.findIndex(f => f.toString() === callback.toString()) === -1) {
         this.RAFs.push(callback);
       }
 
       // If the current callback is the first on the list, we assume the frame just started
-      if (this.RAFs[0] === callback) {
+      // The .toString() is needed because of arrow functions
+      if (this.RAFs[0] === callback || this.RAFs[0].toString() === callback.toString()) {
         console.log("pretick");
         this.preTick();
       }
@@ -828,7 +840,12 @@ window.TESTER = {
       callback(performance.now(), frame);
 
       // If reaching the last RAF, execute all the post code
-      if (this.RAFs[ this.RAFs.length - 1 ] === callback && this.started) {
+      // console.log(this.started);
+      //if (this.RAFs[ this.RAFs.length - 1 ] === callback && this.started) {
+      if ( (this.RAFs[ this.RAFs.length - 1 ] === callback ||
+            this.RAFs[ this.RAFs.length - 1 ].toString() === callback.toString()
+        )
+        && this.started) {
         console.log("posttick", this.referenceTestFrameNumber);
         // @todo Move all this logic to a function to clean up this one
         this.postTick();
@@ -836,6 +853,7 @@ window.TESTER = {
         if (this.referenceTestFrameNumber === this.numFramesToRender) {
           console.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FINISHED!')
           this.releaseRAF();
+          this.finished = true;
           this.benchmarkFinished();
           return;
         }
@@ -847,7 +865,9 @@ window.TESTER = {
 
       // If the previous RAF is the same as now, just reset the list
       // in case we have stopped calling some of the previous RAFs
-      if (this.prevRAFReference === callback && (this.RAFs[0] !== callback || this.RAFs.length > 1)) {
+      //if (this.prevRAFReference === callback && (this.RAFs[0] !== callback || this.RAFs.length > 1)) {
+      if ((this.prevRAFReference === callback || this.prevRAFReference && this.prevRAFReference.toString() === callback.toString()) &&
+        (this.RAFs[0] !== callback || this.RAFs[0].toString() !== callback.toString() || this.RAFs.length > 1)) {
         this.RAFs = [callback];
       }
       this.prevRAFReference = callback;
@@ -856,7 +876,6 @@ window.TESTER = {
   },
   currentRAFContext: window,
   releaseRAF: function () {
-    console.log(this.RAFcontexts);
     this.RAFcontexts.forEach(context => {
       context.requestAnimationFrame = () => {};
     })
