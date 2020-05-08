@@ -84,7 +84,7 @@ window.TESTER = {
       GFXTESTS_CONFIG.preMainLoop();
     }
 
-    console.log('ready', this.ready, 'xrready', this.XRready);
+    // console.log('ready', this.ready, 'xrready', this.XRready);
     if (this.isReady()) {
       if (!this.started) {
         this.started = true;
@@ -744,11 +744,10 @@ window.TESTER = {
         return;
       }
 
-      /*
       if (this.RAFs.length > 1) {
         console.log('hookedCallback', this.RAFs);
         console.log(callback);
-      }*/
+      }
 
       // Push the callback to the list of currently running RAFs
       if (this.RAFs.indexOf(callback) === -1 &&
@@ -757,31 +756,12 @@ window.TESTER = {
       }
 
       // If the current callback is the first on the list, we assume the frame just started
-      // The .toString() is needed because of arrow functions
-      if (this.RAFs[0] === callback || this.RAFs[0].toString() === callback.toString()) {
-        console.log("pretick");
+      if (this.RAFs[0] === callback) {
+        // console.log("pretick");
         this.preTick();
       }
 
       if (frame) {
-        /*
-        let inputSources = [];
-        for (let source of frame.session.inputSources) {
-          if (source.gripSpace && source.gamepad) {
-            let sourcePose = frame.getPose(source.gripSpace, refSpace);
-
-            var transform = new XRRigidTransform(new DOMPoint(0, 1.6, 1, 1),new DOMPoint(0,0,0,1))
-
-            var newView = {
-              eye: view.eye,
-              projectionMatrix: view.projectionMatrix,
-              transform: transform,
-              originalView: view
-            };
-            newPose.views.push(newView);
-          }
-        }
-*/
         let oriGetPose = frame.getPose;
         frame.getPose = function() {
           var pose = oriGetPose.apply(this, arguments);
@@ -814,7 +794,6 @@ window.TESTER = {
               if (view) {
                 return baseLayer.oriGetViewport.apply(this, [view]);
               } else {
-                console.log('>>>>>');
                 return baseLayer.oriGetViewport.apply(this, arguments);
               }
             }
@@ -824,14 +803,18 @@ window.TESTER = {
             var views = pose.views;
             for ( var i = 0; i < views.length; i ++ ) {
               var view = views[ i ];
-              var transform = new XRRigidTransform(new DOMPoint(0, 1.6, 0, 1),new DOMPoint(0,0,0,1))
-              var newView = {
-                eye: view.eye,
-                projectionMatrix: view.projectionMatrix,
-                transform: transform,
-                originalView: view
-              };
-              newPose.views.push(newView);
+              if (!view.originalView) {
+                var transform = new XRRigidTransform(new DOMPoint(0, 1.6, 0, 1),new DOMPoint(0,0,0,1))
+                var newView = {
+                  eye: view.eye,
+                  projectionMatrix: view.projectionMatrix,
+                  transform: transform,
+                  originalView: view
+                };
+                newPose.views.push(newView);
+              } else {
+                newPose.views.push(view);
+              }
             }
           }
           return newPose;
@@ -840,13 +823,8 @@ window.TESTER = {
       callback(performance.now(), frame);
 
       // If reaching the last RAF, execute all the post code
-      // console.log(this.started);
-      //if (this.RAFs[ this.RAFs.length - 1 ] === callback && this.started) {
-      if ( (this.RAFs[ this.RAFs.length - 1 ] === callback ||
-            this.RAFs[ this.RAFs.length - 1 ].toString() === callback.toString()
-        )
-        && this.started) {
-        console.log("posttick", this.referenceTestFrameNumber);
+      if (this.RAFs[ this.RAFs.length - 1 ] === callback && this.started) {
+        // console.log("posttick", this.referenceTestFrameNumber);
         // @todo Move all this logic to a function to clean up this one
         this.postTick();
 
@@ -865,9 +843,7 @@ window.TESTER = {
 
       // If the previous RAF is the same as now, just reset the list
       // in case we have stopped calling some of the previous RAFs
-      //if (this.prevRAFReference === callback && (this.RAFs[0] !== callback || this.RAFs.length > 1)) {
-      if ((this.prevRAFReference === callback || this.prevRAFReference && this.prevRAFReference.toString() === callback.toString()) &&
-        (this.RAFs[0] !== callback || this.RAFs[0].toString() !== callback.toString() || this.RAFs.length > 1)) {
+      if (this.prevRAFReference === callback && (this.RAFs[0] !== callback || this.RAFs.length > 1)) {
         this.RAFs = [callback];
       }
       this.prevRAFReference = callback;
@@ -928,7 +904,7 @@ window.TESTER = {
       this.hookRAF(vrdisplay);
     });
 
-    if ('autoenter-xr') {
+    if ('autoenter-xr' in parameters) {
       this.injectAutoEnterXR(this.canvas);
       navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
         if (!supported) {
