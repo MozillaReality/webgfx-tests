@@ -6,6 +6,7 @@ var Stats = require('./stats');
 var chalk = require('chalk');
 const path = require('path');
 var pc = require('pretty-columns');
+var HTML = require('./html.js');
 
 function getHash(value) {
   return (typeof value === 'object') ? objectHash(value) : value;
@@ -70,13 +71,75 @@ module.exports = {
   //getSummaryGroupByAttribute: getSummaryGroupByAttribute,
   //getComparison: getComparison,
   //getComparisonTable: getComparisonTable,
-  printComparisonTable: printComparisonTable
+  printComparisonTable: printComparisonTable,
+  exportComparisonTableHTML: exportComparisonTableHTML
 };
+
+function generateHTML(results, groupBy, filter) {
+  var testSummary = getSummaryGroupByAttribute(results, groupBy);
+  var comparison = getComparison(testSummary, filter);
+  //var table = getComparisonTable(testSummary, comparison, chalk);
+  var table = getComparisonTable(testSummary, comparison, HTMLColorizer);
+
+  var html = '';
+
+  var first = false;
+  table.forEach((row, i) => {
+    if (row.length === 1) {
+      if (row[0] !== '') {
+        if (html !== '') {
+          html += '</table>';
+        }
+
+        html += `<div class="table-title">
+        <h3>${row}</h3>
+        </div>`;
+        html += '<table class="table-fill">';
+        first = true;
+      }
+    } else {
+      if (first) {
+        html += `
+        <thead><tr>
+          ${row.map((cell, i) => {
+            if (i > 0 && i < row.length -2) {
+              return `<th class="column-title">${cell}</th>`;
+            } else {
+              return `<th>${cell}</th>`;
+            }
+          }
+          ).join('')}
+        </tr></thead>`;
+        first = false;
+      } else {
+        html += `
+          <tr>
+            ${row.map(cell => {
+              if (typeof cell === 'object') {
+                return `<td class="${cell.type}">${cell.text}</td>`;
+              } else {
+                return `<td>${cell}</td>`;
+              }
+            }).join('')}
+          </tr>`;
+      }
+    }
+  });
+
+  return HTML.exportHTML(html);
+}
+
+function exportComparisonTableHTML(results, groupBy, filter, filename) {
+  let html = generateHTML(results, groupBy, filter);
+  filename = typeof filename === "string" ? filename : "exported.html"; 
+  fs.writeFileSync(filename, html);
+  console.log(`Summary succesfully written in ${chalk.yellow(filename)}`);
+}
 
 function printComparisonTable(results, groupBy, filter) {
   var testSummary = getSummaryGroupByAttribute(results, groupBy);
   var comparison = getComparison(testSummary, filter);
-  var comparisonTable = getComparisonTable(testSummary, comparison);
+  var comparisonTable = getComparisonTable(testSummary, comparison, CONSOLEColorizer);
 
   printTable(comparisonTable);
 }
@@ -134,14 +197,37 @@ function getComparison(testSummary, filter) {
   return comparison;
 }
 
-function getComparisonTable(testSummary, comparison) {
+const HTMLColorizer = {
+  colorize(value, color) {return `<span style="color: ${color}">${value}</span>`;},
+
+  title(value) { return value; },
+  blueBright(value) { return this.colorize(value, 'lightblue'); },
+  cyan(value) { return {text: value, type: 'attribute'} },
+  grey(value) { return this.colorize(value, 'grey'); },
+
+  worst(value) { return {text: value, type: 'worst'}; },
+  best(value) { return  {text: value, type: 'best'}; },
+}
+
+const CONSOLEColorizer = {
+  title(value) { return chalk.yellow(value); },
+  blueBright(value) { return chalk.blueBright(value); },
+  cyan(value) { return chalk.cyan(value); },
+  grey(value) { return chalk.grey(value); },
+  worst(value) { return chalk.red(value); },
+  best(value) { return chalk.green(value); }
+}
+
+
+
+function getComparisonTable(testSummary, comparison, colorizer) {
   var dataTable = [];
   for (testId in testSummary.tests) {
-    dataTable.push([]);
-    dataTable.push([chalk.yellow(testId.toUpperCase())]);
-    
+    dataTable.push(['']);
+    dataTable.push([colorizer.title(testId.toUpperCase())]);
+
     var titleRow = ['COUNTER'];
-  
+
     for (hash in testSummary.tests[testId]) {
 
       // @todo Remove the specifics from package
@@ -151,17 +237,17 @@ function getComparisonTable(testSummary, comparison) {
 
       titleRow.push(desc);
     }
-  
+
     titleRow = titleRow.concat(['DIF', 'DIF%']);
-    titleRow = titleRow.map(title => {return chalk.blueBright(title.toUpperCase())});
-  
+    titleRow = titleRow.map(title => {return colorizer.blueBright(title.toUpperCase())});
+
     dataTable.push(titleRow);
-  
+
     for (name in comparison[testId]) {
-  
+
       var data = [];
 
-     var row = [chalk.cyan(name)];
+     var row = [colorizer.cyan(name)];
 
      var res = comparison[testId][name];
 
@@ -170,13 +256,13 @@ function getComparisonTable(testSummary, comparison) {
        var value = testSummary.tests[testId][hash][name];
        value = typeof value !== 'undefined' ? value.toFixed(2) : '';
        if (res.min == res.max) {
-        value = chalk.grey(value);
+        value = colorizer.grey(value);
        } else {
         if (hash === res.minItem) {
-          value = inverseOrder.indexOf(name) === -1 ? chalk.green(value) : chalk.red(value);
+          value = inverseOrder.indexOf(name) === -1 ? colorizer.best(value) : colorizer.worst(value);
         }
         if (hash === res.maxItem) {
-          value = inverseOrder.indexOf(name) === -1 ? chalk.red(value) : chalk.green(value);
+          value = inverseOrder.indexOf(name) === -1 ? colorizer.worst(value) : colorizer.best(value);
         }
        }
       row.push(value);

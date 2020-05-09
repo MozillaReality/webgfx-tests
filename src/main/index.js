@@ -24,11 +24,17 @@ program
 .description('Generate a summary from JSON results')
 .option("-g, --groupby [attribute]", "Group by: test (default), device, browser, file, apk", 'test')
 .option("-f, --filter [attributes]", 'List of attributes to show (Comma separated)')
+.option("-h, --html [filename]", "Export summary to HTML")
 //.option("-v, --verbose", "Show all the information available")
 .action((fileList, options) => {
   var results = Summary.mergeResultsFromFiles(fileList);
   var filter = typeof options.filter !== 'undefined' ? options.filter.split(',') : null;
-  Summary.printComparisonTable(results, options.groupby, filter);
+
+  if (options.html) {
+    Summary.exportComparisonTableHTML(results, options.groupby, filter, options.html);
+  } else {
+    Summary.printComparisonTable(results, options.groupby, filter);
+  }
 });
 
 //-----------------------------------------------------------------------------
