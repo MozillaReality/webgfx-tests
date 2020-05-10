@@ -97,7 +97,29 @@ function initServer(port, config, verbose) {
           }
           // @todo Move socket.io reference to local
           head.append('<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>')
-              .append('<script src="/webgfx-tests.js"></script>')
+              .append('<script src="/webgfx-tests.js"></script>');
+
+          if (test.injectJS) {
+            console.log(`- Injecting JS: ${test.injectJS.path} (${test.injectJS.where})`);
+            switch (test.injectJS.where) {
+              case "HEAD":
+                head.append(`<script src="/tests/${test.injectJS.path}"></script>`); break;
+              case "DEFER":
+                head.append(`<script src="/tests/${test.injectJS.path}" defer></script>`); break;
+              case "CUSTOM":
+                var element = $(test.injectJS.selector);
+                element.append(`<script src="/tests/${test.injectJS.path}"></script>`);
+                break;
+              case "INSIDE":
+                // @REDEFINE
+                var element = $('script').last();
+                const injectPath = path.join(testsFolder, test.injectJS.path);
+                var customJS = fs.readFileSync(injectPath, 'utf8');
+                element.html(element.html() + customJS);
+                break;
+            }
+          }
+
           res.send($.html());
         } else {
           res.send('No test found: ' + url);

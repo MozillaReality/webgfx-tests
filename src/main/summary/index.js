@@ -218,8 +218,6 @@ const CONSOLEColorizer = {
   best(value) { return chalk.green(value); }
 }
 
-
-
 function getComparisonTable(testSummary, comparison, colorizer) {
   var dataTable = [];
   for (testId in testSummary.tests) {

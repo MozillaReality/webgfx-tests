@@ -915,7 +915,51 @@ window.TESTER = {
     } else {
       this.XRready = true;
     }
+/*
+    if (GFXTESTS_CONFIG.injectJS) {
+      function injectJS(url, where, onLoad, onError) {
+        var link = document.createElement('script');
+        link.src = '/tests/' + url;
+        link.charset = 'utf-8';
+        link.setAttribute('fxr-2dcontent-api', 'style');
 
+        if (onLoad) {
+          link.addEventListener('load', onLoad);
+        }
+
+        if (onError) {
+          link.addEventListener('error', onError);
+        }
+
+        if (where === "before") {
+          document.head.appendChild(link);
+        } else {
+          document.body.appendChild(link);
+        }
+      }
+
+      injectJS(GFXTESTS_CONFIG.injectJS.path, GFXTESTS_CONFIG.injectJS.where, ()=> {
+        console.log("Injected!");
+      },
+      () => {
+        console.error("Error injecting JS!");
+      }
+      );
+    }
+    */
+
+    /*
+          if (typeof parameters['replay'] !== 'undefined' && GFXTESTS_CONFIG.input && !this.inputLoading) {
+            this.inputLoading = true;
+            fetch('/tests/' + GFXTESTS_CONFIG.input).then(response => {
+              return response.json();
+            })
+            .then(json => {
+              this.inputReplayer = new InputReplayer(this.canvas, json, this.eventListener.registeredEventListeners);
+              this.inputHelpers = new InputHelpers(this.canvas);
+              this.ready = true;
+            });
+*/
 
 /*
     window.addEventListener('vrdisplaypresentchange', evt => {
