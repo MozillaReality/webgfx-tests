@@ -243,7 +243,7 @@ Browsers on device: PC (serial: )
 ## Start server
 Usage:
 ```
-$ gfxstart start-server [options]
+$ webgfx-tests start-server [options]
 ```
 
 * `-h, --help`: Show the previous help text.
