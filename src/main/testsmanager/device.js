@@ -115,8 +115,8 @@ TestsManager.prototype = {
     });
 
     const serverIP = this.generalOptions ? 'localhost' : internalIp.v4.sync() || 'localhost';
-    //@fixme port from params
-    const baseURL = `http://${serverIP}:3000/`;
+    const port = extraOptions.port || 3000;
+    const baseURL = `http://${serverIP}:${port}/`;
 
     var options = {
       showKeys: false,
