@@ -477,7 +477,8 @@ program
 
               var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions);
               await testsManager.runTests({
-                apkFilename: apkFilename
+                apkFilename: apkFilename,
+                port: options.port
               });
             }
             reader.close();
@@ -518,7 +519,9 @@ program
           //console.log(generalOptions);
 
           var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions, {});
-          await testsManager.runTests({});
+          await testsManager.runTests({
+            port: options.port
+          });
           onTestsFinish();
         }
       });
