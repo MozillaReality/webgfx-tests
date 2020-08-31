@@ -8,10 +8,11 @@ var path = require('path')
 const chalk = require('chalk');
 const internalIp = require('internal-ip');
 var bodyParser = require('body-parser')
+const https = require('https');
 
 const baseFolder = '/../../../';
 
-function initServer(port, config, verbose) {
+function initServer(port, config, verbose, secure) {
   port = port || 3000;
   verbose = verbose || false;
 
@@ -134,10 +135,21 @@ function initServer(port, config, verbose) {
       }
     });
 
-  server.listen(port, function(){
-    var serverIP = internalIp.v4.sync() || 'localhost';
-    console.log('* HTTP Tests server listening on ' + chalk.yellow(serverIP + ':' + port));
-  });
+  const serverIP = internalIp.v4.sync() || 'localhost';
+  if (secure) {
+    if (!fs.existsSync('./key.pem') || !fs.existsSync('./cert.pem')) {
+      console.log('You need key.pem and cert.pem files to run HTTPS server.');
+    }
+    https.createServer({
+      key: fs.readFileSync('./key.pem', 'utf8'),
+      cert: fs.readFileSync('./cert.pem', 'utf8')
+    }, server).listen(port);
+    console.log('* HTTPS Tests server listening on ' + chalk.yellow(serverIP + ':' + port));
+  } else {
+    server.listen(port, function(){
+      console.log('* HTTP Tests server listening on ' + chalk.yellow(serverIP + ':' + port));
+    });
+  }
 }
 
 module.exports = initServer;

@@ -116,7 +116,8 @@ TestsManager.prototype = {
 
     const serverIP = this.generalOptions ? 'localhost' : internalIp.v4.sync() || 'localhost';
     const port = extraOptions.port || 3000;
-    const baseURL = `http://${serverIP}:${port}/`;
+    const protocol = extraOptions.secureServer ? 'https' : 'http';
+    const baseURL = `${protocol}://${serverIP}:${port}/`;
 
     var options = {
       showKeys: false,

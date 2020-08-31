@@ -1,9 +1,11 @@
 var http = require('http');
+const https = require('https');
+const fs = require('fs');
 const PrettyPrint = require('../prettyprint');
 const chalk = require('chalk');
 
 //function initWebSocketServer(port, testFinishedCallback, verbose) {
-function initWebSocketServer(port, callbacks, verbose) {
+function initWebSocketServer(port, callbacks, verbose, secure) {
   verbose = verbose || false;
   port = port || 8888;
 
@@ -14,7 +16,7 @@ function initWebSocketServer(port, callbacks, verbose) {
     }
   }
 
-  var server = http.createServer(function(req,res){
+  const app = (req, res) => {
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Request-Method', '*');
@@ -25,9 +27,21 @@ function initWebSocketServer(port, callbacks, verbose) {
       res.end();
       return;
     }
+  };
 
-    // ...
-  });
+  let server;
+  if (secure) {
+    if (!fs.existsSync('./key.pem') || !fs.existsSync('./cert.pem')) {
+      console.log('You need key.pem and cert.pem files to run HTTPS server.');
+    }
+    server = https.createServer({
+      key: fs.readFileSync('./key.pem', 'utf8'),
+      cert: fs.readFileSync('./cert.pem', 'utf8')
+    }, app);
+  } else {
+    server = http.createServer(app);
+  }
+
   var io = require('socket.io').listen(server);
 
   io.set('origins', '*:*');

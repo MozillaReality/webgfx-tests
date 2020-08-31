@@ -389,7 +389,9 @@ window.TESTER = {
   },
 
   initServer: function () {
-    var serverUrl = 'http://' + GFXTESTS_CONFIG.serverIP + ':8888';
+    const protocol = location.href.split(':')[0];
+    // @Fixme: Port should be configurable by commandline option
+    const serverUrl = protocol + '://' + GFXTESTS_CONFIG.serverIP + ':8888';
 
     this.socket = io.connect(serverUrl);
 

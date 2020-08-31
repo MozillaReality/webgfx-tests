@@ -192,6 +192,7 @@ program
   .option("-b, --launchbrowser <browser name>", "Which browser to use to launch the front page")
   .option("-c, --configfile <configFile>", "Config file (default webgfx-tests.config.json)")
   .option("-v, --verbose", "Show all the information available")
+  .option("-s, --secure", "Run HTTPS Server. You need key.pem and cert.pem.")
   .action(async options => {
     const configfile = options.configfile || 'webgfx-tests.config.json';
 
@@ -200,10 +201,10 @@ program
       console.log(`${chalk.red('ERROR')}: error loading config file: ${chalk.yellow(configfile)}`);
     } else {
 
-      initHTTPServer(options.port, config, options.verbose);
+      initHTTPServer(options.port, config, options.verbose, options.secure);
       initWebSocketServer(options.wsport, (data, io) => {
         io.emit('test_finished', data);
-      }, options.verbose);
+      }, options.verbose, options.secure);
 
       if (options.launchbrowser) {
         var devices = getDevices(options.adb);
@@ -251,6 +252,7 @@ program
   .option("-r, --overrideparams <additional parameters>", "Override parameters on individual execution (eg: \"fake-webgl&width=800&height=600\"")
   .option("-v, --verbose", "Show all the info available")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
+  .option("-s, --secure", "Run HTTPS Server. You need key.pem and cert.pem.")
   .action((testsIDs, options) => {
     const configfile = options.configfile || 'webgfx-tests.config.json';
 
@@ -324,7 +326,7 @@ program
         }
       }
 
-      initHTTPServer(options.port, config, options.verbose);
+      initHTTPServer(options.port, config, options.verbose, options.secure);
       var websockets = initWebSocketServer(options.wsport, {
         testFinished: (data, io) => {
           io.emit('test_finished', data);
@@ -392,7 +394,7 @@ program
             runningBrowser.hardwareStats.enabled = true;
           }
         }
-      }, options.verbose);
+      }, options.verbose, options.secure);
 
 
 
@@ -478,7 +480,8 @@ program
               var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions);
               await testsManager.runTests({
                 apkFilename: apkFilename,
-                port: options.port
+                port: options.port,
+                secureServer: !!options.secure
               });
             }
             reader.close();
@@ -520,7 +523,8 @@ program
 
           var testsManager = testsManagers[device.serial] = new TestUtils.TestsManager(device, testsToRun, browsersToRun, generalOptions, {});
           await testsManager.runTests({
-            port: options.port
+            port: options.port,
+            secureServer: !!options.secure
           });
           onTestsFinish();
         }
