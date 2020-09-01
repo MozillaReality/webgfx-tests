@@ -89,5 +89,18 @@
     "mobile": true,
     "interactive": true,
     "skipReferenceImageTest": true
+  },
+  {
+    "id": "three",
+    "engine": "three.js",
+    "url": "https://threejs.org/examples/webgl_animation_cloth.html",
+    "name": "Three.js Animation Cloth",
+    "mobile": true,
+    "apis": [
+      "WebGL"
+    ],
+    "numFrames": 400,
+    "interactive": true,
+    "skipReferenceImageTest": true
   }
 ]
