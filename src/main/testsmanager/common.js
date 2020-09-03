@@ -58,7 +58,12 @@ function buildTestURL(baseURL, test, mode, options, progress) {
     // console.log('Generated URL: ', url);
   }
 
-  url = baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url + (test.url.indexOf('?') !== -1 ? '' : '?') + url;
+  // If test code is already manually embedded by user
+  // directly open the URL, not via the test server.
+  const baseTestURL = test.hasTestCode ? test.url :
+    baseURL + (mode === 'interactive' ? 'static/': 'tests/') + test.url;
+
+  url = baseTestURL + (test.url.indexOf('?') !== -1 ? '' : '?') + url;
   return url;
 }
 
