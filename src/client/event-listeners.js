@@ -36,7 +36,7 @@ export default class EventListenerManager {
 
     // Filter the page event handlers to only pass programmatically generated events to the site - all real user input needs to be discarded since we are
     // doing a programmatic run.
-    var overriddenMessageTypes = ['mousedown', 'mouseup', 'mousemove',
+    const overriddenMessageTypes = ['mousedown', 'mouseup', 'mousemove',
       'click', 'dblclick', 'keydown', 'keypress', 'keyup',
       'pointerlockchange', 'pointerlockerror', 'webkitpointerlockchange', 'webkitpointerlockerror', 'mozpointerlockchange', 'mozpointerlockerror', 'mspointerlockchange', 'mspointerlockerror', 'opointerlockchange', 'opointerlockerror',
       'devicemotion', 'deviceorientation',
@@ -56,25 +56,37 @@ export default class EventListenerManager {
     // if (!Module['pageNeedsResizeEvent']) overriddenMessageTypes.push('resize');
 
     // If context is specified, addEventListener is called using that as the 'this' object. Otherwise the current this is used.
-    var self = this;
-    var dispatchMouseEventsViaDOM = false;
-    var dispatchKeyEventsViaDOM = false;
+    const self = this;
+    const dispatchMouseEventsViaDOM = false;
+    const dispatchKeyEventsViaDOM = false;
+
     function replaceEventListener(obj, context) {
-      var realAddEventListener = obj.addEventListener;
+      const realAddEventListener = obj.addEventListener;
       obj.addEventListener = function(type, listener, useCapture) {
         self.ensureNoClientHandlers();
-        if (overriddenMessageTypes.indexOf(type) != -1) {
-          var registerListenerToDOM =
+        if (overriddenMessageTypes.indexOf(type) !== -1) {
+          const registerListenerToDOM =
                (type.indexOf('mouse') === -1 || dispatchMouseEventsViaDOM)
             && (type.indexOf('key') === -1 || dispatchKeyEventsViaDOM);
-          var filteredEventListener = function(e) { try { if (e.programmatic || !e.isTrusted) listener(e); } catch(e) {} };
+
+          const filteredEventListener = function(e) {
+            try {
+              if (e.programmatic || !e.isTrusted) listener(e);
+            } catch(e) {}
+          };
           //!!! var filteredEventListener = listener;
-          if (registerListenerToDOM) realAddEventListener.call(context || this, type, filteredEventListener, useCapture);
+
+          if (registerListenerToDOM) {
+            realAddEventListener.call(context || this, type, filteredEventListener, useCapture);
+          }
+
           self.registeredEventListeners.push({
             context: context || this,
             type: type,
             fun: filteredEventListener,
-            useCapture: useCapture
+            realFun: listener,
+            useCapture: useCapture,
+            added: registerListenerToDOM
           });
         } else {
           realAddEventListener.call(context || this, type, listener, useCapture);
@@ -82,25 +94,34 @@ export default class EventListenerManager {
             context: context || this,
             type: type,
             fun: listener,
-            useCapture: useCapture
+            realFun: listener,
+            useCapture: useCapture,
+            added: true
           });
         }
       }
 
-      var realRemoveEventListener = obj.removeEventListener;
-
+      const realRemoveEventListener = obj.removeEventListener;
       obj.removeEventListener = function(type, listener, useCapture) {
-        // if (registerListenerToDOM)
-        //realRemoveEventListener.call(context || this, type, filteredEventListener, useCapture);
-        for (var i = 0; i < self.registeredEventListeners.length; i++) {
-          var eventListener = self.registeredEventListeners[i];
-          if (eventListener.context === this && eventListener.type === type && eventListener.fun === listener) {
-            self.registeredEventListeners.splice(i, 1);
+        let writeIndex = 0;
+        let listenerFunction = null;
+        for (let readIndex = 0; readIndex < self.registeredEventListeners.length; readIndex++) {
+          const eventListener = self.registeredEventListeners[readIndex];
+          if (eventListener.context === this && eventListener.type === type && eventListener.realFun === listener) {
+            if (eventListener.added) {
+              listenerFunction = eventListener.fun;
+            }
+          } else {
+            self.registeredEventListeners[writeIndex++] = eventListener;
           }
         }
-        
+        if (listenerFunction) {
+          realRemoveEventListener.call(context || this, type, listenerFunction, useCapture);
+        }
+        self.registeredEventListeners.length = writeIndex;
       }
     }
+
     if (typeof EventTarget !== 'undefined') {
       replaceEventListener(EventTarget.prototype, null);
     } else {
