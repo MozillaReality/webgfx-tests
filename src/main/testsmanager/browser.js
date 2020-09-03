@@ -74,5 +74,5 @@ TestsManagerBrowser.prototype = {
     }
 
     window.open(url);
-   }
+  }
 }
