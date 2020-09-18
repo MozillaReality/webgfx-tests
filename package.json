@@ -32,7 +32,7 @@
     "cheerio": "^1.0.0-rc.3",
     "commander": "^2.20.3",
     "compression": "^1.7.4",
-    "detect-browsers": "^3.3.0",
+    "detect-browsers": "^5.0.5",
     "express": "^4.17.1",
     "fake-timers": "^0.1.2",
     "input-events-recorder": "^1.2.2",
