@@ -8,14 +8,14 @@ module.exports = {
   name: 'PC',
   getInstalledBrowsers: function() {
     return new Promise((resolve, reject) => {
-      detectBrowsers.getInstalledBrowsers()
+      detectBrowsers.getAvailableBrowsers()
       .then(browsers => {
         resolve(browsers.map(
           browser => {
             return {
-              name: browser.name,
-              code: browser.name.toLowerCase(),
-              launchCmd: browser.executablePath,
+              name: browser.browser,
+              code: browser.browser.toLowerCase(),
+              launchCmd: browser.path,
               versionCode: '',
               versionName: ''
             };
