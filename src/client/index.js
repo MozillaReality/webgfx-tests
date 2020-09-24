@@ -98,10 +98,20 @@ window.TESTER = {
       if (typeof parameters['no-rendering'] !== 'undefined') {
         this.ready = true;
       } else {
-        // We assume the last webgl context being initialized is the one used to rendering
-        // If that's different, the test should have a custom code to return that canvas
         if (CanvasHook.getNumContexts() > 0) {
-          var context = CanvasHook.getContext(CanvasHook.getNumContexts() - 1);
+          let context = null;
+          if (typeof parameters['canvas-id'] !== 'undefined') {
+            const contexts = CanvasHook.getContextsByCanvasId( parameters['canvas-id'] );
+            if (contexts.length > 0) {
+              // Use the first context so far
+              context = contexts[0];
+            }
+          }
+          if (context === null) {
+            // We assume the last webgl context being initialized is the one used to rendering
+            // If that's different, the test should have a custom code to return that canvas
+            context = CanvasHook.getContext(CanvasHook.getNumContexts() - 1);
+          }
           this.canvas = context.canvas;
 
           // Prevent events not defined as event-listeners

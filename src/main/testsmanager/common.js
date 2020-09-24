@@ -23,9 +23,8 @@ function buildTestURL(baseURL, test, mode, options, progress) {
     if (getOption('numFrames')) url = addGET(url, 'num-frames=' + getOption('numFrames'));
     if (getOption('canvasWidth')) url = addGET(url, 'width=' + getOption('canvasWidth'));
     if (getOption('canvasHeight')) url = addGET(url, 'height=' + getOption('canvasHeight'));
-
+    if (getOption('canvasId')) url = addGET(url, 'canvas-id=' + getOption('canvasId'));
     if (getOption('fakeWebGL')) url = addGET(url, 'fake-webgl');
-
     if (getOption('fakeWebAudio')) url = addGET(url, 'fake-webaudio');
 
     if (mode === 'record') {
