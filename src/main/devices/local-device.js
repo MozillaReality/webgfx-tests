@@ -67,7 +67,6 @@ module.exports = {
       var options = [];
       if (browser.code.indexOf('chrome') !== -1) {
         options = [
-          '--incognito',
           '--disable-restore-session-state',
           '--no-default-browser-check',
           '--no-first-run'
