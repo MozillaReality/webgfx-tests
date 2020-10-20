@@ -6,8 +6,8 @@ const buildTestURL = require('./common').buildTestURL;
 const OculusVRAPI = require('../devices/oculus_vrapi');
 
 function addGET(url, parameter) {
-  if (url.indexOf('?') != -1) return url + '&' + parameter;
-  else return url + '?' + parameter;
+  const hashAnchor = url.indexOf('#') !== -1 ? url.slice(url.indexOf('#')) : '';
+  return url.split('#')[0] + (url.indexOf('?') !== -1 ? '&' : '?') + parameter + hashAnchor;
 }
 
 function getHardwareStats(productName) {
