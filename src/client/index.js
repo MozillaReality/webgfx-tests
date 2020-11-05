@@ -10,6 +10,7 @@ import InputHelpers from './input-helpers';
 import WebAudioHook from './webaudio-hook';
 import WebVRHook from './webvr-hook';
 import {resizeImageData} from './image-utils';
+import FakeSensors from './fake-sensors.js';
 import pixelmatch from 'pixelmatch';
 import WebGLStats from 'webgl-stats';
 
@@ -897,6 +898,10 @@ window.TESTER = {
 
     if (!GFXTESTS_CONFIG.dontOverrideWebAudio) {
       WebAudioHook.enable(typeof parameters['fake-webaudio'] !== 'undefined');
+    }
+
+    if (!GFXTESTS_CONFIG.dontOverrideSensors) {
+      FakeSensors.enable();
     }
 
     // @todo Use config
