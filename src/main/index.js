@@ -490,6 +490,8 @@ program
           if (options.localhost) {
             console.log('Reverse ports tcp:3000 => tcp:3000');
             await device.openPorts(3000, 3000);
+            console.log('Reverse ports tcp:8888 => tcp:8888');
+            await device.openPorts(8888, 8888);
           }
           browsersToRun = browsers;
           if (options.browser && options.browser !== 'all') {
