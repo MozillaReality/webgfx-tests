@@ -1,4 +1,4 @@
-var resultsServerUrl = 'http://localhost:3333/';
+var resultsServerUrl = location.protocol + '//localhost:3000/';
 
 var uploadResultsToResultsServer = true;
 
