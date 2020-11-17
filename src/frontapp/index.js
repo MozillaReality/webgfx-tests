@@ -61,7 +61,7 @@ window.onload = (x) => {
           test.engine && test.engine.toLowerCase().indexOf(filter) > -1 ||
           test.apis && test.apis.join(' ').toLowerCase().indexOf(filter) > -1 ||
           test.name && test.name.toLowerCase().indexOf(filter) > -1;
-       })
+        });
       }
     }
   });
