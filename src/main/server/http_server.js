@@ -54,6 +54,10 @@ function initServer(port, config, verbose) {
       console.log('Starting a new test', req.body);
       res.send('');
     })
+    .post('/store_test_results', (req, res) => {
+      console.log('Storing test results', req.body);
+      res.send('');
+    })
     .post('/store_system_info', (req, res) => {
       console.log('Storing system info', req.body);
       res.send('');
