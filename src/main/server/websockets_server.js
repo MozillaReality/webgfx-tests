@@ -43,7 +43,7 @@ function initWebSocketServer(port, callbacks, verbose) {
     });
 
     socket.on('test_started', (data) => {
-      if (callbacks && callbacks.testFinished) {
+      if (callbacks && callbacks.testStarted) {
         callbacks.testStarted(data);
       }
       log(`  - Test started: ${chalk.yellow(data.id)}`);
