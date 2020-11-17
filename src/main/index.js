@@ -186,7 +186,7 @@ program
 program
   .command('start-server')
   .description('Start tests server')
-  .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
+  .option("-p, --port <port_number>", "HTTP Server Port number (Default 3000)")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
   .option("-a, --adb [devices]", "Use android devices through ADB")
   .option("-b, --launchbrowser <browser name>", "Which browser to use to launch the front page")
@@ -247,7 +247,7 @@ program
   .option("-l, --launchparams <additional parameters>", "Additional parameters to launch the browser")
   .option("-n, --numtimes <number>", "Number of times to run each test")
   .option("-o, --outputfile <file>", "Store test results on a local file")
-  .option("-p, --port <port_number>", "HTTP Server Port number (Default 3333)")
+  .option("-p, --port <port_number>", "HTTP Server Port number (Default 3000)")
   .option("-r, --overrideparams <additional parameters>", "Override parameters on individual execution (eg: \"fake-webgl&width=800&height=600\"")
   .option("-v, --verbose", "Show all the info available")
   .option("-w, --wsport <port_number>", "WebSocket Port number (Default 8888)")
