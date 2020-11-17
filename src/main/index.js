@@ -201,8 +201,10 @@ program
     } else {
 
       initHTTPServer(options.port, config, options.verbose);
-      initWebSocketServer(options.wsport, (data, io) => {
-        io.emit('test_finished', data);
+      initWebSocketServer(options.wsport, {
+        testFinished: (data, io) => {
+          io.emit('test_finished', data);
+        }
       }, options.verbose);
 
       if (options.launchbrowser) {
