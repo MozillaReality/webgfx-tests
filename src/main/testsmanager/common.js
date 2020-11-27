@@ -27,6 +27,7 @@ function buildTestURL(baseURL, test, mode, options, progress) {
     if (getOption('fakeWebGL')) url = addGET(url, 'fake-webgl');
 
     if (getOption('fakeWebAudio')) url = addGET(url, 'fake-webaudio');
+    if (getOption('noCanvasResize')) url = addGET(url, 'no-canvas-resize');
 
     if (mode === 'record') {
       url = addGET(url, 'recording');

@@ -1069,21 +1069,23 @@ window.TESTER = {
   onResize: function (e) {
     if (e && e.origin === 'webgfxtest') return;
 
-    const DEFAULT_WIDTH = 800;
-    const DEFAULT_HEIGHT = 600;
-    this.canvasWidth = DEFAULT_WIDTH;
-    this.canvasHeight = DEFAULT_HEIGHT;
+    if (typeof parameters['no-canvas-resize'] === 'undefined') {
+      const DEFAULT_WIDTH = 800;
+      const DEFAULT_HEIGHT = 600;
+      this.canvasWidth = DEFAULT_WIDTH;
+      this.canvasHeight = DEFAULT_HEIGHT;
 
-    if (typeof parameters['keep-window-size'] === 'undefined') {
-      this.canvasWidth = typeof parameters['width'] === 'undefined' ? DEFAULT_WIDTH : parseInt(parameters['width']);
-      this.canvasHeight = typeof parameters['height'] === 'undefined' ? DEFAULT_HEIGHT : parseInt(parameters['height']);
-      window.innerWidth = this.canvasWidth;
-      window.innerHeight = this.canvasHeight;
-    }
+      if (typeof parameters['keep-window-size'] === 'undefined') {
+        this.canvasWidth = typeof parameters['width'] === 'undefined' ? DEFAULT_WIDTH : parseInt(parameters['width']);
+        this.canvasHeight = typeof parameters['height'] === 'undefined' ? DEFAULT_HEIGHT : parseInt(parameters['height']);
+        window.innerWidth = this.canvasWidth;
+        window.innerHeight = this.canvasHeight;
+      }
 
-    if (this.canvas) {
-      this.canvas.width = this.canvasWidth;
-      this.canvas.height = this.canvasHeight;
+      if (this.canvas) {
+        this.canvas.width = this.canvasWidth;
+        this.canvas.height = this.canvasHeight;
+      }
     }
 
     var e = document.createEventObject ? document.createEventObject() : document.createEvent("Events");
